@@ -1,0 +1,1814 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nature-Tech Terminal · Multi-Theme</title>
+<style>
+/* ==========================================================================
+   DESIGN TOKENS — all themes defined here via CSS custom properties
+   ========================================================================== */
+:root {
+  /* Animation curves */
+  --spring-fast: cubic-bezier(0.25, 0.8, 0.15, 1.35);
+  --spring-smooth: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --spring-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --spring-gentle: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-morph: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Spacing scale */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 14px;
+  --space-lg: 24px;
+  --space-xl: 40px;
+
+  /* Radii */
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 20px;
+
+  /* Typography */
+  --font-mono: 'SF Mono', 'Fira Code', monospace;
+}
+
+/* === THEME: Emerald Canopy (Dark) === */
+body[data-theme="emerald"][data-mode="dark"] {
+  --bg-depth: #060d0e;
+  --bg-surface: #0b181a;
+  --bg-card: rgba(10, 22, 24, 0.58);
+  --bg-card-hover: rgba(14, 28, 30, 0.68);
+  --bg-nav: rgba(8, 18, 20, 0.72);
+  --border: rgba(255,255,255,0.07);
+  --border-hover: rgba(13, 148, 136, 0.18);
+  --text-primary: #e2edea;
+  --text-muted: #7d9995;
+  --accent: #0d9488;
+  --accent-glow: rgba(13, 148, 136, 0.2);
+  --accent2: #06b6d4;
+  --accent3: #f59e0b;
+  --accent4: #2dd4bf;
+  --positive: #22c55e;
+  --negative: #ef4444;
+  --skeleton-base: rgba(255,255,255,0.04);
+  --skeleton-shine: rgba(255,255,255,0.08);
+  --droplet-color: rgba(13, 148, 136, 0.25);
+  --bottom-glow: radial-gradient(ellipse 80% 60% at 50% 100%, rgba(13,148,136,0.10) 0%, transparent 60%), radial-gradient(ellipse 50% 40% at 35% 100%, rgba(245,158,11,0.06) 0%, transparent 55%);
+  --aurora: radial-gradient(ellipse 40% 50% at 20% 30%, rgba(6,182,212,0.05) 0%, transparent 70%), radial-gradient(ellipse 35% 45% at 75% 20%, rgba(13,148,136,0.04) 0%, transparent 65%);
+  --nav-glow: radial-gradient(ellipse 60% 80% at 50% 0%, rgba(13,148,136,0.10) 0%, transparent 100%);
+  --stone-opacity: 0.035;
+  --card-stone-opacity: 0.03;
+  --firefly-hues: 168, 190, 40, 170;
+  --kpi-emerald: var(--accent);
+  --kpi-amber: var(--accent3);
+  --kpi-amethyst: #a78bfa;
+  --kpi-cyan: var(--accent2);
+}
+
+/* === THEME: Emerald Canopy (Light) === */
+body[data-theme="emerald"][data-mode="light"] {
+  --bg-depth: #f3f5f1;
+  --bg-surface: #f8faf6;
+  --bg-card: rgba(255,255,255,0.72);
+  --bg-card-hover: rgba(255,255,255,0.88);
+  --bg-nav: rgba(255,255,255,0.78);
+  --border: rgba(0,0,0,0.06);
+  --border-hover: rgba(13, 148, 136, 0.25);
+  --text-primary: #1a2a25;
+  --text-muted: #6b8a7d;
+  --accent: #0f766e;
+  --accent-glow: rgba(13, 148, 136, 0.12);
+  --accent2: #0891b2;
+  --accent3: #d97706;
+  --accent4: #14b8a6;
+  --positive: #16a34a;
+  --negative: #dc2626;
+  --skeleton-base: rgba(0,0,0,0.04);
+  --skeleton-shine: rgba(0,0,0,0.06);
+  --droplet-color: rgba(13, 148, 136, 0.18);
+  --bottom-glow: radial-gradient(ellipse 80% 50% at 50% 100%, rgba(13,148,136,0.06) 0%, transparent 60%);
+  --aurora: radial-gradient(ellipse 40% 50% at 20% 30%, rgba(6,182,212,0.04) 0%, transparent 70%);
+  --nav-glow: radial-gradient(ellipse 60% 80% at 50% 0%, rgba(13,148,136,0.06) 0%, transparent 100%);
+  --stone-opacity: 0.018;
+  --card-stone-opacity: 0.012;
+  --firefly-hues: 168, 190, 40, 170;
+  --kpi-emerald: var(--accent);
+  --kpi-amber: var(--accent3);
+  --kpi-amethyst: #7c3aed;
+  --kpi-cyan: var(--accent2);
+}
+
+/* === THEME: Amber Geo (Dark) === */
+body[data-theme="amber"][data-mode="dark"] {
+  --bg-depth: #0d0a06;
+  --bg-surface: #16110c;
+  --bg-card: rgba(20, 14, 8, 0.58);
+  --bg-card-hover: rgba(26, 18, 10, 0.68);
+  --bg-nav: rgba(14, 10, 6, 0.72);
+  --border: rgba(255,255,255,0.06);
+  --border-hover: rgba(245, 158, 11, 0.2);
+  --text-primary: #efe9e0;
+  --text-muted: #9a8e7c;
+  --accent: #f59e0b;
+  --accent-glow: rgba(245, 158, 11, 0.2);
+  --accent2: #d97706;
+  --accent3: #0d9488;
+  --accent4: #fbbf24;
+  --positive: #22c55e;
+  --negative: #ef4444;
+  --skeleton-base: rgba(255,255,255,0.04);
+  --skeleton-shine: rgba(255,255,255,0.08);
+  --droplet-color: rgba(245, 158, 11, 0.2);
+  --bottom-glow: radial-gradient(ellipse 80% 60% at 50% 100%, rgba(245,158,11,0.08) 0%, transparent 60%), radial-gradient(ellipse 45% 40% at 65% 100%, rgba(217,119,6,0.05) 0%, transparent 55%);
+  --aurora: radial-gradient(ellipse 40% 50% at 20% 30%, rgba(245,158,11,0.04) 0%, transparent 70%);
+  --nav-glow: radial-gradient(ellipse 60% 80% at 50% 0%, rgba(245,158,11,0.08) 0%, transparent 100%);
+  --stone-opacity: 0.03;
+  --card-stone-opacity: 0.025;
+  --firefly-hues: 40, 35, 168, 190;
+  --kpi-emerald: var(--accent3);
+  --kpi-amber: var(--accent);
+  --kpi-amethyst: #c084fc;
+  --kpi-cyan: var(--accent3);
+}
+
+/* === THEME: Amber Geo (Light) === */
+body[data-theme="amber"][data-mode="light"] {
+  --bg-depth: #faf7f0;
+  --bg-surface: #fefcf6;
+  --bg-card: rgba(255,255,255,0.75);
+  --bg-card-hover: rgba(255,255,255,0.9);
+  --bg-nav: rgba(255,255,255,0.82);
+  --border: rgba(0,0,0,0.06);
+  --border-hover: rgba(217, 119, 6, 0.22);
+  --text-primary: #2d2416;
+  --text-muted: #8a7a60;
+  --accent: #d97706;
+  --accent-glow: rgba(217, 119, 6, 0.1);
+  --accent2: #b45309;
+  --accent3: #0f766e;
+  --accent4: #f59e0b;
+  --positive: #16a34a;
+  --negative: #dc2626;
+  --skeleton-base: rgba(0,0,0,0.04);
+  --skeleton-shine: rgba(0,0,0,0.06);
+  --droplet-color: rgba(217, 119, 6, 0.14);
+  --bottom-glow: radial-gradient(ellipse 80% 50% at 50% 100%, rgba(245,158,11,0.04) 0%, transparent 60%);
+  --aurora: radial-gradient(ellipse 40% 50% at 20% 30%, rgba(245,158,11,0.03) 0%, transparent 70%);
+  --nav-glow: radial-gradient(ellipse 60% 80% at 50% 0%, rgba(217,119,6,0.04) 0%, transparent 100%);
+  --stone-opacity: 0.014;
+  --card-stone-opacity: 0.01;
+  --firefly-hues: 40, 35, 168, 190;
+  --kpi-emerald: var(--accent3);
+  --kpi-amber: var(--accent);
+  --kpi-amethyst: #7c3aed;
+  --kpi-cyan: var(--accent3);
+}
+
+/* === THEME: Crystal Amethyst (Dark) === */
+body[data-theme="amethyst"][data-mode="dark"] {
+  --bg-depth: #0a0812;
+  --bg-surface: #120f1e;
+  --bg-card: rgba(16, 13, 28, 0.58);
+  --bg-card-hover: rgba(22, 18, 34, 0.68);
+  --bg-nav: rgba(12, 10, 22, 0.72);
+  --border: rgba(255,255,255,0.06);
+  --border-hover: rgba(139, 92, 246, 0.2);
+  --text-primary: #e8e4f4;
+  --text-muted: #9a92b8;
+  --accent: #8b5cf6;
+  --accent-glow: rgba(139, 92, 246, 0.2);
+  --accent2: #a78bfa;
+  --accent3: #06b6d4;
+  --accent4: #c4b5fd;
+  --positive: #22c55e;
+  --negative: #ef4444;
+  --skeleton-base: rgba(255,255,255,0.04);
+  --skeleton-shine: rgba(255,255,255,0.07);
+  --droplet-color: rgba(139, 92, 246, 0.22);
+  --bottom-glow: radial-gradient(ellipse 80% 60% at 50% 100%, rgba(139,92,246,0.08) 0%, transparent 60%), radial-gradient(ellipse 45% 40% at 30% 100%, rgba(6,182,212,0.05) 0%, transparent 55%);
+  --aurora: radial-gradient(ellipse 40% 50% at 20% 30%, rgba(139,92,246,0.04) 0%, transparent 70%), radial-gradient(ellipse 35% 45% at 75% 20%, rgba(6,182,212,0.03) 0%, transparent 65%);
+  --nav-glow: radial-gradient(ellipse 60% 80% at 50% 0%, rgba(139,92,246,0.08) 0%, transparent 100%);
+  --stone-opacity: 0.03;
+  --card-stone-opacity: 0.025;
+  --firefly-hues: 270, 190, 40, 310;
+  --kpi-emerald: #2dd4bf;
+  --kpi-amber: var(--accent3);
+  --kpi-amethyst: var(--accent2);
+  --kpi-cyan: var(--accent3);
+}
+
+/* === THEME: Crystal Amethyst (Light) === */
+body[data-theme="amethyst"][data-mode="light"] {
+  --bg-depth: #f7f5fc;
+  --bg-surface: #faf9fe;
+  --bg-card: rgba(255,255,255,0.75);
+  --bg-card-hover: rgba(255,255,255,0.9);
+  --bg-nav: rgba(255,255,255,0.82);
+  --border: rgba(0,0,0,0.06);
+  --border-hover: rgba(139, 92, 246, 0.2);
+  --text-primary: #1e1b38;
+  --text-muted: #7c76a0;
+  --accent: #7c3aed;
+  --accent-glow: rgba(124, 58, 237, 0.1);
+  --accent2: #8b5cf6;
+  --accent3: #0891b2;
+  --accent4: #a78bfa;
+  --positive: #16a34a;
+  --negative: #dc2626;
+  --skeleton-base: rgba(0,0,0,0.04);
+  --skeleton-shine: rgba(0,0,0,0.06);
+  --droplet-color: rgba(124, 58, 237, 0.14);
+  --bottom-glow: radial-gradient(ellipse 80% 50% at 50% 100%, rgba(139,92,246,0.04) 0%, transparent 60%);
+  --aurora: radial-gradient(ellipse 40% 50% at 20% 30%, rgba(139,92,246,0.03) 0%, transparent 70%);
+  --nav-glow: radial-gradient(ellipse 60% 80% at 50% 0%, rgba(124,58,237,0.04) 0%, transparent 100%);
+  --stone-opacity: 0.014;
+  --card-stone-opacity: 0.01;
+  --firefly-hues: 270, 190, 40, 310;
+  --kpi-emerald: #0d9488;
+  --kpi-amber: #d97706;
+  --kpi-amethyst: var(--accent);
+  --kpi-cyan: var(--accent3);
+}
+
+/* === THEME: Coral Bloom (Dark) === */
+body[data-theme="coral"][data-mode="dark"] {
+  --bg-depth: #0d0710;
+  --bg-surface: #180e16;
+  --bg-card: rgba(20, 12, 18, 0.58);
+  --bg-card-hover: rgba(26, 16, 24, 0.68);
+  --bg-nav: rgba(14, 8, 14, 0.72);
+  --border: rgba(255,255,255,0.06);
+  --border-hover: rgba(244, 63, 94, 0.2);
+  --text-primary: #f2e4ec;
+  --text-muted: #b08da0;
+  --accent: #f43f5e;
+  --accent-glow: rgba(244, 63, 94, 0.18);
+  --accent2: #fb7185;
+  --accent3: #22d3ee;
+  --accent4: #fda4af;
+  --positive: #22c55e;
+  --negative: #ef4444;
+  --skeleton-base: rgba(255,255,255,0.04);
+  --skeleton-shine: rgba(255,255,255,0.07);
+  --droplet-color: rgba(244, 63, 94, 0.2);
+  --bottom-glow: radial-gradient(ellipse 80% 60% at 50% 100%, rgba(244,63,94,0.07) 0%, transparent 60%), radial-gradient(ellipse 45% 40% at 60% 100%, rgba(34,211,238,0.04) 0%, transparent 55%);
+  --aurora: radial-gradient(ellipse 40% 50% at 20% 30%, rgba(251,113,133,0.04) 0%, transparent 70%);
+  --nav-glow: radial-gradient(ellipse 60% 80% at 50% 0%, rgba(244,63,94,0.07) 0%, transparent 100%);
+  --stone-opacity: 0.03;
+  --card-stone-opacity: 0.025;
+  --firefly-hues: 350, 190, 330, 168;
+  --kpi-emerald: #2dd4bf;
+  --kpi-amber: #fbbf24;
+  --kpi-amethyst: #c084fc;
+  --kpi-cyan: var(--accent3);
+}
+
+/* === THEME: Coral Bloom (Light) === */
+body[data-theme="coral"][data-mode="light"] {
+  --bg-depth: #fcf6f8;
+  --bg-surface: #fef9fa;
+  --bg-card: rgba(255,255,255,0.75);
+  --bg-card-hover: rgba(255,255,255,0.9);
+  --bg-nav: rgba(255,255,255,0.82);
+  --border: rgba(0,0,0,0.06);
+  --border-hover: rgba(244, 63, 94, 0.2);
+  --text-primary: #2d1620;
+  --text-muted: #a07888;
+  --accent: #e11d48;
+  --accent-glow: rgba(225, 29, 72, 0.1);
+  --accent2: #f43f5e;
+  --accent3: #0891b2;
+  --accent4: #fb7185;
+  --positive: #16a34a;
+  --negative: #dc2626;
+  --skeleton-base: rgba(0,0,0,0.04);
+  --skeleton-shine: rgba(0,0,0,0.06);
+  --droplet-color: rgba(244, 63, 94, 0.14);
+  --bottom-glow: radial-gradient(ellipse 80% 50% at 50% 100%, rgba(244,63,94,0.04) 0%, transparent 60%);
+  --aurora: radial-gradient(ellipse 40% 50% at 20% 30%, rgba(251,113,133,0.03) 0%, transparent 70%);
+  --nav-glow: radial-gradient(ellipse 60% 80% at 50% 0%, rgba(225,29,72,0.04) 0%, transparent 100%);
+  --stone-opacity: 0.014;
+  --card-stone-opacity: 0.01;
+  --firefly-hues: 350, 190, 330, 168;
+  --kpi-emerald: #0d9488;
+  --kpi-amber: #d97706;
+  --kpi-amethyst: #7c3aed;
+  --kpi-cyan: var(--accent3);
+}
+
+/* ==========================================================================
+   GLOBAL STYLES
+   ========================================================================== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{
+  background: var(--bg-depth);
+  color: var(--text-primary);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  overflow-x: hidden;
+  min-height: 100vh;
+  position: relative;
+  -webkit-font-smoothing: antialiased;
+  transition: background 0.6s var(--spring-gentle), color 0.6s var(--spring-gentle);
+}
+
+/* Bottom geothermal glow */
+body::after{
+  content: '';
+  position: fixed;
+  bottom: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 120%; height: 45vh;
+  background: var(--bottom-glow);
+  pointer-events: none;
+  z-index: 0;
+  transition: background 0.8s var(--spring-gentle);
+}
+
+/* Aurora layer */
+.aurora-layer{
+  position: fixed;
+  top: -20%; left: 0;
+  width: 100%; height: 60%;
+  background: var(--aurora);
+  pointer-events: none;
+  z-index: 0;
+  animation: auroraDrift 18s ease-in-out infinite;
+  transition: background 0.8s var(--spring-gentle);
+}
+@keyframes auroraDrift{
+  0%,100%{transform:translateY(0) scale(1)}
+  33%{transform:translateY(3vh) scale(1.03)}
+  66%{transform:translateY(-2vh) scale(.97)}
+}
+
+/* Stone texture */
+.stone-texture{
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  background-size: 256px;
+  pointer-events: none;
+  z-index: 0;
+  opacity: var(--stone-opacity);
+  transition: opacity 0.6s;
+}
+
+/* Firefly canvas */
+#fireflyCanvas{
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Water droplets */
+.droplet{
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  background: radial-gradient(circle at 40% 35%, var(--droplet-color) 0%, transparent 70%);
+  transition: background 0.6s;
+}
+.droplet::after{
+  content: '';
+  position: absolute;
+  top: 18%; left: 28%;
+  width: 28%; height: 22%;
+  border-radius: 50%;
+  background: var(--droplet-color);
+}
+@keyframes dropletFloat{
+  0%,100%{transform:translateY(0) rotate(0)}
+  25%{transform:translateY(-8px) rotate(1deg)}
+  50%{transform:translateY(4px) rotate(-1deg)}
+  75%{transform:translateY(-3px) rotate(.5deg)}
+}
+.droplet.d1{width:28px;height:35px;top:15%;left:8%;animation:dropletFloat 8s ease-in-out infinite}
+.droplet.d2{width:22px;height:28px;top:22%;right:10%;animation:dropletFloat 8s -3s ease-in-out infinite}
+.droplet.d3{width:18px;height:22px;top:55%;left:4%;animation:dropletFloat 8s -5.5s ease-in-out infinite}
+.droplet.d4{width:16px;height:20px;top:60%;right:6%;animation:dropletFloat 8s -2s ease-in-out infinite}
+.droplet.d5{width:14px;height:18px;top:78%;left:12%;animation:dropletFloat 8s -6s ease-in-out infinite}
+
+/* ==========================================================================
+   LAYOUT
+   ========================================================================== */
+.app-container{
+  position: relative;
+  z-index: 2;
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+}
+
+/* Forest Canopy Navigation */
+.forest-nav{
+  position: sticky;
+  top: 12px;
+  z-index: 100;
+  margin: 16px 0;
+  padding: 12px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  backdrop-filter: blur(24px) saturate(1.4);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  background: var(--bg-nav);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  transition: all 0.5s var(--spring-gentle);
+  box-shadow: 0 2px 0 rgba(255,255,255,.02), 0 8px 32px rgba(0,0,0,.3);
+}
+.forest-nav::before{
+  content: '';
+  position: absolute;
+  top: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 60%; height: 1px;
+  background: var(--nav-glow);
+  transition: background 0.6s;
+}
+.forest-nav:hover{
+  background: var(--bg-card-hover);
+  border-color: var(--border-hover);
+  box-shadow: 0 2px 0 rgba(255,255,255,.04), 0 12px 40px rgba(0,0,0,.4);
+}
+.nav-brand{display:flex;align-items:center;gap:12px}
+.nav-logo{
+  width: 34px; height: 34px;
+  border-radius: 10px;
+  background: radial-gradient(circle at 40% 35%, var(--accent-glow) 0%, transparent 70%);
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+  transition: background 0.6s;
+}
+.nav-logo::after{
+  content: '';
+  position: absolute;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 12px var(--accent), 0 0 24px var(--accent-glow);
+  animation: seedPulse 3s ease-in-out infinite;
+  transition: background 0.6s, box-shadow 0.6s;
+}
+@keyframes seedPulse{
+  0%,100%{opacity:.7;transform:scale(1)}
+  50%{opacity:1;transform:scale(1.3)}
+}
+.nav-title{
+  font-weight: 700; font-size: 15px; letter-spacing: -.01em;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  transition: all 0.6s;
+}
+.nav-links{display:flex;gap:4px;align-items:center}
+.nav-link{
+  padding: 8px 16px; border-radius: 10px;
+  font-size: 13px; font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.35s var(--spring-smooth);
+  border: none; background: transparent;
+}
+.nav-link:hover{color:var(--text-primary);background:rgba(255,255,255,.04)}
+.nav-link.active{color:var(--accent);background:var(--accent-glow);box-shadow:inset 0 0 20px var(--accent-glow)}
+
+.nav-right{display:flex;align-items:center;gap:12px}
+.nav-status{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-muted)}
+.status-dot{
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--positive);
+  box-shadow: 0 0 8px rgba(34,197,94,.6);
+  animation: statusBreathe 2.5s ease-in-out infinite;
+}
+@keyframes statusBreathe{
+  0%,100%{box-shadow:0 0 6px rgba(34,197,94,.5)}
+  50%{box-shadow:0 0 14px rgba(34,197,94,.9)}
+}
+
+/* Settings gear */
+.settings-btn{
+  width: 34px; height: 34px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  transition: all 0.35s var(--spring-smooth);
+}
+.settings-btn:hover{
+  color: var(--text-primary);
+  background: var(--accent-glow);
+  border-color: var(--border-hover);
+  transform: rotate(30deg);
+}
+
+/* ==========================================================================
+   KPI SEED POD ROW
+   ========================================================================== */
+.kpi-row{
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-md);
+  margin: var(--space-lg) 0;
+}
+.kpi-pod{
+  position: relative;
+  padding: 22px 20px 20px;
+  border-radius: var(--radius-md);
+  backdrop-filter: blur(18px) saturate(1.2);
+  -webkit-backdrop-filter: blur(18px) saturate(1.2);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  transition: all 0.5s var(--spring-smooth);
+  cursor: default;
+  overflow: hidden;
+}
+.kpi-pod::before{
+  content: '';
+  position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  background-size: 200px;
+  border-radius: var(--radius-md);
+  pointer-events: none; z-index: 0;
+  opacity: var(--card-stone-opacity);
+  transition: opacity 0.6s;
+}
+.kpi-pod::after{
+  content: '';
+  position: absolute; bottom: -2px; left: 10%;
+  width: 80%; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  transition: all 0.5s var(--spring-smooth);
+  opacity: 0.4;
+}
+.kpi-pod:hover{
+  transform: translateY(-4px);
+  background: var(--bg-card-hover);
+  border-color: var(--border-hover);
+  box-shadow: 0 8px 30px rgba(0,0,0,.25), 0 0 30px var(--accent-glow);
+}
+.kpi-pod:hover::after{opacity:0.7}
+.kpi-label{position:relative;z-index:1;font-size:11px;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.kpi-value{position:relative;z-index:1;font-size:32px;font-weight:700;letter-spacing:-.02em;line-height:1;margin-bottom:4px;color:var(--text-primary)}
+.kpi-pod.emerald .kpi-value{color:var(--kpi-emerald)}
+.kpi-pod.amber .kpi-value{color:var(--kpi-amber)}
+.kpi-pod.amethyst .kpi-value{color:var(--kpi-amethyst)}
+.kpi-pod.cyan .kpi-value{color:var(--kpi-cyan)}
+.kpi-change{position:relative;z-index:1;font-size:12px;font-weight:600}
+.kpi-change.up{color:var(--positive)}
+.kpi-change.down{color:var(--negative)}
+.kpi-glow{
+  position: absolute;
+  top: -50%; right: -20%;
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(40px);
+  opacity: 0;
+  transition: opacity 0.6s var(--spring-gentle);
+}
+.kpi-pod.emerald .kpi-glow{background:var(--kpi-emerald)}
+.kpi-pod.amber .kpi-glow{background:var(--kpi-amber)}
+.kpi-pod.amethyst .kpi-glow{background:var(--kpi-amethyst)}
+.kpi-pod.cyan .kpi-glow{background:var(--kpi-cyan)}
+.kpi-pod:hover .kpi-glow{opacity:.14}
+
+/* ==========================================================================
+   GLASS CARD
+   ========================================================================== */
+.main-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-md);margin-top:var(--space-md)}
+.full-width{grid-column:1/-1}
+
+.glass-card{
+  position: relative;
+  padding: 22px;
+  border-radius: 18px;
+  backdrop-filter: blur(18px) saturate(1.2);
+  -webkit-backdrop-filter: blur(18px) saturate(1.2);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  transition: all 0.6s var(--spring-smooth);
+  overflow: hidden;
+  perspective: 800px;
+  transform-style: preserve-3d;
+}
+.glass-card::before{
+  content: '';
+  position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  background-size: 200px;
+  border-radius: 18px;
+  pointer-events: none; z-index: 0;
+  opacity: var(--card-stone-opacity);
+  transition: opacity 0.6s;
+}
+.glass-card:hover{
+  transform: perspective(800px) rotateY(-1deg) rotateX(1.5deg) translateY(-3px);
+  background: var(--bg-card-hover);
+  border-color: var(--border-hover);
+  box-shadow: 0 12px 36px rgba(0,0,0,.3), 0 0 40px var(--accent-glow);
+}
+.glass-card>*{position:relative;z-index:1}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.card-title{font-size:14px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em}
+.card-badge{font-size:11px;padding:4px 10px;border-radius:20px;font-weight:600}
+.badge-accent{background:var(--accent-glow);color:var(--accent);border:1px solid var(--border-hover)}
+
+/* ==========================================================================
+   STRATEGY TABLE
+   ========================================================================== */
+.strategy-table{width:100%;border-collapse:collapse;font-size:13px}
+.strategy-table th{
+  text-align:left;padding:10px 12px;
+  font-size:11px;font-weight:600;color:var(--text-muted);
+  text-transform:uppercase;letter-spacing:.05em;
+  border-bottom:1px solid var(--border);
+}
+.strategy-table td{
+  padding:10px 12px;
+  border-bottom:1px solid var(--border);
+  transition: all 0.35s var(--spring-smooth);
+}
+.strategy-table tr:hover td{background:rgba(255,255,255,.02)}
+.strategy-table tr{transition:all .35s var(--spring-smooth)}
+.strategy-table tr:hover{transform:translateX(3px)}
+.pnl-up{color:var(--positive);font-weight:600}
+.pnl-down{color:var(--negative);font-weight:600}
+
+/* ==========================================================================
+   PORTFOLIO DONUT
+   ========================================================================== */
+.portfolio-visual{display:flex;align-items:center;gap:28px;margin:8px 0}
+.donut-container{position:relative;width:120px;height:120px;flex-shrink:0}
+.donut-svg{width:100%;height:100%;transform:rotate(-90deg)}
+.donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.donut-total{font-size:20px;font-weight:700}
+.donut-label{font-size:10px;color:var(--text-muted);text-transform:uppercase}
+.portfolio-legend{display:flex;flex-direction:column;gap:10px;flex:1}
+.legend-item{display:flex;align-items:center;gap:10px;font-size:13px}
+.legend-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+.legend-dot.emerald{background:var(--kpi-emerald);box-shadow:0 0 8px var(--kpi-emerald)}
+.legend-dot.amber{background:var(--kpi-amber);box-shadow:0 0 8px var(--kpi-amber)}
+.legend-dot.amethyst{background:var(--kpi-amethyst);box-shadow:0 0 8px var(--kpi-amethyst)}
+.legend-dot.cyan{background:var(--kpi-cyan);box-shadow:0 0 8px var(--kpi-cyan)}
+.legend-name{flex:1;color:var(--text-muted)}
+.legend-value{font-weight:600}
+
+/* ==========================================================================
+   CHART / GAUGE / ORDER
+   ========================================================================== */
+.chart-bars{display:flex;align-items:flex-end;gap:6px;height:80px;padding:4px 0}
+.bar-item{flex:1;border-radius:4px 4px 0 0;min-width:14px;transition:height 0.8s var(--spring-smooth)}
+.bar-item.emerald{background:linear-gradient(to top,var(--kpi-emerald),transparent)}
+.bar-item.amber{background:linear-gradient(to top,var(--kpi-amber),transparent)}
+.bar-item.amethyst{background:linear-gradient(to top,var(--kpi-amethyst),transparent)}
+.bar-item.cyan{background:linear-gradient(to top,var(--kpi-cyan),transparent)}
+
+.gauge-row{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.gauge-bar{flex:1;height:8px;border-radius:4px;background:linear-gradient(90deg,#ef4444,#f59e0b,#eab308,#a3e635,#22c55e);position:relative}
+.gauge-indicator{position:absolute;top:-4px;width:16px;height:16px;border-radius:50%;background:#fff;border:2px solid var(--accent3);box-shadow:0 0 12px var(--accent3);transform:translateX(-50%);transition:left .8s var(--spring-smooth)}
+.gauge-value{font-weight:700;font-size:14px;color:var(--accent3);min-width:32px;text-align:right}
+
+.order-form{display:flex;gap:10px;align-items:flex-end;margin-top:12px}
+.input-group{flex:1;display:flex;flex-direction:column;gap:4px}
+.input-group label{font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em}
+.input-group input,.input-group select{
+  padding:10px 12px;border-radius:10px;
+  background:rgba(255,255,255,.04);border:1px solid var(--border);
+  color:var(--text-primary);font-size:13px;font-family:inherit;outline:none;
+  transition:all .35s var(--spring-smooth);
+}
+.input-group input:focus,.input-group select:focus{
+  border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow);background:rgba(255,255,255,.06);
+}
+.btn{
+  padding:10px 22px;border-radius:10px;border:none;
+  font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;
+  transition:all .35s var(--spring-bounce);
+}
+.btn-buy{background:linear-gradient(135deg,var(--positive),#16a34a);color:#fff;box-shadow:0 4px 16px rgba(34,197,94,.25)}
+.btn-sell{background:linear-gradient(135deg,var(--negative),#dc2626);color:#fff;box-shadow:0 4px 16px rgba(239,68,68,.25)}
+.btn:hover{transform:translateY(-2px) scale(1.02)}
+.btn:active{transform:translateY(0) scale(.97);transition:all .1s var(--spring-fast)}
+
+/* ==========================================================================
+   SKELETON LOADING
+   ========================================================================== */
+.skeleton{background:var(--skeleton-base);border-radius:6px;position:relative;overflow:hidden}
+.skeleton::after{
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent 0%, var(--skeleton-shine) 50%, transparent 100%);
+  animation: shimmer 1.6s infinite;
+}
+@keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.skeleton-text{height:13px;margin-bottom:8px;width:70%}
+.skeleton-text.short{width:40%}
+.skeleton-text.long{width:90%}
+.skeleton-value{height:32px;width:60%;margin-bottom:6px}
+.skeleton-row{height:36px;margin-bottom:6px;width:100%}
+.skeleton-circle{width:120px;height:120px;border-radius:50%}
+.skeleton-dot{width:10px;height:10px;border-radius:3px;display:inline-block}
+.skeleton-badge{width:60px;height:22px;border-radius:20px}
+
+/* Skeleton visibility */
+[data-skeleton="true"] .real-content,[data-skeleton="true"] .kpi-value,[data-skeleton="true"] .kpi-change,[data-skeleton="true"] .strategy-table td,[data-skeleton="true"] .donut-container,[data-skeleton="true"] .portfolio-legend,[data-skeleton="true"] .chart-bars,[data-skeleton="true"] .order-form{display:none}
+[data-skeleton="false"] .skeleton-only{display:none}
+
+/* ==========================================================================
+   SETTINGS PANEL
+   ========================================================================== */
+.settings-overlay{
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.4);
+  z-index: 200;
+  opacity: 0; visibility: hidden;
+  transition: all .35s;
+  backdrop-filter: blur(4px);
+}
+.settings-overlay.open{opacity:1;visibility:visible}
+
+.settings-panel{
+  position: fixed; top: 0; right: -420px;
+  width: 400px; max-width: 92vw; height: 100vh;
+  background: var(--bg-surface);
+  border-left: 1px solid var(--border);
+  z-index: 201;
+  padding: 28px 24px;
+  overflow-y: auto;
+  transition: right .45s var(--spring-smooth);
+  display: flex; flex-direction: column; gap: 28px;
+}
+.settings-panel.open{right:0}
+
+.settings-panel h2{
+  font-size: 18px; font-weight: 700;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.settings-close{
+  width: 32px; height: 32px; border-radius: 8px;
+  border: 1px solid var(--border); background: transparent;
+  color: var(--text-muted); cursor: pointer; font-size: 16px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .3s;
+}
+.settings-close:hover{background:rgba(255,255,255,.05);color:var(--text-primary)}
+
+.settings-section{}
+.settings-section h3{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+
+/* Mode toggle */
+.mode-toggle{
+  display: flex;
+  background: var(--bg-card);
+  border-radius: 12px;
+  padding: 4px;
+  border: 1px solid var(--border);
+}
+.mode-btn{
+  flex: 1; padding: 10px; border-radius: 9px;
+  font-size: 13px; font-weight: 600; cursor: pointer;
+  border: none; background: transparent;
+  color: var(--text-muted);
+  transition: all .35s var(--spring-smooth);
+}
+.mode-btn.active{
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 2px 8px var(--accent-glow);
+}
+
+/* Theme grid */
+.theme-grid{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.theme-card{
+  padding: 14px;
+  border-radius: 12px;
+  border: 2px solid var(--border);
+  cursor: pointer;
+  transition: all .35s var(--spring-smooth);
+  position: relative;
+}
+.theme-card:hover{border-color:var(--border-hover);transform:translateY(-2px)}
+.theme-card.active{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
+
+.theme-preview{
+  display: flex; gap: 4px; margin-bottom: 10px;
+}
+.theme-preview span{
+  width: 20px; height: 20px; border-radius: 6px;
+}
+.theme-name{font-size:13px;font-weight:600;color:var(--text-primary)}
+
+/* Emerald preview */
+.theme-pv-emerald span:nth-child(1){background:#0d9488}
+.theme-pv-emerald span:nth-child(2){background:#06b6d4}
+.theme-pv-emerald span:nth-child(3){background:#f59e0b}
+.theme-pv-emerald span:nth-child(4){background:#2dd4bf}
+/* Amber preview */
+.theme-pv-amber span:nth-child(1){background:#f59e0b}
+.theme-pv-amber span:nth-child(2){background:#d97706}
+.theme-pv-amber span:nth-child(3){background:#0d9488}
+.theme-pv-amber span:nth-child(4){background:#fbbf24}
+/* Amethyst preview */
+.theme-pv-amethyst span:nth-child(1){background:#8b5cf6}
+.theme-pv-amethyst span:nth-child(2){background:#a78bfa}
+.theme-pv-amethyst span:nth-child(3){background:#06b6d4}
+.theme-pv-amethyst span:nth-child(4){background:#c4b5fd}
+/* Coral preview */
+.theme-pv-coral span:nth-child(1){background:#f43f5e}
+.theme-pv-coral span:nth-child(2){background:#fb7185}
+.theme-pv-coral span:nth-child(3){background:#22d3ee}
+.theme-pv-coral span:nth-child(4){background:#fda4af}
+
+/* Animation radio */
+.anim-options{display:flex;flex-direction:column;gap:8px}
+.anim-option{
+  display:flex;align-items:center;gap:12px;padding:12px 14px;
+  border-radius:10px;border:1px solid var(--border);cursor:pointer;
+  transition:all .3s;
+}
+.anim-option:hover{border-color:var(--border-hover)}
+.anim-option.active{border-color:var(--accent);background:var(--accent-glow)}
+.anim-option .radio{
+  width:18px;height:18px;border-radius:50%;border:2px solid var(--text-muted);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .3s;
+}
+.anim-option.active .radio{border-color:var(--accent)}
+.anim-option.active .radio::after{content:'';width:8px;height:8px;border-radius:50%;background:var(--accent)}
+.anim-label{font-size:13px;font-weight:600}
+.anim-desc{font-size:11px;color:var(--text-muted)}
+
+/* Skeleton toggle */
+.skeleton-demo{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 14px;border-radius:10px;border:1px solid var(--border);
+}
+.toggle-switch{
+  width:44px;height:24px;border-radius:12px;
+  background:var(--border);cursor:pointer;position:relative;
+  transition:all .3s;
+}
+.toggle-switch.active{background:var(--accent)}
+.toggle-switch::after{
+  content:'';position:absolute;top:2px;left:2px;
+  width:20px;height:20px;border-radius:50%;background:#fff;
+  transition:all .3s var(--spring-smooth);
+}
+.toggle-switch.active::after{left:22px}
+
+/* ==========================================================================
+   ANIMATION THEME VARIANTS
+   ========================================================================== */
+/* Spring Bounce — default, already applied */
+/* Gentle Morph */
+[data-animation="gentle"] * {
+  transition-duration: 0.9s !important;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+[data-animation="gentle"] .kpi-pod:hover{transform:translateY(-2px)}
+[data-animation="gentle"] .glass-card:hover{transform:perspective(800px) rotateY(-0.5deg) rotateX(1deg) translateY(-2px)}
+[data-animation="gentle"] .btn:hover{transform:translateY(-1px) scale(1.01)}
+/* Minimal */
+[data-animation="minimal"] * {
+  transition-duration: 0.25s !important;
+  transition-timing-function: ease !important;
+}
+[data-animation="minimal"] .kpi-pod:hover{transform:none}
+[data-animation="minimal"] .glass-card:hover{transform:none}
+[data-animation="minimal"] .strategy-table tr:hover{transform:none}
+[data-animation="minimal"] .btn:hover{transform:none}
+[data-animation="minimal"] .settings-btn:hover{transform:none}
+
+/* ==========================================================================
+   ENTRANCE ANIMATIONS
+   ========================================================================== */
+@keyframes fadeInUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeInScale{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}
+.anim-up{animation:fadeInUp .7s var(--spring-gentle) both}
+.anim-scale{animation:fadeInScale .6s var(--spring-smooth) both}
+.anim-d1{animation-delay:.05s}.anim-d2{animation-delay:.12s}.anim-d3{animation-delay:.19s}
+.anim-d4{animation-delay:.26s}.anim-d5{animation-delay:.33s}.anim-d6{animation-delay:.40s}.anim-d7{animation-delay:.47s}
+
+/* ==========================================================================
+   RESPONSIVE
+   ========================================================================== */
+@media(max-width:900px){
+  .kpi-row{grid-template-columns:repeat(2,1fr)}
+  .main-grid{grid-template-columns:1fr}
+  .forest-nav{padding:10px 18px}
+  .nav-links{display:none}
+}
+@media(max-width:540px){
+  .kpi-row{grid-template-columns:1fr}
+  .portfolio-visual{flex-direction:column;align-items:flex-start}
+  .order-form{flex-direction:column}
+  .app-container{padding:0 12px 60px}
+}
+</style>
+</head>
+<body data-theme="emerald" data-mode="dark" data-animation="spring" data-skeleton="false">
+
+<!-- Ambient layers -->
+<div class="aurora-layer"></div>
+<div class="stone-texture"></div>
+<canvas id="fireflyCanvas"></canvas>
+<div class="droplet d1"></div><div class="droplet d2"></div><div class="droplet d3"></div><div class="droplet d4"></div><div class="droplet d5"></div>
+
+<!-- Settings Overlay -->
+<div class="settings-overlay" id="settingsOverlay"></div>
+<div class="settings-panel" id="settingsPanel">
+  <h2>
+    Theme Settings
+    <button class="settings-close" id="settingsClose">✕</button>
+  </h2>
+
+  <div class="settings-section">
+    <h3>Mode</h3>
+    <div class="mode-toggle">
+      <button class="mode-btn active" data-mode="dark">Dark</button>
+      <button class="mode-btn" data-mode="light">Light</button>
+    </div>
+  </div>
+
+  <div class="settings-section">
+    <h3>Color Theme</h3>
+    <div class="theme-grid" id="themeGrid">
+      <div class="theme-card active" data-theme="emerald">
+        <div class="theme-preview theme-pv-emerald"><span></span><span></span><span></span><span></span></div>
+        <div class="theme-name">Emerald Canopy</div>
+        <div style="font-size:10px;color:var(--text-muted);margin-top:2px">Forest · Bioluminescent</div>
+      </div>
+      <div class="theme-card" data-theme="amber">
+        <div class="theme-preview theme-pv-amber"><span></span><span></span><span></span><span></span></div>
+        <div class="theme-name">Amber Geo</div>
+        <div style="font-size:10px;color:var(--text-muted);margin-top:2px">Volcanic · Geothermal</div>
+      </div>
+      <div class="theme-card" data-theme="amethyst">
+        <div class="theme-preview theme-pv-amethyst"><span></span><span></span><span></span><span></span></div>
+        <div class="theme-name">Crystal Amethyst</div>
+        <div style="font-size:10px;color:var(--text-muted);margin-top:2px">Crystalline · Constellation</div>
+      </div>
+      <div class="theme-card" data-theme="coral">
+        <div class="theme-preview theme-pv-coral"><span></span><span></span><span></span><span></span></div>
+        <div class="theme-name">Coral Bloom</div>
+        <div style="font-size:10px;color:var(--text-muted);margin-top:2px">Tropical · Bioluminescent</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="settings-section">
+    <h3>Animation</h3>
+    <div class="anim-options" id="animOptions">
+      <div class="anim-option active" data-animation="spring">
+        <span class="radio"></span>
+        <div>
+          <div class="anim-label">Spring Bounce</div>
+          <div class="anim-desc">Physics-based spring easing — playful & energetic</div>
+        </div>
+      </div>
+      <div class="anim-option" data-animation="gentle">
+        <span class="radio"></span>
+        <div>
+          <div class="anim-label">Gentle Morph</div>
+          <div class="anim-desc">Slow smooth transitions — calm & refined</div>
+        </div>
+      </div>
+      <div class="anim-option" data-animation="minimal">
+        <span class="radio"></span>
+        <div>
+          <div class="anim-label">Minimal Fade</div>
+          <div class="anim-desc">Subtle opacity only — professional & distraction-free</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="settings-section">
+    <h3>Skeleton Loading</h3>
+    <div class="skeleton-demo">
+      <div>
+        <div style="font-size:13px;font-weight:600">Show skeleton placeholders</div>
+        <div style="font-size:11px;color:var(--text-muted)">Preview loading states</div>
+      </div>
+      <div class="toggle-switch" id="skeletonToggle"></div>
+    </div>
+  </div>
+</div>
+
+<!-- App Container -->
+<div class="app-container">
+
+  <!-- Forest Canopy Navigation -->
+  <nav class="forest-nav anim-scale anim-d1">
+    <div class="nav-brand">
+      <div class="nav-logo"></div>
+      <span class="nav-title">Nature-Tech Terminal</span>
+    </div>
+    <div class="nav-links">
+      <button class="nav-link active">Dashboard</button>
+      <button class="nav-link">Trading</button>
+      <button class="nav-link">Portfolio</button>
+      <button class="nav-link">Analytics</button>
+      <button class="nav-link" id="nav-backtest">Backtest</button>
+      <button class="nav-link" id="nav-orders">Orders</button>
+    </div>
+    <div class="nav-right">
+      <div class="nav-status"><span class="status-dot"></span><span>Live</span></div>
+      <button class="settings-btn" id="settingsBtn" title="Settings">⚙</button>
+    </div>
+  </nav>
+
+  <!-- KPI Row -->
+  <div class="kpi-row">
+    <!-- Real content -->
+    <div class="kpi-pod emerald anim-up anim-d2">
+      <div class="kpi-glow"></div>
+      <div class="kpi-label">Total Portfolio Value</div>
+      <div class="kpi-value">$184,632.50</div>
+      <div class="kpi-change up">+12.4% MTD</div>
+    </div>
+    <div class="kpi-pod amber anim-up anim-d3">
+      <div class="kpi-glow"></div>
+      <div class="kpi-label">24h P&L</div>
+      <div class="kpi-value">$4,218.00</div>
+      <div class="kpi-change up">+2.34%</div>
+    </div>
+    <div class="kpi-pod amethyst anim-up anim-d4">
+      <div class="kpi-glow"></div>
+      <div class="kpi-label">Active Strategies</div>
+      <div class="kpi-value">7</div>
+      <div class="kpi-change up">3 profitable</div>
+    </div>
+    <div class="kpi-pod cyan anim-up anim-d5">
+      <div class="kpi-glow"></div>
+      <div class="kpi-label">Win Rate (30d)</div>
+      <div class="kpi-value">68.4%</div>
+      <div class="kpi-change up">+5.2% vs avg</div>
+    </div>
+
+    <!-- Skeleton KPI -->
+    <div class="kpi-pod skeleton-only anim-up anim-d2"><div class="kpi-glow"></div><div class="skeleton skeleton-text" style="width:50%"></div><div class="skeleton skeleton-value"></div><div class="skeleton skeleton-text short"></div></div>
+    <div class="kpi-pod skeleton-only anim-up anim-d3"><div class="kpi-glow"></div><div class="skeleton skeleton-text" style="width:30%"></div><div class="skeleton skeleton-value"></div><div class="skeleton skeleton-text short"></div></div>
+    <div class="kpi-pod skeleton-only anim-up anim-d4"><div class="kpi-glow"></div><div class="skeleton skeleton-text" style="width:45%"></div><div class="skeleton skeleton-value"></div><div class="skeleton skeleton-text short"></div></div>
+    <div class="kpi-pod skeleton-only anim-up anim-d5"><div class="kpi-glow"></div><div class="skeleton skeleton-text" style="width:40%"></div><div class="skeleton skeleton-value"></div><div class="skeleton skeleton-text short"></div></div>
+  </div>
+
+  <!-- Main Grid -->
+  <div class="main-grid">
+
+    <!-- Strategy Table -->
+    <div class="glass-card anim-scale anim-d6" style="grid-column:1/-1">
+      <div class="card-header">
+        <span class="card-title real-content">Active Strategies</span>
+        <span class="card-badge badge-accent real-content">Refreshing live</span>
+        <span class="skeleton skeleton-badge skeleton-only"></span>
+      </div>
+      <table class="strategy-table real-content">
+        <thead><tr><th>Strategy</th><th>Pair</th><th>Entry</th><th>Current</th><th>P&L</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>Mean Reversion v3</td><td>BTC/USDT</td><td>$64,200</td><td>$67,850</td><td class="pnl-up">+5.69%</td><td><span class="card-badge badge-accent">Running</span></td></tr>
+          <tr><td>Grid Infinity</td><td>ETH/USDT</td><td>$3,420</td><td>$3,516</td><td class="pnl-up">+2.81%</td><td><span class="card-badge badge-accent">Running</span></td></tr>
+          <tr><td>Trend Surf</td><td>SOL/USDT</td><td>$172.40</td><td>$168.20</td><td class="pnl-down">-2.44%</td><td><span class="card-badge badge-accent">Holding</span></td></tr>
+          <tr><td>Arbitrage Nexus</td><td>BNB/USDT</td><td>$598.00</td><td>$612.30</td><td class="pnl-up">+2.39%</td><td><span class="card-badge badge-accent">Running</span></td></tr>
+          <tr><td>Volatility Harvester</td><td>AVAX/USDT</td><td>$38.50</td><td>$36.90</td><td class="pnl-down">-4.16%</td><td><span class="card-badge badge-accent">Stop Loss</span></td></tr>
+        </tbody>
+      </table>
+      <!-- Skeleton rows -->
+      <div class="skeleton-only" style="display:flex;flex-direction:column;gap:8px">
+        <div class="skeleton skeleton-row"></div><div class="skeleton skeleton-row"></div><div class="skeleton skeleton-row"></div><div class="skeleton skeleton-row"></div><div class="skeleton skeleton-row"></div>
+      </div>
+    </div>
+
+    <!-- Portfolio -->
+    <div class="glass-card anim-scale anim-d7">
+      <div class="card-header">
+        <span class="card-title real-content">Portfolio Allocation</span>
+        <span class="card-badge badge-accent real-content">Rebalanced</span>
+        <span class="skeleton skeleton-badge skeleton-only"></span>
+      </div>
+      <!-- Real -->
+      <div class="portfolio-visual real-content">
+        <div class="donut-container">
+          <svg class="donut-svg" viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="48" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="12"/>
+            <circle cx="60" cy="60" r="48" fill="none" stroke="var(--kpi-emerald)" stroke-width="12" stroke-dasharray="130 302" stroke-linecap="round" style="filter:drop-shadow(0 0 6px var(--kpi-emerald))"/>
+            <circle cx="60" cy="60" r="48" fill="none" stroke="var(--kpi-amber)" stroke-width="12" stroke-dasharray="68 302" stroke-linecap="round" stroke-dashoffset="-130" style="filter:drop-shadow(0 0 6px var(--kpi-amber))"/>
+            <circle cx="60" cy="60" r="48" fill="none" stroke="var(--kpi-amethyst)" stroke-width="12" stroke-dasharray="55 302" stroke-linecap="round" stroke-dashoffset="-198" style="filter:drop-shadow(0 0 6px var(--kpi-amethyst))"/>
+            <circle cx="60" cy="60" r="48" fill="none" stroke="var(--kpi-cyan)" stroke-width="12" stroke-dasharray="49 302" stroke-linecap="round" stroke-dashoffset="-253" style="filter:drop-shadow(0 0 6px var(--kpi-cyan))"/>
+          </svg>
+          <div class="donut-center"><span class="donut-total">$184K</span><span class="donut-label">Total</span></div>
+        </div>
+        <div class="portfolio-legend">
+          <div class="legend-item"><span class="legend-dot emerald"></span><span class="legend-name">BTC · Bitcoin</span><span class="legend-value">43%</span></div>
+          <div class="legend-item"><span class="legend-dot amber"></span><span class="legend-name">ETH · Ethereum</span><span class="legend-value">22%</span></div>
+          <div class="legend-item"><span class="legend-dot amethyst"></span><span class="legend-name">SOL · Solana</span><span class="legend-value">18%</span></div>
+          <div class="legend-item"><span class="legend-dot cyan"></span><span class="legend-name">Stablecoins</span><span class="legend-value">17%</span></div>
+        </div>
+      </div>
+      <!-- Skeleton -->
+      <div class="skeleton-only" style="display:flex;gap:28px;align-items:center;margin:8px 0">
+        <div class="skeleton skeleton-circle"></div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:10px">
+          <div class="skeleton" style="height:14px;width:70%"></div><div class="skeleton" style="height:14px;width:50%"></div><div class="skeleton" style="height:14px;width:60%"></div><div class="skeleton" style="height:14px;width:45%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Market Sentiment -->
+    <div class="glass-card anim-scale anim-d7">
+      <div class="card-header">
+        <span class="card-title real-content">Market Sentiment</span>
+        <span class="card-badge badge-accent real-content">Fear & Greed</span>
+        <span class="skeleton skeleton-badge skeleton-only"></span>
+      </div>
+      <!-- Real -->
+      <div class="real-content">
+        <div class="gauge-row">
+          <span style="font-size:11px;color:#ef4444;font-weight:600">Fear</span>
+          <div class="gauge-bar"><div class="gauge-indicator" style="left:68%"></div></div>
+          <span style="font-size:11px;color:#22c55e;font-weight:600">Greed</span>
+          <span class="gauge-value">68</span>
+        </div>
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:14px">Greed · Markets trending bullish</div>
+        <div class="chart-bars" style="height:70px">
+          <div class="bar-item emerald" style="height:60%"></div><div class="bar-item amber" style="height:45%"></div><div class="bar-item emerald" style="height:72%"></div><div class="bar-item amethyst" style="height:38%"></div><div class="bar-item cyan" style="height:55%"></div><div class="bar-item amber" style="height:82%"></div><div class="bar-item emerald" style="height:50%"></div><div class="bar-item amethyst" style="height:65%"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:20px">
+          <div style="font-size:11px;color:var(--text-muted)">BTC Dom: <strong style="color:var(--text-primary)">52.1%</strong></div>
+          <div style="font-size:11px;color:var(--text-muted)">24h Vol: <strong style="color:var(--text-primary)">$42.8B</strong></div>
+          <div style="font-size:11px;color:var(--text-muted)">Vol: <strong style="color:var(--accent3)">Medium</strong></div>
+        </div>
+      </div>
+      <!-- Skeleton -->
+      <div class="skeleton-only">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+          <div class="skeleton" style="height:8px;flex:1;border-radius:4px"></div>
+          <div class="skeleton" style="width:32px;height:16px"></div>
+        </div>
+        <div style="display:flex;gap:6px;height:70px;align-items:flex-end">
+          <div class="skeleton" style="flex:1;height:60%"></div><div class="skeleton" style="flex:1;height:45%"></div><div class="skeleton" style="flex:1;height:72%"></div><div class="skeleton" style="flex:1;height:38%"></div><div class="skeleton" style="flex:1;height:55%"></div><div class="skeleton" style="flex:1;height:82%"></div><div class="skeleton" style="flex:1;height:50%"></div><div class="skeleton" style="flex:1;height:65%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Trade -->
+    <div class="glass-card anim-scale anim-d7" style="grid-column:1/-1">
+      <div class="card-header"><span class="card-title">Quick Trade</span><span class="card-badge badge-accent">Low Spread</span></div>
+      <div class="order-form">
+        <div class="input-group"><label>Pair</label><select><option>BTC/USDT</option><option>ETH/USDT</option><option>SOL/USDT</option></select></div>
+        <div class="input-group"><label>Type</label><select><option>Market</option><option>Limit</option></select></div>
+        <div class="input-group"><label>Amount (USDT)</label><input type="number" value="1000"></div>
+        <button class="btn btn-buy">Buy</button>
+        <button class="btn btn-sell">Sell</button>
+      </div>
+    </div>
+
+    <!-- ===== Backtest Panel ===== -->
+    <div id="backtest-panel" style="display:none; grid-column: 1 / -1;">
+      <!-- 回测控制栏 -->
+      <div class="glass-card" style="margin-bottom: 16px; padding: 16px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+        <select id="bt-strategy" style="padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--card); color: var(--text);">
+          <option value="mean_reversion">Mean Reversion</option>
+          <option value="trend">Trend Following</option>
+          <option value="grid">Grid Trading</option>
+          <option value="momentum">Momentum Breakout</option>
+          <option value="arbitrage">Arbitrage</option>
+        </select>
+        <select id="bt-symbol" style="padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--card); color: var(--text);">
+          <option value="BTC/USDT">BTC/USDT</option>
+          <option value="ETH/USDT">ETH/USDT</option>
+          <option value="SOL/USDT">SOL/USDT</option>
+        </select>
+        <select id="bt-timeframe" style="padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--card); color: var(--text);">
+          <option value="1h">1h</option>
+          <option value="4h">4h</option>
+          <option value="1d">1d</option>
+        </select>
+        <button id="bt-run" class="btn-accent" style="padding: 8px 20px; background: var(--accent); color: #fff; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Run Backtest</button>
+        <button id="bt-compare" class="btn-accent" style="padding: 8px 20px; background: var(--amethyst, #a78bfa); color: #fff; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Compare All</button>
+      </div>
+
+      <!-- 净值曲线画布 -->
+      <div class="glass-card" style="margin-bottom: 16px; padding: 16px;">
+        <div class="card-header">Equity Curve</div>
+        <canvas id="bt-equity-canvas" width="900" height="280" style="width: 100%; height: auto; border-radius: 8px;"></canvas>
+      </div>
+
+      <!-- KPI 网格 -->
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px;" id="bt-kpi-grid">
+        <div class="glass-card" style="padding: 14px; text-align: center;"><div class="card-header">Total Return</div><div class="kpi-value" id="bt-total-return">--</div></div>
+        <div class="glass-card" style="padding: 14px; text-align: center;"><div class="card-header">Max Drawdown</div><div class="kpi-value pnl-down" id="bt-max-dd">--</div></div>
+        <div class="glass-card" style="padding: 14px; text-align: center;"><div class="card-header">Sharpe Ratio</div><div class="kpi-value" id="bt-sharpe">--</div></div>
+        <div class="glass-card" style="padding: 14px; text-align: center;"><div class="card-header">Win Rate</div><div class="kpi-value" id="bt-winrate">--</div></div>
+        <div class="glass-card" style="padding: 14px; text-align: center;"><div class="card-header">Sortino</div><div class="kpi-value" id="bt-sortino">--</div></div>
+        <div class="glass-card" style="padding: 14px; text-align: center;"><div class="card-header">Calmar</div><div class="kpi-value" id="bt-calmar">--</div></div>
+        <div class="glass-card" style="padding: 14px; text-align: center;"><div class="card-header">Profit Factor</div><div class="kpi-value" id="bt-prof-factor">--</div></div>
+        <div class="glass-card" style="padding: 14px; text-align: center;"><div class="card-header">Total Trades</div><div class="kpi-value" id="bt-trades">--</div></div>
+      </div>
+
+      <!-- 交易记录表格 -->
+      <div class="glass-card" style="padding: 16px;">
+        <div class="card-header">Recent Trades</div>
+        <table class="strategy-table" style="width: 100%; margin-top: 8px;">
+          <thead><tr><th>Time</th><th>Action</th><th>Price</th><th>Size</th><th>PnL</th><th>Reason</th></tr></thead>
+          <tbody id="bt-trades-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ===== Orders Panel ===== -->
+    <div id="orders-panel" style="display:none; grid-column: 1 / -1;">
+      <div class="glass-card" style="margin-bottom: 16px; padding: 16px; display: flex; align-items: center; gap: 12px;">
+        <div style="flex: 1; font-weight: 600; color: var(--text-secondary);">Order History</div>
+        <button id="ord-refresh" class="btn-accent" style="padding: 6px 16px; background: var(--accent); color: #fff; border: none; border-radius: 8px; cursor: pointer;">Refresh</button>
+      </div>
+      <div class="glass-card" style="padding: 16px;">
+        <table class="strategy-table" style="width: 100%;">
+          <thead><tr><th>ID</th><th>Symbol</th><th>Side</th><th>Type</th><th>Price</th><th>Qty</th><th>Filled</th><th>Status</th></tr></thead>
+          <tbody id="ord-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ===== FIREFLY =====
+(function(){
+  const c=document.getElementById('fireflyCanvas'),ctx=c.getContext('2d');
+  let W,H,P=[];
+  function rsz(){W=c.width=innerWidth;H=c.height=innerHeight}
+  rsz();addEventListener('resize',rsz);
+  class F{
+    constructor(){this.reset();this.y=Math.random()*H}
+    reset(){
+      this.x=Math.random()*W;this.y=-20;
+      this.s=Math.random()*2+0.8;
+      this.sY=Math.random()*0.25+.1;
+      this.sX=(Math.random()-.5)*.35;
+      this.o=0;this.tO=Math.random()*.4+.18;
+      this.pS=Math.random()*.012+.006;this.pO=Math.random()*6.28;
+      this.gs=this.s*7;
+    }
+    get hueList(){return (document.body.dataset.theme==='emerald'?'168,190,40,170':document.body.dataset.theme==='amber'?'40,35,168,190':document.body.dataset.theme==='amethyst'?'270,190,40,310':'350,190,330,168').split(',').map(Number)}
+    get hue(){return this._h||(this._h=this.hueList[Math.floor(Math.random()*4)])}
+    upd(){
+      this.y+=this.sY;this.x+=this.sX+Math.sin(Date.now()*.001+this.pO)*.15;
+      const p=Math.sin(Date.now()*this.pS+this.pO);
+      this.o+=(this.tO*(.6+.4*p)-this.o)*.03;
+      if(this.y>H+30||this.x<-30||this.x>W+30){this._h=null;this.reset()}
+    }
+    draw(ctx){
+      const g=ctx.createRadialGradient(this.x,this.y,0,this.x,this.y,this.gs);
+      g.addColorStop(0,`hsla(${this.hue},65%,55%,${this.o})`);
+      g.addColorStop(.35,`hsla(${this.hue},55%,40%,${this.o*.35})`);
+      g.addColorStop(1,`hsla(${this.hue},45%,30%,0)`);
+      ctx.fillStyle=g;ctx.beginPath();ctx.arc(this.x,this.y,this.gs,0,6.28);ctx.fill();
+      ctx.fillStyle=`hsla(${this.hue},75%,70%,${this.o*1.1})`;
+      ctx.beginPath();ctx.arc(this.x,this.y,this.s*.7,0,6.28);ctx.fill();
+    }
+  }
+  for(let i=0;i<45;i++)P.push(new F());
+  (function anim(){ctx.clearRect(0,0,W,H);P.forEach(p=>{p.upd();p.draw(ctx)});requestAnimationFrame(anim)})();
+})();
+
+// ===== SETTINGS PANEL =====
+const body=document.body;
+const overlay=document.getElementById('settingsOverlay');
+const panel=document.getElementById('settingsPanel');
+
+// Open/close
+document.getElementById('settingsBtn').addEventListener('click',()=>{overlay.classList.add('open');panel.classList.add('open')});
+document.getElementById('settingsClose').addEventListener('click',closeSettings);
+overlay.addEventListener('click',closeSettings);
+function closeSettings(){overlay.classList.remove('open');panel.classList.remove('open')}
+
+// Mode toggle
+document.querySelectorAll('.mode-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    body.dataset.mode=btn.dataset.mode;
+    savePrefs();
+  });
+});
+
+// Theme cards
+document.querySelectorAll('.theme-card').forEach(card=>{
+  card.addEventListener('click',()=>{
+    document.querySelectorAll('.theme-card').forEach(c=>c.classList.remove('active'));
+    card.classList.add('active');
+    body.dataset.theme=card.dataset.theme;
+    savePrefs();
+  });
+});
+
+// Animation options
+document.querySelectorAll('.anim-option').forEach(opt=>{
+  opt.addEventListener('click',()=>{
+    document.querySelectorAll('.anim-option').forEach(o=>o.classList.remove('active'));
+    opt.classList.add('active');
+    body.dataset.animation=opt.dataset.animation;
+    savePrefs();
+  });
+});
+
+// Skeleton toggle
+const skToggle=document.getElementById('skeletonToggle');
+skToggle.addEventListener('click',()=>{
+  skToggle.classList.toggle('active');
+  body.dataset.skeleton=skToggle.classList.contains('active')?'true':'false';
+  if(body.dataset.skeleton==='false'){
+    // Re-trigger bar heights
+    setTimeout(()=>{
+      document.querySelectorAll('.chart-bars .bar-item').forEach((b,i)=>{
+        const h=b.style.height;b.style.height='0%';
+        setTimeout(()=>{b.style.height=h},100+i*60);
+      });
+    },100);
+  }
+  savePrefs();
+});
+
+// Persistence
+function savePrefs(){
+  localStorage.setItem('nt-theme',body.dataset.theme);
+  localStorage.setItem('nt-mode',body.dataset.mode);
+  localStorage.setItem('nt-animation',body.dataset.animation);
+  localStorage.setItem('nt-skeleton',body.dataset.skeleton);
+}
+function loadPrefs(){
+  const t=localStorage.getItem('nt-theme')||'emerald';
+  const m=localStorage.getItem('nt-mode')||'dark';
+  const a=localStorage.getItem('nt-animation')||'spring';
+  const s=localStorage.getItem('nt-skeleton')||'false';
+  body.dataset.theme=t;body.dataset.mode=m;body.dataset.animation=a;body.dataset.skeleton=s;
+  // Update UI
+  document.querySelectorAll('.theme-card').forEach(c=>c.classList.toggle('active',c.dataset.theme===t));
+  document.querySelectorAll('.mode-btn').forEach(b=>b.classList.toggle('active',b.dataset.mode===m));
+  document.querySelectorAll('.anim-option').forEach(o=>o.classList.toggle('active',o.dataset.animation===a));
+  skToggle.classList.toggle('active',s==='true');
+}
+loadPrefs();
+
+// Nav links
+document.querySelectorAll('.nav-link').forEach(l=>{
+  l.addEventListener('click',function(){
+    // 回测/订单标签有自己的切换逻辑，这里只处理其他标签切回主视图
+    if (this.id !== 'nav-backtest' && this.id !== 'nav-orders') {
+      document.querySelectorAll('.nav-link').forEach(x=>x.classList.remove('active'));
+      this.classList.add('active');
+      // 隐藏回测面板和订单面板，恢复主视图
+      const bp = document.getElementById('backtest-panel');
+      if (bp) bp.style.display = 'none';
+      const op = document.getElementById('orders-panel');
+      if (op) op.style.display = 'none';
+      const mg = document.querySelector('.main-grid');
+      if (mg) mg.querySelectorAll(':scope > :not(#backtest-panel):not(#orders-panel)').forEach(el => el.style.display = '');
+    }
+  });
+});
+
+// Bar entrance
+setTimeout(()=>{
+  if(body.dataset.skeleton==='false'){
+    document.querySelectorAll('.chart-bars .bar-item').forEach((b,i)=>{
+      const h=b.style.height;b.style.height='0%';
+      setTimeout(()=>{b.style.height=h},100+i*60);
+    });
+  }
+},300);
+
+// Keyboard shortcut: Esc to close settings
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSettings()});
+</script>
+<!-- ===== CANOPY BRIDGE: pywebview JS-API ===== -->
+<script>
+// 检测是否在 pywebview 环境中运行
+const isPywebview = typeof window.pywebview !== 'undefined';
+
+async function bridgeCall(method, ...args) {
+  if (!isPywebview) return null;
+  try {
+    if (args.length === 0) {
+      return await window.pywebview.api[method]();
+    } else if (args.length === 1 && typeof args[0] === 'object' && !Array.isArray(args[0])) {
+      return await window.pywebview.api[method](args[0]);
+    } else {
+      return await window.pywebview.api[method](...args);
+    }
+  } catch(e) {
+    console.warn('Bridge call failed:', method, e);
+    return null;
+  }
+}
+
+// 连接交易所并开始数据轮询
+(async function initBridge() {
+  if (!isPywebview) return;
+  
+  // 连接交易所
+  const connResult = await bridgeCall('connect_exchange', 'binance');
+  console.log('Exchange connection:', connResult);
+  
+  // 定时刷新行情数据
+  async function refreshData() {
+    const results = await Promise.all([
+      bridgeCall('get_kpi'),
+      bridgeCall('get_strategies'),
+      bridgeCall('get_portfolio'),
+      bridgeCall('get_sentiment'),
+      bridgeCall('get_risk_status')
+    ]);
+    
+    if (results[0]) updateUI(results[0]);
+    if (results[1]) updateStrategies(results[1]);
+    if (results[2]) updatePortfolio(results[2]);
+    if (results[3]) updateSentiment(results[3]);
+    
+    // 更新熔断状态指示器
+    const risk = results[4];
+    if (risk && risk.circuit_breaker) {
+      const statusDot = document.querySelector('.status-dot');
+      const statusText = document.querySelector('.nav-status span:last-child');
+      if (risk.circuit_breaker.tripped) {
+        if (statusDot) statusDot.style.background = 'var(--danger, #ef4444)';
+        if (statusText) statusText.textContent = 'HALTED';
+      } else {
+        if (statusDot) statusDot.style.background = 'var(--emerald, #10b981)';
+        if (statusText) statusText.textContent = 'Live';
+      }
+    }
+  }
+  
+  // 初始加载
+  await refreshData();
+  
+  // 定时刷新（30秒）
+  setInterval(refreshData, 30000);
+})();
+
+// UI 更新函数 — 真实 DOM 操作
+function updateUI(kpi) {
+  const pods = document.querySelectorAll('.kpi-pod');
+  if (pods.length >= 4) {
+    const valEls = pods[0].querySelectorAll('.kpi-value, .kpi-change');
+    if (valEls.length >= 2) {
+      valEls[0].textContent = '$' + Number(kpi.total_value || 0).toLocaleString('en-US', {minimumFractionDigits: 2});
+      valEls[1].textContent = '+12.4% MTD';
+    }
+    const valEls2 = pods[1].querySelectorAll('.kpi-value, .kpi-change');
+    if (valEls2.length >= 2) {
+      valEls2[0].textContent = '$' + Number(kpi.pnl_24h || 0).toLocaleString('en-US', {minimumFractionDigits: 2});
+      valEls2[1].textContent = '+' + (kpi.pnl_pct || 0) + '%';
+    }
+    const valEls3 = pods[2].querySelectorAll('.kpi-value, .kpi-change');
+    if (valEls3.length >= 2) {
+      valEls3[0].textContent = kpi.active_strategies || 0;
+      valEls3[1].textContent = (kpi.profitable || 0) + ' profitable';
+    }
+    const valEls4 = pods[3].querySelectorAll('.kpi-value, .kpi-change');
+    if (valEls4.length >= 2) {
+      valEls4[0].textContent = (kpi.win_rate || 0) + '%';
+      valEls4[1].textContent = '+' + (kpi.win_rate_change || 0) + '% vs avg';
+    }
+  }
+}
+
+function updateStrategies(list) {
+  const tbody = document.querySelector('.strategy-table tbody');
+  if (!tbody) return;
+  tbody.innerHTML = list.map(s => {
+    const cls = s.pnl_pct >= 0 ? 'pnl-up' : 'pnl-down';
+    const sign = s.pnl_pct >= 0 ? '+' : '';
+    return `<tr>
+      <td>${s.name}</td><td>${s.pair || s.symbol}</td><td>$${Number(s.entry||0).toLocaleString()}</td>
+      <td>$${Number(s.current||0).toLocaleString()}</td><td class="${cls}">${sign}${s.pnl_pct}%</td>
+      <td><span class="card-badge badge-accent">${s.status || 'Running'}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+function updatePortfolio(list) {
+  const legend = document.querySelector('.portfolio-legend');
+  if (!legend) return;
+  const colors = ['emerald','amber','amethyst','cyan'];
+  legend.innerHTML = list.map((p,i) => 
+    `<div class="legend-item"><span class="legend-dot ${colors[i]||'emerald'}"></span><span class="legend-name">${p.asset} &middot; ${p.name}</span><span class="legend-value">${p.pct}%</span></div>`
+  ).join('');
+}
+
+function updateSentiment(data) {
+  // 更新恐惧贪婪指标
+  const indicator = document.querySelector('.gauge-indicator');
+  if (indicator) indicator.style.left = data.fear_greed + '%';
+  const gaugeVal = document.querySelector('.gauge-value');
+  if (gaugeVal) gaugeVal.textContent = data.fear_greed;
+
+  // 更新底部指标（BTC Dom、24h Vol、Volatility）
+  const cards = document.querySelectorAll('.glass-card');
+  for (const card of cards) {
+    if (card.querySelector('.gauge-bar')) {
+      const stats = card.querySelectorAll('div[style*="justify-content:space-between"] strong');
+      if (stats.length >= 3) {
+        stats[0].textContent = data.btc_dominance + '%';
+        stats[1].textContent = '$' + data.volume_24h + 'B';
+        stats[2].textContent = data.volatility;
+      }
+      break;
+    }
+  }
+}
+
+// ============ 回测逻辑 ============
+
+async function runBacktest() {
+  const strategy = document.getElementById('bt-strategy').value;
+  const symbol = document.getElementById('bt-symbol').value;
+  const timeframe = document.getElementById('bt-timeframe').value;
+  const btn = document.getElementById('bt-run');
+  btn.disabled = true;
+  btn.textContent = 'Running...';
+
+  try {
+    const result = await bridgeCall('run_backtest', { strategy_type: strategy, symbol, timeframe });
+    renderBacktestResult(result);
+    // 标记已有结果
+    document.getElementById('backtest-panel').dataset.hasResult = 'true';
+  } catch (e) {
+    console.error('Backtest error:', e);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Run Backtest';
+  }
+}
+
+async function compareAll() {
+  const symbol = document.getElementById('bt-symbol').value;
+  const timeframe = document.getElementById('bt-timeframe').value;
+  const btn = document.getElementById('bt-compare');
+  btn.disabled = true;
+  btn.textContent = 'Running...';
+
+  try {
+    const results = await bridgeCall('compare_strategies', { symbol, timeframe });
+    renderCompareTable(results);
+  } catch (e) {
+    console.error('Compare error:', e);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Compare All';
+  }
+}
+
+function renderBacktestResult(data) {
+  if (!data) return;
+
+  // 更新 KPI
+  document.getElementById('bt-total-return').textContent = (data.total_return_pct >= 0 ? '+' : '') + data.total_return_pct + '%';
+  document.getElementById('bt-max-dd').textContent = '-' + data.max_drawdown_pct + '%';
+  document.getElementById('bt-sharpe').textContent = data.sharpe_ratio;
+  document.getElementById('bt-winrate').textContent = data.win_rate + '%';
+  document.getElementById('bt-sortino').textContent = data.sortino_ratio;
+  document.getElementById('bt-calmar').textContent = data.calmar_ratio;
+  document.getElementById('bt-prof-factor').textContent = data.profit_factor;
+  document.getElementById('bt-trades').textContent = data.total_trades;
+
+  // 渲染净值曲线
+  drawEquityCurve(data.equity_curve, data.initial_capital);
+
+  // 渲染交易记录
+  const tbody = document.getElementById('bt-trades-body');
+  if (tbody && data.trades) {
+    tbody.innerHTML = data.trades.map(t => {
+      const cls = (t.pnl || 0) >= 0 ? 'pnl-up' : 'pnl-down';
+      const sign = (t.pnl || 0) >= 0 ? '+' : '';
+      const actCls = t.action === 'BUY' ? 'color: var(--accent)' : 'color: var(--negative)';
+      return `<tr>
+        <td style="font-size: 12px;">${(t.time || '').slice(-16)}</td>
+        <td style="${actCls}; font-weight: 600;">${t.action}</td>
+        <td>$${Number(t.price||0).toLocaleString()}</td>
+        <td>${t.size || 0}</td>
+        <td class="${cls}">${sign}$${Math.abs(t.pnl||0).toLocaleString()}</td>
+        <td style="font-size: 12px; opacity: 0.7;">${t.reason || ''}</td>
+      </tr>`;
+    }).join('');
+  }
+}
+
+function drawEquityCurve(data, initialCapital) {
+  const canvas = document.getElementById('bt-equity-canvas');
+  if (!canvas || !data || data.length === 0) return;
+
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width;
+  const H = canvas.height;
+  const pad = { top: 20, right: 20, bottom: 30, left: 60 };
+  const pw = W - pad.left - pad.right;
+  const ph = H - pad.top - pad.bottom;
+
+  ctx.clearRect(0, 0, W, H);
+
+  // 背景
+  ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--card').trim() || '#1a1a2e';
+  ctx.fillRect(0, 0, W, H);
+
+  const vals = data;
+  const min = Math.min(...vals);
+  const max = Math.max(...vals);
+  const range = max - min || 1;
+
+  const xScale = (i) => pad.left + (i / (vals.length - 1)) * pw;
+  const yScale = (v) => pad.top + ph - ((v - min) / range) * ph;
+
+  // 绘制填充区域
+  ctx.beginPath();
+  ctx.moveTo(xScale(0), pad.top + ph);
+  vals.forEach((v, i) => ctx.lineTo(xScale(i), yScale(v)));
+  ctx.lineTo(xScale(vals.length - 1), pad.top + ph);
+  ctx.closePath();
+
+  const grad = ctx.createLinearGradient(0, pad.top, 0, pad.top + ph);
+  grad.addColorStop(0, 'rgba(80, 200, 120, 0.3)');
+  grad.addColorStop(1, 'rgba(80, 200, 120, 0.02)');
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  // 绘制曲线
+  ctx.beginPath();
+  ctx.strokeStyle = 'rgb(80, 200, 120)';
+  ctx.lineWidth = 2;
+  ctx.lineJoin = 'round';
+  vals.forEach((v, i) => {
+    if (i === 0) ctx.moveTo(xScale(i), yScale(v));
+    else ctx.lineTo(xScale(i), yScale(v));
+  });
+  ctx.stroke();
+
+  // 初始资金线
+  ctx.beginPath();
+  const yInit = yScale(initialCapital);
+  ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([4, 4]);
+  ctx.moveTo(pad.left, yInit);
+  ctx.lineTo(pad.left + pw, yInit);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Y 轴标签
+  ctx.fillStyle = 'rgba(255,255,255,0.5)';
+  ctx.font = '11px monospace';
+  ctx.textAlign = 'right';
+  for (let i = 0; i <= 4; i++) {
+    const v = min + (range * i / 4);
+    const y = yScale(v);
+    ctx.fillText('$' + v.toFixed(0), pad.left - 6, y + 4);
+    // 水平网格线
+    ctx.beginPath();
+    ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+    ctx.moveTo(pad.left, y);
+    ctx.lineTo(pad.left + pw, y);
+    ctx.stroke();
+  }
+
+  // 起始/结束标注
+  ctx.fillStyle = 'rgba(255,255,255,0.5)';
+  ctx.font = '10px monospace';
+  ctx.textAlign = 'left';
+  ctx.fillText('Start', pad.left, pad.top - 5);
+  ctx.textAlign = 'right';
+  ctx.fillText('End', pad.left + pw, pad.top - 5);
+}
+
+function renderCompareTable(results) {
+  if (!results || !results.length) return;
+
+  // 移除旧的对比表格
+  const existing = document.getElementById('bt-compare-table');
+  if (existing) existing.remove();
+
+  const grid = document.getElementById('bt-kpi-grid');
+  if (!grid) return;
+
+  const tableHTML = `<div id="bt-compare-table" class="glass-card" style="padding: 16px; margin-bottom: 16px;">
+    <div class="card-header">Strategy Comparison</div>
+    <table class="strategy-table" style="width: 100%; margin-top: 8px;">
+      <thead><tr><th>Strategy</th><th>Return</th><th>Max DD</th><th>Sharpe</th><th>Win Rate</th><th>Trades</th><th>Final Eq.</th></tr></thead>
+      <tbody>${results.map(r => {
+        const cls = r.total_return_pct >= 0 ? 'pnl-up' : 'pnl-down';
+        const sign = r.total_return_pct >= 0 ? '+' : '';
+        return `<tr>
+          <td style="font-weight: 600;">${r.strategy}</td>
+          <td class="${cls}">${sign}${r.total_return_pct}%</td>
+          <td class="pnl-down">-${r.max_drawdown_pct}%</td>
+          <td>${r.sharpe_ratio}</td>
+          <td>${r.win_rate}%</td>
+          <td>${r.total_trades}</td>
+          <td>$${Number(r.final_equity).toLocaleString()}</td>
+        </tr>`;
+      }).join('')}</tbody></table></div>`;
+
+  grid.insertAdjacentHTML('beforebegin', tableHTML);
+}
+
+// 回测标签页切换
+const navBacktest = document.getElementById('nav-backtest');
+const backtestPanel = document.getElementById('backtest-panel');
+const mainGrid = document.querySelector('.main-grid');
+const allOtherCards = mainGrid ? mainGrid.querySelectorAll(':scope > :not(#backtest-panel):not(#orders-panel)') : [];
+
+navBacktest.addEventListener('click', function() {
+  document.querySelectorAll('.nav-link').forEach(x => x.classList.remove('active'));
+  this.classList.add('active');
+
+  const ordersPanel = document.getElementById('orders-panel');
+  if (ordersPanel) ordersPanel.style.display = 'none';
+
+  const isActive = backtestPanel.style.display !== 'none';
+  if (isActive) {
+    // 切回主视图
+    backtestPanel.style.display = 'none';
+    allOtherCards.forEach(el => el.style.display = '');
+  } else {
+    // 显示回测面板，隐藏其他卡片
+    backtestPanel.style.display = '';
+    allOtherCards.forEach(el => el.style.display = 'none');
+  }
+});
+
+// 回测按钮事件绑定
+document.getElementById('bt-run').addEventListener('click', runBacktest);
+document.getElementById('bt-compare').addEventListener('click', compareAll);
+
+// ============ 订单逻辑 ============
+
+async function refreshOrders() {
+  const orders = await bridgeCall('get_orders', 50);
+  const tbody = document.getElementById('ord-tbody');
+  if (!tbody || !orders) return;
+  tbody.innerHTML = orders.map(o => {
+    const sideCls = o.side === 'buy' ? 'pnl-up' : 'pnl-down';
+    let badgeHtml = '';
+    if (o.status === 'FILLED') {
+      badgeHtml = `<span class="card-badge badge-accent">FILLED</span>`;
+    } else if (o.status === 'REJECTED') {
+      badgeHtml = `<span class="card-badge badge-accent" style="background: var(--danger);">REJECTED</span>`;
+    } else if (o.status === 'PENDING') {
+      badgeHtml = `<span class="card-badge badge-accent">PENDING</span>`;
+    } else {
+      badgeHtml = `<span class="card-badge badge-accent">${o.status}</span>`;
+    }
+    return `<tr>
+      <td style="font-size: 11px; opacity: 0.6;">${(o.id || '--').slice(0,10)}</td>
+      <td>${o.symbol}</td>
+      <td class="${sideCls}" style="font-weight: 600;">${o.side.toUpperCase()}</td>
+      <td>${o.type}</td>
+      <td>$${Number(o.price||0).toLocaleString()}</td>
+      <td>${o.quantity||0}</td>
+      <td>${o.filled_qty||0}</td>
+      <td>${badgeHtml}</td>
+    </tr>`;
+  }).join('');
+}
+
+// Orders 标签页切换
+const navOrders = document.getElementById('nav-orders');
+const ordersPanel = document.getElementById('orders-panel');
+
+navOrders.addEventListener('click', function() {
+  document.querySelectorAll('.nav-link').forEach(x => x.classList.remove('active'));
+  this.classList.add('active');
+
+  // 隐藏回测面板
+  if (backtestPanel) backtestPanel.style.display = 'none';
+
+  const isActive = ordersPanel.style.display !== 'none';
+  if (isActive) {
+    ordersPanel.style.display = 'none';
+    allOtherCards.forEach(el => el.style.display = '');
+  } else {
+    ordersPanel.style.display = '';
+    allOtherCards.forEach(el => el.style.display = 'none');
+    refreshOrders();
+  }
+});
+
+// 订单刷新按钮
+document.getElementById('ord-refresh').addEventListener('click', refreshOrders);
+</script>
+</body>
+</html>
