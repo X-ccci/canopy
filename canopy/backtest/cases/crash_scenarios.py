@@ -6,7 +6,6 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -135,7 +134,7 @@ def generate_pressure_test(
     crash_vol = daily_vol * 3.0
 
     # 计算目标价格范围
-    target_pct = scenario.price_change_pct / 100.0  # 如 -37.8 → -0.378
+    scenario.price_change_pct / 100.0  # 如 -37.8 → -0.378
     max_dd_pct = scenario.max_drawdown_pct / 100.0  # 如 -50.0 → -0.50
 
     # 总跌幅在 crash 阶段实现几何级加速

@@ -485,10 +485,17 @@ body::after{
   background: var(--positive);
   box-shadow: 0 0 8px rgba(34,197,94,.6);
   animation: statusBreathe 2.5s ease-in-out infinite;
+  transition: background 0.4s, box-shadow 0.4s;
 }
+.status-dot.disconnected{background:var(--negative);box-shadow:0 0 8px rgba(239,68,68,.6);animation:none}
+.status-dot.reconnecting{background:var(--kpi-amber);box-shadow:0 0 8px rgba(245,158,11,.6);animation:statusBlink .8s ease-in-out infinite}
 @keyframes statusBreathe{
   0%,100%{box-shadow:0 0 6px rgba(34,197,94,.5)}
   50%{box-shadow:0 0 14px rgba(34,197,94,.9)}
+}
+@keyframes statusBlink{
+  0%,100%{opacity:1}
+  50%{opacity:.4}
 }
 
 /* Settings gear */
@@ -1025,7 +1032,7 @@ body::after{
       <button class="nav-link" id="nav-orders">Orders</button>
     </div>
     <div class="nav-right">
-      <div class="nav-status"><span class="status-dot"></span><span>Live</span></div>
+      <div class="nav-status"><span class="status-dot" id="ws-dot"></span><span id="ws-status-label">Offline</span></div>
       <button class="settings-btn" id="settingsBtn" title="Settings">⚙</button>
     </div>
   </nav>
@@ -1076,13 +1083,13 @@ body::after{
         <span class="skeleton skeleton-badge skeleton-only"></span>
       </div>
       <table class="strategy-table real-content">
-        <thead><tr><th>Strategy</th><th>Pair</th><th>Entry</th><th>Current</th><th>P&L</th><th>Status</th></tr></thead>
+        <thead><tr><th>Strategy</th><th>Pair</th><th>Signals</th><th>Entry</th><th>Current</th><th>P&amp;L</th><th>Status</th></tr></thead>
         <tbody>
-          <tr><td>Mean Reversion v3</td><td>BTC/USDT</td><td>$64,200</td><td>$67,850</td><td class="pnl-up">+5.69%</td><td><span class="card-badge badge-accent">Running</span></td></tr>
-          <tr><td>Grid Infinity</td><td>ETH/USDT</td><td>$3,420</td><td>$3,516</td><td class="pnl-up">+2.81%</td><td><span class="card-badge badge-accent">Running</span></td></tr>
-          <tr><td>Trend Surf</td><td>SOL/USDT</td><td>$172.40</td><td>$168.20</td><td class="pnl-down">-2.44%</td><td><span class="card-badge badge-accent">Holding</span></td></tr>
-          <tr><td>Arbitrage Nexus</td><td>BNB/USDT</td><td>$598.00</td><td>$612.30</td><td class="pnl-up">+2.39%</td><td><span class="card-badge badge-accent">Running</span></td></tr>
-          <tr><td>Volatility Harvester</td><td>AVAX/USDT</td><td>$38.50</td><td>$36.90</td><td class="pnl-down">-4.16%</td><td><span class="card-badge badge-accent">Stop Loss</span></td></tr>
+          <tr><td>Mean Reversion v3</td><td>BTC/USDT</td><td>0</td><td>$64,200</td><td>$67,850</td><td class="pnl-up">+5.69%</td><td><span class="card-badge badge-accent">Running</span></td></tr>
+          <tr><td>Grid Infinity</td><td>ETH/USDT</td><td>0</td><td>$3,420</td><td>$3,516</td><td class="pnl-up">+2.81%</td><td><span class="card-badge badge-accent">Running</span></td></tr>
+          <tr><td>Trend Surf</td><td>SOL/USDT</td><td>0</td><td>$172.40</td><td>$168.20</td><td class="pnl-down">-2.44%</td><td><span class="card-badge badge-accent">Holding</span></td></tr>
+          <tr><td>Arbitrage Nexus</td><td>BNB/USDT</td><td>0</td><td>$598.00</td><td>$612.30</td><td class="pnl-up">+2.39%</td><td><span class="card-badge badge-accent">Running</span></td></tr>
+          <tr><td>Volatility Harvester</td><td>AVAX/USDT</td><td>0</td><td>$38.50</td><td>$36.90</td><td class="pnl-down">-4.16%</td><td><span class="card-badge badge-accent">Stop Loss</span></td></tr>
         </tbody>
       </table>
       <!-- Skeleton rows -->
@@ -1424,7 +1431,13 @@ async function bridgeCall(method, ...args) {
   const connResult = await bridgeCall('connect_exchange', 'binance');
   console.log('Exchange connection:', connResult);
   
-  // 定时刷新行情数据
+  // WS 状态刷新器 — 实时更新（单独轮询，间隔更短）
+  async function refreshWSStatus() {
+    const ws = await bridgeCall('get_ws_status');
+    updateWSStatus(ws);
+  }
+  
+  // 数据刷新器 — 30s 间隔
   async function refreshData() {
     const results = await Promise.all([
       bridgeCall('get_kpi'),
@@ -1438,26 +1451,30 @@ async function bridgeCall(method, ...args) {
     if (results[1]) updateStrategies(results[1]);
     if (results[2]) updatePortfolio(results[2]);
     if (results[3]) updateSentiment(results[3]);
+  }
+  
+  // 更新 WS 连接状态指示器
+  function updateWSStatus(ws) {
+    const dot = document.getElementById('ws-dot');
+    const label = document.getElementById('ws-status-label');
+    if (!dot || !label) return;
     
-    // 更新熔断状态指示器
-    const risk = results[4];
-    if (risk && risk.circuit_breaker) {
-      const statusDot = document.querySelector('.status-dot');
-      const statusText = document.querySelector('.nav-status span:last-child');
-      if (risk.circuit_breaker.tripped) {
-        if (statusDot) statusDot.style.background = 'var(--danger, #ef4444)';
-        if (statusText) statusText.textContent = 'HALTED';
-      } else {
-        if (statusDot) statusDot.style.background = 'var(--emerald, #10b981)';
-        if (statusText) statusText.textContent = 'Live';
-      }
+    if (!ws || !ws.connected) {
+      dot.className = 'status-dot disconnected';
+      label.textContent = 'Disconnected';
+    } else {
+      dot.className = 'status-dot';
+      label.textContent = ws.status_label || 'Live';
     }
   }
   
   // 初始加载
+  await refreshWSStatus();
   await refreshData();
   
-  // 定时刷新（30秒）
+  // WS 状态实时更新（5s）
+  setInterval(refreshWSStatus, 5000);
+  // 数据定时刷新（30s）
   setInterval(refreshData, 30000);
 })();
 
@@ -1483,8 +1500,14 @@ function updateUI(kpi) {
     const valEls4 = pods[3].querySelectorAll('.kpi-value, .kpi-change');
     if (valEls4.length >= 2) {
       valEls4[0].textContent = (kpi.win_rate || 0) + '%';
-      valEls4[1].textContent = '+' + (kpi.win_rate_change || 0) + '% vs avg';
+      valEls4[1].textContent = (kpi.profitable || 0) + ' signals passed';
     }
+  }
+
+  // 更新持仓总价值（donut 中心）
+  const donutTotal = document.querySelector('.donut-total');
+  if (donutTotal) {
+    donutTotal.textContent = '$' + Number(kpi.total_value || 0).toLocaleString('en-US', {notation: 'compact', maximumFractionDigits: 1});
   }
 }
 
@@ -1494,8 +1517,10 @@ function updateStrategies(list) {
   tbody.innerHTML = list.map(s => {
     const cls = s.pnl_pct >= 0 ? 'pnl-up' : 'pnl-down';
     const sign = s.pnl_pct >= 0 ? '+' : '';
+    const sigCount = s.signal_count != null ? s.signal_count : 0;
     return `<tr>
-      <td>${s.name}</td><td>${s.pair || s.symbol}</td><td>$${Number(s.entry||0).toLocaleString()}</td>
+      <td>${s.name}</td><td>${s.pair || s.symbol}</td><td>${sigCount}</td>
+      <td>$${Number(s.entry||0).toLocaleString()}</td>
       <td>$${Number(s.current||0).toLocaleString()}</td><td class="${cls}">${sign}${s.pnl_pct}%</td>
       <td><span class="card-badge badge-accent">${s.status || 'Running'}</span></td>
     </tr>`;

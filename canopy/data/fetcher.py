@@ -137,7 +137,7 @@ class DataFetcher:
             失败时返回空结构。
         """
         try:
-            ob = self.adapter.exchange.fetch_order_book(symbol, limit=depth)
+            ob = self.adapter.exchange.fetch_order_book(symbol, limit=depth)  # type: ignore[union-attr]
             return {
                 "bids": ob.get("bids", [])[:depth],
                 "asks": ob.get("asks", [])[:depth],

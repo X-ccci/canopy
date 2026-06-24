@@ -1,0 +1,9 @@
+services:
+  canopy:
+    build: .
+    container_name: canopy
+    volumes:
+      - ./data:/app/data
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped

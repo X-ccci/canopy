@@ -1,8 +1,8 @@
 """
 回退测试数据生成器：为回测生成模拟 OHLCV 数据。
 """
-import random
 import math
+import random
 from datetime import datetime, timedelta
 
 import pandas as pd
@@ -34,7 +34,7 @@ def generate_fallback_test_data(symbol: str = 'BTC/USDT', timeframe: str = '1h',
 
     # 随机种子保证可复现但不同调用有变化
     random.seed(hash(symbol + timeframe) % (2 ** 31))
-    math_seed = random.random()
+    random.random()
 
     rows = []
     current_time = datetime(2025, 1, 1)
@@ -66,7 +66,7 @@ def generate_fallback_test_data(symbol: str = 'BTC/USDT', timeframe: str = '1h',
             'volume': round(volume, 2)
         })
 
-        price = close_price
+        price = close_price  # type: ignore[assignment]
         current_time += delta
 
     return pd.DataFrame(rows)

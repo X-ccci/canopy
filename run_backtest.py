@@ -5,16 +5,16 @@
 使用 TrendStrategy 进行回测，输出绩效摘要。
 """
 
-import sys
 import os
+import sys
 
 # 确保项目包路径可导入
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import numpy as np
 
-from canopy.engine.factory import StrategyFactory
 from canopy.backtest.engine import BacktestEngine
+from canopy.engine.factory import StrategyFactory
 
 
 def generate_simulated_candles(
@@ -157,7 +157,7 @@ def main() -> None:
     print("-" * 60)
 
     if trades:
-        print(f"\n  最近 5 笔交易:")
+        print("\n  最近 5 笔交易:")
         for t in trades[-5:]:
             print(f"    {t['entry_time']} → {t['exit_time']}  "
                   f"{t['side']:5s}  PnL: {t['pnl']:+.2f}")

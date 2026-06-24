@@ -17,14 +17,14 @@ import pandas as pd
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, PROJECT_ROOT)
 
-from canopy.config import Config
-from canopy.exchange.ccxt_adapter import ExchangeAdapter
-from canopy.data.fetcher import DataFetcher
-from canopy.backtest.cases.crash_scenarios import (
+from canopy.backtest.cases.crash_scenarios import (  # noqa: E402
     CRASH_SCENARIOS,
-    generate_pressure_test,
     generate_all_tests,
+    generate_pressure_test,
 )
+from canopy.config import Config  # noqa: E402
+from canopy.data.fetcher import DataFetcher  # noqa: E402
+from canopy.exchange.ccxt_adapter import ExchangeAdapter  # noqa: E402
 
 SEP = "─" * 60
 
@@ -87,7 +87,7 @@ def test_fetch_ohlcv(adapter: ExchangeAdapter):
         if not df.empty:
             print(f"  行数: {len(df)}, 列: {list(df.columns)}")
             print(f"  dtypes:\n{df.dtypes}")
-            print(f"\n  前 5 行:")
+            print("\n  前 5 行:")
             print(df.head(5).to_string())
             assert "timestamp" in df.columns
             assert pd.api.types.is_datetime64_any_dtype(df["timestamp"])
@@ -201,7 +201,7 @@ def test_crash_scenarios():
         print("  → PASS")
 
         # 测试 generate_all_tests
-        print(f"\n  测试 generate_all_tests(base_price=60000)...")
+        print("\n  测试 generate_all_tests(base_price=60000)...")
         all_data = generate_all_tests(base_price=60000)
         assert len(all_data) == len(CRASH_SCENARIOS)
         for name, df_all in all_data.items():

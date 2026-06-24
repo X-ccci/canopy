@@ -3,14 +3,14 @@ test_risk.py — 单元测试：RiskConfig / CircuitBreaker / RiskManager
 覆盖正向路径和异常/边界路径。
 """
 import sys
-import pytest
-from unittest.mock import patch, MagicMock
 from pathlib import Path
+
+import pytest
 
 # 确保项目根目录在 path 中
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
-from canopy.engine.risk import RiskConfig, CircuitBreaker, RiskManager, Position
+from canopy.engine.risk import CircuitBreaker, RiskConfig, RiskManager
 
 
 # ── RiskConfig ──────────────────────────────────────────────

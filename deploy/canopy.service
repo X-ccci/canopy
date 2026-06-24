@@ -1,0 +1,25 @@
+[Unit]
+Description=Canopy Nature-Tech Trading Terminal
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=%u
+WorkingDirectory=/Users/cccc/Desktop/canopy
+Environment="PATH=/usr/local/bin:/usr/bin:/bin:/opt/homebrew/bin"
+Environment="PYTHONUNBUFFERED=1"
+ExecStart=/usr/bin/env python3 canopy/main.py
+ExecStop=/bin/kill -TERM $MAINPID
+
+Restart=on-failure
+RestartSec=10
+StartLimitInterval=300
+StartLimitBurst=5
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=canopy
+
+[Install]
+WantedBy=default.target

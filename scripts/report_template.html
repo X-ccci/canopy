@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>Canopy 复盘报告 — {{ report_date }}</title>
+<style>
+  @page { size: A4; margin: 20mm; }
+  body {
+    font-family: "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+    color: #1a1a1a;
+    font-size: 12px;
+    line-height: 1.6;
+  }
+  h1 { font-size: 24px; margin-bottom: 4px; }
+  h2 { font-size: 16px; border-bottom: 2px solid #2563eb; padding-bottom: 4px; margin-top: 28px; }
+  .subtitle { color: #666; font-size: 13px; margin-bottom: 20px; }
+
+  /* KPI cards */
+  .kpi-grid { display: flex; gap: 12px; margin: 16px 0; flex-wrap: wrap; }
+  .kpi-card {
+    flex: 1; min-width: 120px; background: #f8fafc;
+    border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px;
+    text-align: center;
+  }
+  .kpi-value { font-size: 22px; font-weight: 700; color: #2563eb; }
+  .kpi-label { font-size: 11px; color: #64748b; margin-top: 2px; }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 11px; }
+  th, td { border: 1px solid #e2e8f0; padding: 6px 8px; text-align: left; }
+  th { background: #f1f5f9; font-weight: 600; }
+  tr:nth-child(even) { background: #fafafa; }
+  .positive { color: #16a34a; }
+  .negative { color: #dc2626; }
+
+  /* Calendar heatmap */
+  .calendar { margin: 16px 0; }
+  .cal-month { margin-bottom: 12px; }
+  .cal-month-name { font-weight: 600; font-size: 13px; margin-bottom: 4px; }
+  .cal-week { display: flex; gap: 2px; margin-bottom: 2px; }
+  .cal-day {
+    width: 28px; height: 28px; border-radius: 3px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; color: #fff;
+  }
+  .cal-day-empty { background: #f1f5f9; color: #94a3b8; }
+  .cal-day-loss { background: #dc2626; }
+  .cal-day-breakeven { background: #94a3b8; }
+  .cal-day-gain-light { background: #86efac; color: #166534; }
+  .cal-day-gain { background: #22c55e; }
+  .cal-day-gain-strong { background: #16a34a; }
+
+  /* Chart */
+  .chart-container { margin: 16px 0; text-align: center; }
+  .chart-container img { max-width: 100%; }
+
+  /* Footer */
+  .footer { margin-top: 40px; padding-top: 12px; border-top: 1px solid #e2e8f0;
+             font-size: 10px; color: #94a3b8; text-align: center; }
+</style>
+</head>
+<body>
+
+<h1>Canopy 复盘报告</h1>
+<p class="subtitle">报告周期：{{ start_date }} ~ {{ end_date }} | 生成时间：{{ report_date }}</p>
+
+<!-- ======== KPI 卡片 ======== -->
+<h2>核心指标</h2>
+<div class="kpi-grid">
+  <div class="kpi-card">
+    <div class="kpi-value">{{ "%.2f%%"|format(total_return_pct) }}</div>
+    <div class="kpi-label">累计收益率</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-value">{{ "%.2f"|format(sharpe_ratio) }}</div>
+    <div class="kpi-label">Sharpe 比率</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-value">{{ "%.2f%%"|format(max_drawdown_pct) }}</div>
+    <div class="kpi-label">最大回撤</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-value">{{ total_trades }}</div>
+    <div class="kpi-label">总成交笔数</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-value">{{ "%.2f%%"|format(win_rate_pct) }}</div>
+    <div class="kpi-label">胜率</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-value">{{ "%.4f"|format(profit_factor) }}</div>
+    <div class="kpi-label">盈亏比</div>
+  </div>
+</div>
+
+<!-- ======== 净值曲线 ======== -->
+<h2>净值曲线</h2>
+<div class="chart-container">
+  <img src="{{ equity_curve_svg }}" alt="Equity Curve">
+</div>
+
+<!-- ======== 每日 PnL 日历热力图 ======== -->
+<h2>每日 PnL 日历热力图</h2>
+<div class="calendar">
+  {% for month in calendar_months %}
+  <div class="cal-month">
+    <div class="cal-month-name">{{ month.label }}</div>
+    <div class="cal-week">
+      {% for day in month.days %}
+      <div class="cal-day {% if day.pnl is none %}cal-day-empty{% elif day.pnl < 0 %}cal-day-loss{% elif day.pnl == 0 %}cal-day-breakeven{% elif day.pnl < 50 %}cal-day-gain-light{% elif day.pnl < 200 %}cal-day-gain{% else %}cal-day-gain-strong{% endif %}" title="{{ day.date_str }}: {{ "%.2f"|format(day.pnl) if day.pnl is not none else 'N/A' }}">
+        {{ day.day_num }}
+      </div>
+      {% endfor %}
+    </div>
+    {% if not loop.last %}{% endif %}
+    {% endfor %}
+  </div>
+</div>
+
+<!-- ======== 策略对比表 ======== -->
+<h2>策略对比</h2>
+<table>
+  <thead>
+    <tr><th>策略名称</th><th>交易对</th><th>信号数</th><th>成交数</th><th>胜率</th><th>累计 PnL</th><th>Sharpe</th><th>最大回撤</th></tr>
+  </thead>
+  <tbody>
+    {% for s in strategy_stats %}
+    <tr>
+      <td>{{ s.strategy }}</td>
+      <td>{{ s.symbol }}</td>
+      <td>{{ s.signals }}</td>
+      <td>{{ s.trades }}</td>
+      <td>{{ "%.1f%%"|format(s.win_rate) }}</td>
+      <td class="{{ 'positive' if s.total_pnl >= 0 else 'negative' }}">{{ "%.2f"|format(s.total_pnl) }}</td>
+      <td>{{ "%.2f"|format(s.sharpe) }}</td>
+      <td>{{ "%.2f%%"|format(s.max_dd) }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<!-- ======== 日度明细 ======== -->
+<h2>日度 PnL 明细（最近 20 个交易日）</h2>
+<table>
+  <thead>
+    <tr><th>日期</th><th>成交笔数</th><th>PnL</th><th>累计 PnL</th><th>最大回撤</th></tr>
+  </thead>
+  <tbody>
+    {% for d in daily_pnl %}
+    <tr>
+      <td>{{ d.date }}</td>
+      <td>{{ d.trades }}</td>
+      <td class="{{ 'positive' if d.pnl >= 0 else 'negative' }}">{{ "%.2f"|format(d.pnl) }}</td>
+      <td class="{{ 'positive' if d.cumulative_pnl >= 0 else 'negative' }}">{{ "%.2f"|format(d.cumulative_pnl) }}</td>
+      <td>{{ "%.2f%%"|format(d.drawdown) }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<div class="footer">
+  Canopy Trading System — 本报告由系统自动生成，仅供参考，不构成投资建议。
+</div>
+
+</body>
+</html>

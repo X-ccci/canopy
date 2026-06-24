@@ -3,11 +3,11 @@
 支持限价单/市价单，以及订单状态跟踪和回调。
 """
 import threading
-import time
-from typing import Optional, Callable
+from collections.abc import Callable
 from datetime import datetime
 
 from canopy.exchange.ccxt_adapter import ExchangeAdapter
+from canopy.utils.database import Database
 
 
 class Order:
@@ -23,7 +23,7 @@ class Order:
         self.filled_qty: float = 0.0
         self.avg_fill_price: float = 0.0
         self.created_at: str = order_dict.get('approved_at', datetime.now().isoformat())
-        self.filled_at: Optional[str] = None
+        self.filled_at: str | None = None
         self.error: str = ''
 
 
@@ -31,25 +31,29 @@ class OrderExecutor:
     """
     订单执行器线程——从队列中取订单并发往交易所。
     """
-    
-    def __init__(self, adapter: ExchangeAdapter, risk_manager=None):
+
+    def __init__(self, adapter: ExchangeAdapter, risk_manager=None, db: Database | None = None):
         self.adapter = adapter
         self.risk_manager = risk_manager
+        self.db = db
         self._order_queue: list[Order] = []
         self._order_history: list[Order] = []
         self._running = False
         self._stop_event = threading.Event()
         self._lock = threading.Lock()
-        self._thread: Optional[threading.Thread] = None
+        self._thread: threading.Thread | None = None
         self._on_fill_callbacks: list[Callable] = []
-    
+
     def submit(self, order_dict: dict) -> Order:
         """提交订单到执行队列"""
         order = Order(order_dict)
         with self._lock:
             self._order_queue.append(order)
+        # 同步写入 SQLite（PENDING 状态）
+        if self.db:
+            self._sync_order_to_db(order)
         return order
-    
+
     def start(self):
         """启动执行线程"""
         if self._running:
@@ -58,12 +62,12 @@ class OrderExecutor:
         self._stop_event.clear()
         self._thread = threading.Thread(target=self._run_loop, daemon=True, name='order-executor')
         self._thread.start()
-    
+
     def stop(self):
         """停止执行线程"""
         self._running = False
         self._stop_event.set()
-    
+
     def _run_loop(self):
         """主循环——从队列取订单并执行"""
         while not self._stop_event.is_set():
@@ -71,17 +75,19 @@ class OrderExecutor:
             with self._lock:
                 if self._order_queue:
                     order = self._order_queue.pop(0)
-            
+
             if order:
                 self._execute_order(order)
             else:
                 self._stop_event.wait(0.5)
-    
+
     def _execute_order(self, order: Order):
         """执行单个订单"""
         try:
             order.status = 'OPEN'
-            
+            if self.db:
+                self._sync_order_to_db(order)
+
             # 通过 CCXT 下单
             if order.type == 'LIMIT':
                 result = self.adapter.create_limit_order(
@@ -93,14 +99,23 @@ class OrderExecutor:
                     symbol=order.symbol, side=order.side,
                     amount=order.quantity
                 )
-            
+
             if result and result.get('id'):
                 order.id = result['id']
                 order.status = 'FILLED'
                 order.filled_qty = result.get('filled', order.quantity)
                 order.avg_fill_price = result.get('price', order.price)
                 order.filled_at = datetime.now().isoformat()
-                
+
+                # 同步写入 SQLite（FILLED + trade 记录）
+                if self.db:
+                    self._sync_order_to_db(order)
+                    self.db.insert_trade(
+                        order_id=order.id, symbol=order.symbol,
+                        price=order.avg_fill_price, amount=order.filled_qty,
+                        exchange_order_id=order.id
+                    )
+
                 # 回调：更新风险控制器的持仓
                 if self.risk_manager:
                     side = 'LONG' if order.side == 'buy' else 'SHORT'
@@ -108,7 +123,7 @@ class OrderExecutor:
                         order.symbol, side, order.avg_fill_price,
                         order.filled_qty, order.avg_fill_price
                     )
-                
+
                 # 触发 on_fill 回调
                 for cb in self._on_fill_callbacks:
                     try:
@@ -118,20 +133,40 @@ class OrderExecutor:
             else:
                 order.status = 'REJECTED'
                 order.error = result.get('error', 'Unknown error') if result else 'No response'
-                
+                if self.db:
+                    self._sync_order_to_db(order)
+
         except Exception as e:
             order.status = 'REJECTED'
             order.error = str(e)
+            if self.db:
+                self._sync_order_to_db(order)
         finally:
             with self._lock:
                 self._order_history.append(order)
                 if len(self._order_history) > 500:
                     self._order_history = self._order_history[-500:]
-    
+
     def on_fill(self, callback: Callable):
         """注册成交回调"""
         self._on_fill_callbacks.append(callback)
-    
+
+    def _sync_order_to_db(self, order: Order):
+        """将订单状态同步写入 SQLite"""
+        if not self.db:
+            return
+        try:
+            self.db.upsert_order(
+                order_id=order.id or f"pending_{id(order)}",
+                symbol=order.symbol,
+                side=order.side,
+                price=order.price,
+                amount=order.quantity,
+                status=order.status
+            )
+        except Exception:
+            pass
+
     def get_orders(self, limit: int = 50) -> list:
         """获取最近的订单"""
         with self._lock:
@@ -152,7 +187,7 @@ class OrderExecutor:
             }
             for o in orders
         ]
-    
+
     def get_pending_count(self) -> int:
         with self._lock:
             return len(self._order_queue)

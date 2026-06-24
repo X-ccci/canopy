@@ -1,0 +1,27 @@
+API Reference
+=============
+
+.. automodule:: canopy.engine
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: canopy.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: canopy.exchange
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: canopy.data
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: canopy.sim
+   :members:
+   :undoc-members:
+   :show-inheritance:

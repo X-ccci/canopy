@@ -1,6 +1,5 @@
 """绩效指标 — 回测结果分析：夏普比率、最大回撤、胜率、盈亏比、月度热力图、卡玛比率、索提诺比率。"""
 
-from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -87,8 +86,8 @@ def profit_factor(trades: list[dict]) -> float:
     gross_profit = sum(t["pnl"] for t in trades if t.get("pnl", 0) > 0)
     gross_loss = abs(sum(t["pnl"] for t in trades if t.get("pnl", 0) < 0))
     if gross_loss == 0:
-        return float("inf") if gross_profit > 0 else 1.0
-    return gross_profit / gross_loss
+        return float("inf") if gross_profit > 0 else 1.0  # type: ignore[no-any-return]
+    return gross_profit / gross_loss  # type: ignore[no-any-return]
 
 
 def monthly_heatmap(equity: np.ndarray, dates: pd.DatetimeIndex) -> dict[str, float]:

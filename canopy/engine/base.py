@@ -16,7 +16,9 @@ class Strategy(ABC):
         self.name = name or self.__class__.__name__
         self.exchange = exchange_adapter
         self.params = {**self.default_params, **(params or {})}
-        self._is_running = False
+        self._is_running: bool = False
+        self.symbol: str = ""
+        self.timeframe: str = "1h"
 
     @property
     def is_running(self) -> bool:
@@ -29,7 +31,9 @@ class Strategy(ABC):
 
     def stop(self):
         """停止策略。"""
-        self._is_running = False
+        self._is_running: bool = False
+        self.symbol: str = ""
+        self.timeframe: str = "1h"
         self.on_stop()
 
     # ── 子类可覆写的生命周期回调 ──

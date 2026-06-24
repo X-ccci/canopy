@@ -1,10 +1,6 @@
 """
 回测运行器：封装 BacktestEngine，提供面向前端的简洁 API。
 """
-import json
-import numpy as np
-from pathlib import Path
-from typing import Optional
 
 from canopy.engine.backtest.engine import BacktestEngine
 from canopy.engine.backtest.metrics import PerformanceMetrics
@@ -15,11 +11,11 @@ class BacktestRunner:
     """回测运行器——面向前端的简洁 API"""
 
     def __init__(self):
-        self._last_result: Optional[dict] = None
+        self._last_result: dict | None = None
 
     def run_strategy(self, strategy_type: str, symbol: str = 'BTC/USDT',
                      timeframe: str = '1h', initial_capital: float = 10000,
-                     params: dict = None) -> dict:
+                     params: dict | None = None) -> dict:
         """
         运行单个策略回测，返回完整结果（净值曲线、绩效指标、交易记录）。
         """
@@ -92,5 +88,5 @@ class BacktestRunner:
             })
         return results
 
-    def get_last_result(self) -> Optional[dict]:
+    def get_last_result(self) -> dict | None:
         return self._last_result

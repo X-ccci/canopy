@@ -2,7 +2,7 @@
 绩效指标计算：基于净值和交易记录计算 Sharpe / Sortino / Calmar / 胜率等。
 """
 import math
-from typing import Optional
+from typing import cast
 
 
 class PerformanceMetrics:
@@ -97,7 +97,7 @@ class PerformanceMetrics:
 
     def _calmar_ratio(self, total_return: float, max_drawdown: float) -> float:
         if max_drawdown == 0:
-            return 999 if total_return > 0 else 0
+            return 999 if total_return > 0 else 0  # type: ignore[no-any-return]
         return total_return / max_drawdown
 
     def _win_rate(self) -> float:
@@ -110,5 +110,5 @@ class PerformanceMetrics:
         gross_profit = sum(t.get('pnl', 0) for t in winning)
         gross_loss = abs(sum(t.get('pnl', 0) for t in losing))
         if gross_loss == 0:
-            return 999 if gross_profit > 0 else 0
-        return gross_profit / gross_loss
+            return cast(float, 999.0 if gross_profit > 0 else 0.0)
+        return cast(float, gross_profit / gross_loss)

@@ -3,10 +3,10 @@ test_executor.py — 单元测试：Order / OrderExecutor
 覆盖正向路径和异常/边界路径。使用 mock 隔离 ExchangeAdapter。
 """
 import sys
-import time
-import pytest
-from unittest.mock import MagicMock, patch, call
 from pathlib import Path
+from unittest.mock import MagicMock
+
+import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 

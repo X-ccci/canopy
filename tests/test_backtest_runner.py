@@ -3,9 +3,8 @@ test_backtest_runner.py — 单元测试：BacktestRunner
 覆盖正向路径和异常/边界路径。使用 mock 隔离底层引擎依赖。
 """
 import sys
-import pytest
-from unittest.mock import patch, MagicMock, PropertyMock
 from pathlib import Path
+from unittest.mock import MagicMock, patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 

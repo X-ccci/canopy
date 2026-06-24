@@ -48,14 +48,14 @@ class CustomStrategy(Strategy):
         if name == "ma":
             n = 20
             if len(closes) >= n:
-                return sum(closes[-n:]) / n
+                return sum(closes[-n:]) / n  # type: ignore[no-any-return]
             return None
         if name == "std":
             n = 20
             if len(closes) >= n:
                 avg = sum(closes[-n:]) / n
                 var = sum((x - avg) ** 2 for x in closes[-n:]) / (n - 1)
-                return var ** 0.5
+                return var ** 0.5  # type: ignore[no-any-return]
             return None
         if name == "rsi":
             n = 14
@@ -207,11 +207,11 @@ class StrategyFactory:
 
     def _register_builtins(self) -> None:
         """注册 5 种内置策略。"""
-        from canopy.engine.trend import TrendStrategy
-        from canopy.engine.grid import GridStrategy
         from canopy.engine.arbitrage import ArbitrageStrategy
-        from canopy.engine.momentum import MomentumStrategy
+        from canopy.engine.grid import GridStrategy
         from canopy.engine.mean_reversion import MeanReversionStrategy
+        from canopy.engine.momentum import MomentumStrategy
+        from canopy.engine.trend import TrendStrategy
 
         self.register("trend", TrendStrategy)
         self.register("grid", GridStrategy)

@@ -2,7 +2,7 @@
 回测引擎：模拟策略在历史数据上的运行，追踪净值曲线和交易记录。
 """
 from dataclasses import dataclass, field
-from typing import Optional
+
 import pandas as pd
 
 from canopy.engine.factory import StrategyFactory
@@ -84,9 +84,9 @@ class BacktestEngine:
             # 逐根记录净值（未实现盈亏浮动计入）
             unrealized = 0
             if position > 0:
-                unrealized = (close - entry_price) * position
+                unrealized = (close - entry_price) * position  # type: ignore[operator]
             elif position < 0:
-                unrealized = (entry_price - close) * abs(position)
+                unrealized = (entry_price - close) * abs(position)  # type: ignore[operator]
 
             current_equity = equity + unrealized
             result.equity_curve.append(round(current_equity, 2))

@@ -1,0 +1,141 @@
+{
+  "dashboard": {
+    "id": null,
+    "uid": "canopy-trading",
+    "title": "Canopy Trading Monitor",
+    "tags": ["canopy", "trading"],
+    "timezone": "browser",
+    "schemaVersion": 38,
+    "version": 0,
+    "refresh": "10s",
+    "panels": [
+      {
+        "id": 1,
+        "gridPos": {"h": 10, "w": 12, "x": 0, "y": 0},
+        "type": "timeseries",
+        "title": "PnL Curve",
+        "fieldConfig": {
+          "defaults": {
+            "custom": {
+              "drawStyle": "line",
+              "lineInterpolation": "smooth",
+              "fillOpacity": 10,
+              "showPoints": "never"
+            },
+            "unit": "currencyUSD"
+          }
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "expr": "canopy_pnl",
+            "legendFormat": "PnL",
+            "interval": "15s"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "gridPos": {"h": 10, "w": 12, "x": 12, "y": 0},
+        "type": "heatmap",
+        "title": "Order Latency Heatmap",
+        "fieldConfig": {
+          "defaults": {
+            "unit": "s"
+          }
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "expr": "canopy_latency_seconds",
+            "legendFormat": "{{operation}}",
+            "interval": "15s"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "gridPos": {"h": 10, "w": 12, "x": 0, "y": 10},
+        "type": "barchart",
+        "title": "Strategy Signals",
+        "fieldConfig": {
+          "defaults": {
+            "custom": {
+              "fillOpacity": 80
+            }
+          }
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "expr": "rate(canopy_strategy_signals_total[5m]) * 60",
+            "legendFormat": "{{strategy}} / {{symbol}}",
+            "interval": "15s"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "gridPos": {"h": 10, "w": 12, "x": 12, "y": 10},
+        "type": "stat",
+        "title": "Circuit Breaker Events",
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "thresholds"},
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "orange", "value": 1},
+                {"color": "red", "value": 5}
+              ]
+            },
+            "mappings": []
+          }
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "expr": "canopy_circuit_breaker_total",
+            "legendFormat": "Circuits",
+            "interval": "15s"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "gridPos": {"h": 8, "w": 24, "x": 0, "y": 20},
+        "type": "stat",
+        "title": "Orders by Status",
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "palette-classic"},
+            "mappings": [],
+            "noValue": "0"
+          }
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "expr": "canopy_orders_total",
+            "legendFormat": "{{status}}",
+            "interval": "15s"
+          }
+        ],
+        "options": {
+          "reduceOptions": {
+            "values": true,
+            "calcs": ["lastNotNull"]
+          },
+          "orientation": "horizontal",
+          "textMode": "auto"
+        }
+      }
+    ],
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    }
+  },
+  "overwrite": true
+}

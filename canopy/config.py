@@ -26,8 +26,12 @@ class Config:
     ))
 
     # ── WebSocket ──
+    ws_enabled: bool = False             # 是否启用 WebSocket 实时行情（替代 REST 轮询）
     ws_reconnect_interval: float = 5.0   # 重连间隔（秒）
     ws_ping_interval: float = 30.0       # 心跳间隔（秒）
+    ws_channels: list[dict] = field(default_factory=list)
+    # ws_channels 示例: [{"type": "ticker", "symbol": "BTC/USDT"},
+    #                    {"type": "kline", "symbol": "ETH/USDT", "interval": "1h"}]
 
     # ── 回测 ──
     backtest_initial_capital: float = 10000.0

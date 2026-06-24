@@ -1,11 +1,10 @@
 """回测引擎 — 事件驱动循环、撮合模拟、交易记录与权益曲线。"""
 
-from typing import Any
 
 import numpy as np
 
-from canopy.engine.base import Strategy
 from canopy.backtest import metrics as bt_metrics
+from canopy.engine.base import Strategy
 
 
 class BacktestEngine:

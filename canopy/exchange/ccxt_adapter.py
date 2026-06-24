@@ -74,6 +74,8 @@ class ExchangeAdapter:
     # ── 行情 ──
 
     def fetch_ticker(self, symbol: str) -> dict[str, Any]:
+        if self.exchange is None:
+            return {}
         """获取单个交易对的最新行情。
 
         Args:
@@ -131,6 +133,8 @@ class ExchangeAdapter:
                 since_ts = None
 
         try:
+            if self.exchange is None:
+                return pd.DataFrame(columns=columns)
             raw = self.exchange.fetch_ohlcv(symbol, timeframe, since=since_ts, limit=limit)
             df = pd.DataFrame(raw, columns=columns)
             df["timestamp"] = pd.to_datetime(df["timestamp"], unit="ms")
@@ -145,6 +149,8 @@ class ExchangeAdapter:
     # ── 账户 ──
 
     def fetch_balance(self) -> dict[str, dict[str, float]]:
+        if self.exchange is None:
+            return {"total": {}, "free": {}, "used": {}}
         """获取账户余额。
 
         Returns:
@@ -170,6 +176,8 @@ class ExchangeAdapter:
     # ── 下单 ──
 
     def create_market_order(self, symbol: str, side: str, amount: float) -> dict[str, Any]:
+        if self.exchange is None:
+            return {}
         """市价单。
 
         Args:
@@ -203,6 +211,8 @@ class ExchangeAdapter:
     def create_limit_order(
         self, symbol: str, side: str, amount: float, price: float
     ) -> dict[str, Any]:
+        if self.exchange is None:
+            return {}
         """限价单。
 
         Args:
@@ -236,6 +246,8 @@ class ExchangeAdapter:
     # ── 订单管理 ──
 
     def cancel_order(self, order_id: str, symbol: str) -> bool:
+        if self.exchange is None:
+            return False
         """撤销指定订单。
 
         Args:
@@ -256,6 +268,8 @@ class ExchangeAdapter:
             return False
 
     def fetch_open_orders(self, symbol: str | None = None) -> list[dict[str, Any]]:
+        if self.exchange is None:
+            return []
         """获取未成交订单列表。
 
         Args:
@@ -275,6 +289,8 @@ class ExchangeAdapter:
             return []
 
     def fetch_order_status(self, order_id: str, symbol: str) -> dict[str, Any]:
+        if self.exchange is None:
+            return {}
         """查询指定订单状态。
 
         Args:
@@ -305,6 +321,8 @@ class ExchangeAdapter:
     # ── 市场信息 ──
 
     def get_supported_markets(self) -> list[str]:
+        if self.exchange is None:
+            return []
         """返回交易所支持的所有交易对列表。
 
         首次调用时加载并缓存，后续调用直接返回缓存。
@@ -327,6 +345,8 @@ class ExchangeAdapter:
             return []
 
     def get_min_amount(self, symbol: str) -> float:
+        if self.exchange is None:
+            return 0.0
         """获取交易对的最小下单量。
 
         Args:
@@ -343,7 +363,7 @@ class ExchangeAdapter:
                 return 0.0
             limits = market.get("limits", {})
             amount_limits = limits.get("amount", {})
-            return amount_limits.get("min", 0.0)
+            return amount_limits.get("min", 0.0)  # type: ignore[no-any-return]
         except Exception as e:
             logger.warning(f"get_min_amount({symbol}) 失败: {e}")
             return 0.0

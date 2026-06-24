@@ -2,12 +2,14 @@
 AIGC:
     Label: "1"
     ContentProducer: 001191440300708461136T1XGW3
-    ProduceID: dfa59edf71882ac3e29663828f688f4a_abd4619c6f7911f184585254007bceed
-    ReservedCode1: n6ss+xz8iyJpsj3HNH12EzUFtcLo9tY2Efs9unQtfPHJSLYYQK5CDpc0lVQjSDf7mp5Feg5Z1TFOlcFW1F3CO+Rfuab2s3ArRpjC3AH3QRsMc5Ma4pXSll9aTqhJA+VThjKkaoRagqioGlB2WuOPEa1oqh7utF5eCHcEpyMYrkxkv2g2FBbOEHWiMHU=
+    ProduceID: dfa59edf71882ac3e29663828f688f4a_be6369c86f7e11f1b2f55254006c9bbf
+    ReservedCode1: Y47vlupbrDAFVmugqESY6yici6iTt5WxJBfmArn2bXTV6M5aFIjQIAv66HSR0MOnmIrA+bgkVwhnCGRchH0KU8iLkiM5LQfNO/8c0gGmzEOfBAX7B5B7MBzwF8T8GV4DyLFjYkC6Bi1zPL6gLo/vuTzu2zs+PeaiRBLHBP9TdnHhQgAlStiiV2KLf5s=
     ContentPropagator: 001191440300708461136T1XGW3
-    PropagateID: dfa59edf71882ac3e29663828f688f4a_abd4619c6f7911f184585254007bceed
-    ReservedCode2: n6ss+xz8iyJpsj3HNH12EzUFtcLo9tY2Efs9unQtfPHJSLYYQK5CDpc0lVQjSDf7mp5Feg5Z1TFOlcFW1F3CO+Rfuab2s3ArRpjC3AH3QRsMc5Ma4pXSll9aTqhJA+VThjKkaoRagqioGlB2WuOPEa1oqh7utF5eCHcEpyMYrkxkv2g2FBbOEHWiMHU=
+    PropagateID: dfa59edf71882ac3e29663828f688f4a_be6369c86f7e11f1b2f55254006c9bbf
+    ReservedCode2: Y47vlupbrDAFVmugqESY6yici6iTt5WxJBfmArn2bXTV6M5aFIjQIAv66HSR0MOnmIrA+bgkVwhnCGRchH0KU8iLkiM5LQfNO/8c0gGmzEOfBAX7B5B7MBzwF8T8GV4DyLFjYkC6Bi1zPL6gLo/vuTzu2zs+PeaiRBLHBP9TdnHhQgAlStiiV2KLf5s=
 ---
+
+
 
 # Canopy · Nature-Tech Trading Terminal
 
@@ -116,4 +118,5 @@ python canopy/main.py
 - **后端**: Python 3.x, CCXT, pandas, pywebview
 - **前端**: Vanilla JS + Canvas, Nature-Tech Glass Design System (Emerald/Amber/Amethyst/Rose × Dark/Light)
 - **数据**: Parquet 本地缓存
+*（内容由AI生成，仅供参考）*
 *（内容由AI生成，仅供参考）*
