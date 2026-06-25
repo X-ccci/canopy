@@ -20,3 +20,8 @@ API Reference
    :members:
    :undoc-members:
    :show-inheritance:
+
+.. automodule:: canopy.sim
+   :members:
+   :undoc-members:
+   :show-inheritance:

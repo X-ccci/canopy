@@ -239,7 +239,422 @@
 <dd><p>工厂函数：获取或创建命名 logger 实例</p>
 </dd></dl>
 
-<span class="target" id="module-canopy.data"><span id="module-canopy.exchange"></span></span></section>
+<p id="module-canopy.sim"><span id="module-canopy.data"></span><span id="module-canopy.exchange"></span>脱网模拟交易模式 — 不连交易所也能跑完整交易链路。</p>
+<p>提供 SimEngine（模拟撮合引擎）、SimAccount（模拟账户）、
+SimBroker（模拟券商）三大组件，基于历史 Parquet 数据逐根 K 线推进，
+支持市价/限价单撮合、滑点模拟、保证金冻结、事件流等完整功能。</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="canopy.sim.SimAccount">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">canopy.sim.</span></span><span class="sig-name descname"><span class="pre">SimAccount</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">initial_capital</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10000.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/canopy/sim/account.html#SimAccount"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#canopy.sim.SimAccount" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>模拟账户。</p>
+<p>跟踪：
+- 余额（可用 + 冻结）
+- 持仓（多/空）
+- 已实现 / 未实现盈亏
+- 保证金冻结与释放</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="canopy.sim.SimAccount.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">initial_capital</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10000.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/canopy/sim/account.html#SimAccount.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#canopy.sim.SimAccount.__init__" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>initial_capital</strong> – 初始资金（USDT）。</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="canopy.sim.SimAccount.get_balance">
+<span class="sig-name descname"><span class="pre">get_balance</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/canopy/sim/account.html#SimAccount.get_balance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#canopy.sim.SimAccount.get_balance" title="Link to this definition">¶</a></dt>
+<dd><p>返回余额快照。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="canopy.sim.SimAccount.get_pending_orders">
+<span class="sig-name descname"><span class="pre">get_pending_orders</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">SimOrder</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/canopy/sim/account.html#SimAccount.get_pending_orders"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#canopy.sim.SimAccount.get_pending_orders" title="Link to this definition">¶</a></dt>
+<dd><p>获取未成交的限价单。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="canopy.sim.SimAccount.get_portfolio">
+<span class="sig-name descname"><span class="pre">get_portfolio</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/canopy/sim/account.html#SimAccount.get_portfolio"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#canopy.sim.SimAccount.get_portfolio" title="Link to this definition">¶</a></dt>
+<dd><p>返回完整组合快照。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="canopy.sim.SimAccount.get_positions">
+<span class="sig-name descname"><span class="pre">get_positions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/canopy/sim/account.html#SimAccount.get_positions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#canopy.sim.SimAccount.get_positions" title="Link to this definition">¶</a></dt>
+<dd><p>返回所有持仓。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="canopy.sim.SimAccount.get_recent_trades">
+<span class="sig-name descname"><span class="pre">get_recent_trades</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">50</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/canopy/sim/account.html#SimAccount.get_recent_trades"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#canopy.sim.SimAccount.get_recent_trades" title="Link to this definition">¶</a></dt>
+<dd><p>获取最近的成交记录。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="canopy.sim.SimAccount.mark_to_market_public">
+<span class="sig-name descname"><span class="pre">mark_to_market_public</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">current_price</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/canopy/sim/account.html#SimAccount.mark_to_market_public"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#canopy.sim.SimAccount.mark_to_market_public" title="Link to this definition">¶</a></dt>
+<dd><p>公开接口：按当前价格重估持仓。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="canopy.sim.SimAccount.on_fill">
+<span class="sig-name descname"><span class="pre">on_fill</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SimOrder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_price</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_result</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">SimOrder</span></span></span><a class="reference internal" href="_modules/canopy/sim/account.html#SimAccount.on_fill"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#canopy.sim.SimAccount.on_fill" title="Link to this definition">¶</a></dt>
+<dd><p>处理订单成交：更新余额、持仓、盈亏。</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>order</strong> – 被成交的订单。</p></li>
+<li><p><strong>fill_price</strong> – 实际成交价。</p></li>
+<li><p><strong>fill_result</strong> – 撮合引擎返回的成交结果（含 cost/fee 等）。</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>更新后的 SimOrder。</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="canopy.sim.SimAccount.reject_order">
+<span class="sig-name descname"><span class="pre">reject_order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SimOrder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reason</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/canopy/sim/account.html#SimAccount.reject_order"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#canopy.sim.SimAccount.reject_order" title="Link to this definition">¶</a></dt>
+<dd><p>拒绝订单。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="canopy.sim.SimAccount.submit_order">
+<span class="sig-name descname"><span class="pre">submit_order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">side</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amount</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">price</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">SimOrder</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/canopy/sim/account.html#SimAccount.submit_order"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#canopy.sim.SimAccount.submit_order" title="Link to this definition">¶</a></dt>
+<dd><p>提交订单：校验余额并冻结保证金。</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>symbol</strong> – 交易对。</p></li>
+<li><p><strong>side</strong> – ‘buy’ 或 ‘sell’。</p></li>
+<li><p><strong>order_type</strong> – ‘market’ 或 ‘limit’。</p></li>
+<li><p><strong>amount</strong> – 下单数量。</p></li>
+<li><p><strong>price</strong> – 限价（市价单可为 None，将在撮合时填充）。</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>SimOrder 对象；资金不足时返回 None。</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="canopy.sim.SimBroker">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">canopy.sim.</span></span><span class="sig-name descname"><span class="pre">SimBroker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">engine</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#canopy.sim.SimEngine" title="canopy.sim.engine.SimEngine"><span class="pre">SimEngine</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">account</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#canopy.sim.SimAccount" title="canopy.sim.account.SimAccount"><span class="pre">SimAccount</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/canopy/sim/broker.html#SimBroker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#canopy.sim.SimBroker" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>模拟券商。</p>
+<p>封装 SimEngine（行情 + 撮合）和 SimAccount（资金 + 持仓），
+提供 submit_order() 方法一站式完成订单全生命周期。</p>
+<p>策略/风控层只需调用 submit_order() → 检查返回结果即可。</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="canopy.sim.SimBroker.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">engine</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#canopy.sim.SimEngine" title="canopy.sim.engine.SimEngine"><span class="pre">SimEngine</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">account</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#canopy.sim.SimAccount" title="canopy.sim.account.SimAccount"><span class="pre">SimAccount</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/canopy/sim/broker.html#SimBroker.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#canopy.sim.SimBroker.__init__" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>engine</strong> – SimEngine 实例（已加载数据）。</p></li>
+<li><p><strong>account</strong> – SimAccount 实例（已设置初始资金）。</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="canopy.sim.SimBroker.check_pending">
+<span class="sig-name descname"><span class="pre">check_pending</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/canopy/sim/broker.html#SimBroker.check_pending"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#canopy.sim.SimBroker.check_pending" title="Link to this definition">¶</a></dt>
+<dd><p>检查所有待成交的限价单，对已触发的订单执行撮合。</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>本轮新成交的订单结果列表。</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="canopy.sim.SimBroker.fetch_ohlcv">
+<span class="sig-name descname"><span class="pre">fetch_ohlcv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeframe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'1h'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">since</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">500</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/canopy/sim/broker.html#SimBroker.fetch_ohlcv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#canopy.sim.SimBroker.fetch_ohlcv" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="canopy.sim.SimBroker.fetch_ticker">
+<span class="sig-name descname"><span class="pre">fetch_ticker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/canopy/sim/broker.html#SimBroker.fetch_ticker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#canopy.sim.SimBroker.fetch_ticker" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="canopy.sim.SimBroker.get_balance">
+<span class="sig-name descname"><span class="pre">get_balance</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/canopy/sim/broker.html#SimBroker.get_balance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#canopy.sim.SimBroker.get_balance" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="canopy.sim.SimBroker.get_portfolio">
+<span class="sig-name descname"><span class="pre">get_portfolio</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/canopy/sim/broker.html#SimBroker.get_portfolio"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#canopy.sim.SimBroker.get_portfolio" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="canopy.sim.SimBroker.get_positions">
+<span class="sig-name descname"><span class="pre">get_positions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/canopy/sim/broker.html#SimBroker.get_positions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#canopy.sim.SimBroker.get_positions" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="canopy.sim.SimBroker.on_match">
+<span class="sig-name descname"><span class="pre">on_match</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/canopy/sim/broker.html#SimBroker.on_match"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#canopy.sim.SimBroker.on_match" title="Link to this definition">¶</a></dt>
+<dd><p>注册 ORDER_MATCHED 回调。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="canopy.sim.SimBroker.on_position_update">
+<span class="sig-name descname"><span class="pre">on_position_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/canopy/sim/broker.html#SimBroker.on_position_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#canopy.sim.SimBroker.on_position_update" title="Link to this definition">¶</a></dt>
+<dd><p>注册 POSITION_UPDATED 回调。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="canopy.sim.SimBroker.on_submit">
+<span class="sig-name descname"><span class="pre">on_submit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/canopy/sim/broker.html#SimBroker.on_submit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#canopy.sim.SimBroker.on_submit" title="Link to this definition">¶</a></dt>
+<dd><p>注册 ORDER_SUBMITTED 回调。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="canopy.sim.SimBroker.step">
+<span class="sig-name descname"><span class="pre">step</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/canopy/sim/broker.html#SimBroker.step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#canopy.sim.SimBroker.step" title="Link to this definition">¶</a></dt>
+<dd><p>推进到下一根 K 线，自动检查待成交限价单。</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool, ‘new_fills’: list, ‘candle’: dict}</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>{‘advanced’</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="canopy.sim.SimBroker.submit_order">
+<span class="sig-name descname"><span class="pre">submit_order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">side</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amount</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">price</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/canopy/sim/broker.html#SimBroker.submit_order"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#canopy.sim.SimBroker.submit_order" title="Link to this definition">¶</a></dt>
+<dd><p>提交订单并自动撮合。</p>
+<dl class="simple">
+<dt>流程:</dt><dd><ol class="arabic simple">
+<li><p>账户创建订单（ORDER_SUBMITTED）</p></li>
+<li><p>引擎撮合（ORDER_MATCHED）</p></li>
+<li><p>账户更新余额/持仓（POSITION_UPDATED）</p></li>
+</ol>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>symbol</strong> – 交易对。</p></li>
+<li><p><strong>side</strong> – ‘buy’ 或 ‘sell’。</p></li>
+<li><p><strong>order_type</strong> – ‘market’ 或 ‘limit’。</p></li>
+<li><p><strong>amount</strong> – 下单数量。</p></li>
+<li><p><strong>price</strong> – 限价（市价单可忽略）。</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>{</dt><dd><p>‘order_id’: str,
+‘status’: ‘FILLED’ | ‘PENDING’ | ‘REJECTED’,
+‘symbol’: str,
+‘side’: str,
+‘price’: float,
+‘amount’: float,
+‘cost’: float,
+‘fee’: float,
+‘message’: str,</p>
+</dd>
+</dl>
+<p>}</p>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="canopy.sim.SimBroker.symbol">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">symbol</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#canopy.sim.SimBroker.symbol" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="canopy.sim.SimEngine">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">canopy.sim.</span></span><span class="sig-name descname"><span class="pre">SimEngine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slippage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0005</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">commission</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.001</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/canopy/sim/engine.html#SimEngine"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#canopy.sim.SimEngine" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>模拟撮合引擎。</p>
+<p>从 Parquet 文件加载历史 K 线数据，按时间顺序逐根推进。
+每根 K 线即代表一个时间步，在该时间步内：
+- fetch_ticker 返回当前 K 线的 bid/ask/last
+- fetch_ohlcv 返回截止当前时间步的历史 K 线
+- 市价单按当前 K 线收盘价成交（含滑点）
+- 限价单在触及价位时成交</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="canopy.sim.SimEngine.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slippage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0005</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">commission</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.001</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/canopy/sim/engine.html#SimEngine.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#canopy.sim.SimEngine.__init__" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_path</strong> – Parquet 文件路径，列必须包含 timestamp/open/high/low/close/volume。</p></li>
+<li><p><strong>slippage</strong> – 滑点比例（默认 0.05%），成交价 = 理论价 * (1 ± slippage)。</p></li>
+<li><p><strong>commission</strong> – 手续费率（默认 0.1%）。</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="canopy.sim.SimEngine.check_limit_order">
+<span class="sig-name descname"><span class="pre">check_limit_order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">side</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">price</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/canopy/sim/engine.html#SimEngine.check_limit_order"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#canopy.sim.SimEngine.check_limit_order" title="Link to this definition">¶</a></dt>
+<dd><p>检查限价单在当前 K 线是否触发。</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>side</strong> – ‘buy’ 或 ‘sell’。</p></li>
+<li><p><strong>price</strong> – 限价。</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True 表示已触发。</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="canopy.sim.SimEngine.current_candle">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">current_candle</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#canopy.sim.SimEngine.current_candle" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="canopy.sim.SimEngine.current_timestamp">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">current_timestamp</span></span><a class="headerlink" href="#canopy.sim.SimEngine.current_timestamp" title="Link to this definition">¶</a></dt>
+<dd><p>当前 K 线的时间戳。</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="canopy.sim.SimEngine.cursor">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">cursor</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#canopy.sim.SimEngine.cursor" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="canopy.sim.SimEngine.fetch_ohlcv">
+<span class="sig-name descname"><span class="pre">fetch_ohlcv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeframe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'1h'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">since</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">500</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/canopy/sim/engine.html#SimEngine.fetch_ohlcv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#canopy.sim.SimEngine.fetch_ohlcv" title="Link to this definition">¶</a></dt>
+<dd><p>返回截止当前游标位置的历史 K 线数据。</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>symbol</strong> – 交易对。</p></li>
+<li><p><strong>timeframe</strong> – K 线周期（模拟中忽略，按实际数据）。</p></li>
+<li><p><strong>since</strong> – ISO 日期起始时间过滤。</p></li>
+<li><p><strong>limit</strong> – 返回条数上限。</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>timestamp/open/high/low/close/volume。</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>DataFrame，列</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="canopy.sim.SimEngine.fetch_ticker">
+<span class="sig-name descname"><span class="pre">fetch_ticker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/canopy/sim/engine.html#SimEngine.fetch_ticker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#canopy.sim.SimEngine.fetch_ticker" title="Link to this definition">¶</a></dt>
+<dd><p>获取当前 K 线对应的模拟行情。</p>
+<p>基于当前 K 线的 OHLC 数据构造 bid/ask/last。</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>symbol</strong> – 交易对。</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>{‘symbol’, ‘bid’, ‘ask’, ‘last’, ‘volume_24h’, ‘timestamp’}</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="canopy.sim.SimEngine.load">
+<span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/canopy/sim/engine.html#SimEngine.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#canopy.sim.SimEngine.load" title="Link to this definition">¶</a></dt>
+<dd><p>加载 Parquet 数据并初始化引擎。</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True 表示加载成功，False 表示失败。</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="canopy.sim.SimEngine.match_limit_order">
+<span class="sig-name descname"><span class="pre">match_limit_order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">side</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amount</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">price</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/canopy/sim/engine.html#SimEngine.match_limit_order"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#canopy.sim.SimEngine.match_limit_order" title="Link to this definition">¶</a></dt>
+<dd><p>限价单撮合：检查当前 K 线是否触及限价。</p>
+<p>买单：low &lt;= price 即成交；卖单：high &gt;= price 即成交。
+成交价取限价（买方最优）。</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>side</strong> – ‘buy’ 或 ‘sell’。</p></li>
+<li><p><strong>amount</strong> – 下单数量。</p></li>
+<li><p><strong>price</strong> – 限价。</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>成交结果字典；订单未触发时返回 None。</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="canopy.sim.SimEngine.match_market_order">
+<span class="sig-name descname"><span class="pre">match_market_order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">side</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amount</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/canopy/sim/engine.html#SimEngine.match_market_order"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#canopy.sim.SimEngine.match_market_order" title="Link to this definition">¶</a></dt>
+<dd><p>市价单撮合：按当前 K 线收盘价成交（含滑点）。</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>side</strong> – ‘buy’ 或 ‘sell’。</p></li>
+<li><p><strong>amount</strong> – 下单数量。</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>{‘id’, ‘status’, ‘price’, ‘amount’, ‘cost’, ‘fee’, ‘side’, ‘symbol’, ‘filled’}</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="canopy.sim.SimEngine.reset">
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/canopy/sim/engine.html#SimEngine.reset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#canopy.sim.SimEngine.reset" title="Link to this definition">¶</a></dt>
+<dd><p>重置游标到起始位置。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="canopy.sim.SimEngine.step">
+<span class="sig-name descname"><span class="pre">step</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/canopy/sim/engine.html#SimEngine.step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#canopy.sim.SimEngine.step" title="Link to this definition">¶</a></dt>
+<dd><p>推进到下一根 K 线。</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True 表示推进成功，False 表示已到末尾。</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="canopy.sim.SimEngine.symbol">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">symbol</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#canopy.sim.SimEngine.symbol" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="canopy.sim.SimEngine.total_bars">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">total_bars</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#canopy.sim.SimEngine.total_bars" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
 
         </article>
       </div>
@@ -290,6 +705,52 @@
             <ul>
 <li><a class="reference internal" href="#">API Reference</a><ul>
 <li><a class="reference internal" href="#canopy.utils.get_logger"><code class="docutils literal notranslate"><span class="pre">get_logger()</span></code></a></li>
+<li><a class="reference internal" href="#canopy.sim.SimAccount"><code class="docutils literal notranslate"><span class="pre">SimAccount</span></code></a><ul>
+<li><a class="reference internal" href="#canopy.sim.SimAccount.__init__"><code class="docutils literal notranslate"><span class="pre">SimAccount.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#canopy.sim.SimAccount.get_balance"><code class="docutils literal notranslate"><span class="pre">SimAccount.get_balance()</span></code></a></li>
+<li><a class="reference internal" href="#canopy.sim.SimAccount.get_pending_orders"><code class="docutils literal notranslate"><span class="pre">SimAccount.get_pending_orders()</span></code></a></li>
+<li><a class="reference internal" href="#canopy.sim.SimAccount.get_portfolio"><code class="docutils literal notranslate"><span class="pre">SimAccount.get_portfolio()</span></code></a></li>
+<li><a class="reference internal" href="#canopy.sim.SimAccount.get_positions"><code class="docutils literal notranslate"><span class="pre">SimAccount.get_positions()</span></code></a></li>
+<li><a class="reference internal" href="#canopy.sim.SimAccount.get_recent_trades"><code class="docutils literal notranslate"><span class="pre">SimAccount.get_recent_trades()</span></code></a></li>
+<li><a class="reference internal" href="#canopy.sim.SimAccount.mark_to_market_public"><code class="docutils literal notranslate"><span class="pre">SimAccount.mark_to_market_public()</span></code></a></li>
+<li><a class="reference internal" href="#canopy.sim.SimAccount.on_fill"><code class="docutils literal notranslate"><span class="pre">SimAccount.on_fill()</span></code></a></li>
+<li><a class="reference internal" href="#canopy.sim.SimAccount.reject_order"><code class="docutils literal notranslate"><span class="pre">SimAccount.reject_order()</span></code></a></li>
+<li><a class="reference internal" href="#canopy.sim.SimAccount.submit_order"><code class="docutils literal notranslate"><span class="pre">SimAccount.submit_order()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#canopy.sim.SimBroker"><code class="docutils literal notranslate"><span class="pre">SimBroker</span></code></a><ul>
+<li><a class="reference internal" href="#canopy.sim.SimBroker.__init__"><code class="docutils literal notranslate"><span class="pre">SimBroker.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#canopy.sim.SimBroker.check_pending"><code class="docutils literal notranslate"><span class="pre">SimBroker.check_pending()</span></code></a></li>
+<li><a class="reference internal" href="#canopy.sim.SimBroker.fetch_ohlcv"><code class="docutils literal notranslate"><span class="pre">SimBroker.fetch_ohlcv()</span></code></a></li>
+<li><a class="reference internal" href="#canopy.sim.SimBroker.fetch_ticker"><code class="docutils literal notranslate"><span class="pre">SimBroker.fetch_ticker()</span></code></a></li>
+<li><a class="reference internal" href="#canopy.sim.SimBroker.get_balance"><code class="docutils literal notranslate"><span class="pre">SimBroker.get_balance()</span></code></a></li>
+<li><a class="reference internal" href="#canopy.sim.SimBroker.get_portfolio"><code class="docutils literal notranslate"><span class="pre">SimBroker.get_portfolio()</span></code></a></li>
+<li><a class="reference internal" href="#canopy.sim.SimBroker.get_positions"><code class="docutils literal notranslate"><span class="pre">SimBroker.get_positions()</span></code></a></li>
+<li><a class="reference internal" href="#canopy.sim.SimBroker.on_match"><code class="docutils literal notranslate"><span class="pre">SimBroker.on_match()</span></code></a></li>
+<li><a class="reference internal" href="#canopy.sim.SimBroker.on_position_update"><code class="docutils literal notranslate"><span class="pre">SimBroker.on_position_update()</span></code></a></li>
+<li><a class="reference internal" href="#canopy.sim.SimBroker.on_submit"><code class="docutils literal notranslate"><span class="pre">SimBroker.on_submit()</span></code></a></li>
+<li><a class="reference internal" href="#canopy.sim.SimBroker.step"><code class="docutils literal notranslate"><span class="pre">SimBroker.step()</span></code></a></li>
+<li><a class="reference internal" href="#canopy.sim.SimBroker.submit_order"><code class="docutils literal notranslate"><span class="pre">SimBroker.submit_order()</span></code></a></li>
+<li><a class="reference internal" href="#canopy.sim.SimBroker.symbol"><code class="docutils literal notranslate"><span class="pre">SimBroker.symbol</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#canopy.sim.SimEngine"><code class="docutils literal notranslate"><span class="pre">SimEngine</span></code></a><ul>
+<li><a class="reference internal" href="#canopy.sim.SimEngine.__init__"><code class="docutils literal notranslate"><span class="pre">SimEngine.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#canopy.sim.SimEngine.check_limit_order"><code class="docutils literal notranslate"><span class="pre">SimEngine.check_limit_order()</span></code></a></li>
+<li><a class="reference internal" href="#canopy.sim.SimEngine.current_candle"><code class="docutils literal notranslate"><span class="pre">SimEngine.current_candle</span></code></a></li>
+<li><a class="reference internal" href="#canopy.sim.SimEngine.current_timestamp"><code class="docutils literal notranslate"><span class="pre">SimEngine.current_timestamp</span></code></a></li>
+<li><a class="reference internal" href="#canopy.sim.SimEngine.cursor"><code class="docutils literal notranslate"><span class="pre">SimEngine.cursor</span></code></a></li>
+<li><a class="reference internal" href="#canopy.sim.SimEngine.fetch_ohlcv"><code class="docutils literal notranslate"><span class="pre">SimEngine.fetch_ohlcv()</span></code></a></li>
+<li><a class="reference internal" href="#canopy.sim.SimEngine.fetch_ticker"><code class="docutils literal notranslate"><span class="pre">SimEngine.fetch_ticker()</span></code></a></li>
+<li><a class="reference internal" href="#canopy.sim.SimEngine.load"><code class="docutils literal notranslate"><span class="pre">SimEngine.load()</span></code></a></li>
+<li><a class="reference internal" href="#canopy.sim.SimEngine.match_limit_order"><code class="docutils literal notranslate"><span class="pre">SimEngine.match_limit_order()</span></code></a></li>
+<li><a class="reference internal" href="#canopy.sim.SimEngine.match_market_order"><code class="docutils literal notranslate"><span class="pre">SimEngine.match_market_order()</span></code></a></li>
+<li><a class="reference internal" href="#canopy.sim.SimEngine.reset"><code class="docutils literal notranslate"><span class="pre">SimEngine.reset()</span></code></a></li>
+<li><a class="reference internal" href="#canopy.sim.SimEngine.step"><code class="docutils literal notranslate"><span class="pre">SimEngine.step()</span></code></a></li>
+<li><a class="reference internal" href="#canopy.sim.SimEngine.symbol"><code class="docutils literal notranslate"><span class="pre">SimEngine.symbol</span></code></a></li>
+<li><a class="reference internal" href="#canopy.sim.SimEngine.total_bars"><code class="docutils literal notranslate"><span class="pre">SimEngine.total_bars</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
