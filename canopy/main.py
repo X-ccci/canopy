@@ -75,7 +75,7 @@ class CanopyAPI:
                 self.runner.add_strategy('Arbitrage Nexus', 'arbitrage', 'BNB/USDT', '1h')
                 self.runner.add_strategy('Volatility Harvester', 'momentum', 'AVAX/USDT', '1h')
                 self.runner.start_all()
-            return {'success': ok, 'exchange': exchange_id, 'status': 'connected' if ok else 'failed'}
+            return {'success': ok, 'exchange': exchange_id, 'status': '已连接' if ok else '连接失败'}
         except Exception as e:
             return {'success': False, 'error': str(e)}
 
@@ -195,7 +195,7 @@ class CanopyAPI:
                 'current': round(current_price, 2),
                 'entry': 0,
                 'pnl_pct': 0,
-                'status': 'Running' if s.get('running') else 'Idle',
+                'status': '运行中' if s.get('running') else '空闲',
                 'signal_count': stats.get('signal_count', 0),
                 'pass_count': stats.get('pass_count', 0),
                 'last_signal': stats.get('last_signal', ''),
@@ -221,9 +221,9 @@ class CanopyAPI:
             pct = round(pos_value_approx / max(balance, 1) * 100, 1)
 
             asset_names = {
-                'BTC': 'Bitcoin', 'ETH': 'Ethereum', 'SOL': 'Solana',
-                'BNB': 'BNB', 'XRP': 'XRP', 'AVAX': 'Avalanche',
-                'ADA': 'Cardano', 'DOT': 'Polkadot', 'LINK': 'Chainlink',
+                'BTC': '比特币', 'ETH': '以太坊', 'SOL': '索拉纳',
+                'BNB': 'BNB', 'XRP': '瑞波币', 'AVAX': '雪崩',
+                'ADA': '艾达币', 'DOT': '波卡', 'LINK': '链环',
             }
             result.append({
                 'asset': base,
@@ -236,7 +236,7 @@ class CanopyAPI:
         if total_allocated < 100:
             result.append({
                 'asset': 'CASH',
-                'name': 'Cash Reserve',
+                'name': '现金储备',
                 'pct': round(100 - total_allocated, 1),
             })
 
@@ -245,20 +245,20 @@ class CanopyAPI:
     def get_ws_status(self) -> dict:
         """获取 WebSocket 连接状态"""
         if self.runner is None:
-            return {'connected': False, 'status': 'disconnected', 'status_label': 'OFFLINE'}
+            return {'connected': False, 'status': '未连接', 'status_label': '离线'}
 
         ws = getattr(self.runner, '_ws_client', None)
         if ws is None:
-            return {'connected': False, 'status': 'disconnected', 'status_label': 'OFFLINE'}
+            return {'connected': False, 'status': '未连接', 'status_label': '离线'}
 
         is_connected = ws.is_connected() if hasattr(ws, 'is_connected') else False
         ws_status = ws.get_status() if hasattr(ws, 'get_status') else {}
 
-        status_label = 'LIVE' if is_connected else 'DISCONNECTED'
+        status_label = '在线' if is_connected else '已断开'
 
         return {
             'connected': is_connected,
-            'status': 'connected' if is_connected else 'disconnected',
+            'status': '已连接' if is_connected else '未连接',
             'status_label': status_label,
             'channels': list(ws_status.get('subscriptions', [])),
         }
@@ -267,10 +267,10 @@ class CanopyAPI:
         """获取市场情绪数据"""
         return {
             'fear_greed': 68,
-            'label': 'Greed',
+            'label': '贪婪',
             'btc_dominance': 52.1,
             'volume_24h': 42.8,
-            'volatility': 'Medium'
+            'volatility': '中等'
         }
 
     def run_backtest(self, params: dict | None = None) -> dict:
@@ -302,9 +302,9 @@ class CanopyAPI:
         multi_status = self.multi_adapter.get_all_status() if self.multi_adapter else {}
         return {  # type: ignore[no-any-return]
             'connected': self.adapter is not None,
-            'exchange': self.config.exchange if self.adapter else 'Disconnected',
+            'exchange': self.config.exchange if self.adapter else '已断开',
             'runner': runner_status,
-            'mode': 'Live',
+            'mode': '实盘',
             'multi_exchange': multi_status,
         }
 
@@ -358,15 +358,15 @@ class CanopyAPI:
         """启动所有策略"""
         if self.runner:
             self.runner.start_all()
-            return {'success': True, 'message': 'All strategies started'}
-        return {'success': False, 'message': 'No runner available'}
+            return {'success': True, 'message': '所有策略已启动'}
+        return {'success': False, 'message': '无可用的策略运行器'}
 
     def stop_strategies(self) -> dict:
         """停止所有策略"""
         if self.runner:
             self.runner.stop_all()
-            return {'success': True, 'message': 'All strategies stopped'}
-        return {'success': False, 'message': 'No runner available'}
+            return {'success': True, 'message': '所有策略已停止'}
+        return {'success': False, 'message': '无可用运行器'}
 
     def get_risk_status(self) -> dict:
         """获取风控状态"""
@@ -385,23 +385,23 @@ class CanopyAPI:
         if self.runner and hasattr(self.runner, 'risk_mgr'):
             msg = self.runner.risk_mgr.reset_circuit_breaker()
             return {'success': True, 'message': msg}
-        return {'success': False, 'message': 'No risk manager available'}
+        return {'success': False, 'message': '无可用风控管理器'}
 
     def update_risk_config(self, params: dict | None = None) -> dict:
         """更新风控参数（pywebview 兼容：接收单个 dict 参数）"""
         if not params:
-            return {'success': False, 'message': 'No params provided'}
+            return {'success': False, 'message': '未提供参数'}
         if self.runner and hasattr(self.runner, 'risk_mgr'):
             for key, val in params.items():
                 if hasattr(self.runner.risk_mgr.config, key):
                     setattr(self.runner.risk_mgr.config, key, val)
             return {'success': True, 'config': self.runner.risk_mgr.config.to_dict()}
-        return {'success': False, 'message': 'No risk manager available'}
+        return {'success': False, 'message': '无可用风控管理器'}
 
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Canopy · Nature-Tech Trading Terminal",
+        description="Canopy · Nature-Tech 交易终端",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument("--web", action="store_true",
@@ -437,7 +437,7 @@ def main():
             # 启动 pywebview 桌面窗口（同时运行）
             html_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'web', 'index.html')
             webview.create_window(
-                title='Canopy · Nature-Tech Trading Terminal',
+                title='Canopy · Nature-Tech 交易终端',
                 url=html_path,
                 js_api=api,
                 width=1400,
@@ -449,14 +449,14 @@ def main():
             webview.start(debug=True)
         else:
             # 纯 Web 模式，无桌面窗口
-            print(f"[Web] Canopy Dashboard 启动: http://localhost:{args.port}")
+            print(f"[Web] Canopy 仪表盘 启动: http://localhost:{args.port}")
             uvicorn.run(app, host=args.host, port=args.port, log_level="info")
 
     else:
         # ── 桌面模式（默认）：pywebview 原生窗口 ──
         html_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'web', 'index.html')
         webview.create_window(
-            title='Canopy · Nature-Tech Trading Terminal',
+            title='Canopy · Nature-Tech 交易终端',
             url=html_path,
             js_api=api,
             width=1400,

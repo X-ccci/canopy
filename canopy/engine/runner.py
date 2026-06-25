@@ -175,7 +175,7 @@ class StrategyRunner:
                     self._stop_event.wait(wait_seconds)
 
                 except Exception as e:
-                    print(f"[Runner] Error in strategy '{name}': {e}")
+                    print(f"[Runner] 策略 '{name}' 出错: {e}")
                     self._stop_event.wait(10)
 
     def _register_ws_channels(self):
@@ -210,7 +210,7 @@ class StrategyRunner:
         self._ws_client.on_ticker("*", self._ws_on_ticker)
 
     def _ws_on_kline(self, kline: WSKline):
-        """WS kline 回调：将 WSKline 转为 candle dict，分发给匹配的策略。"""
+        """WS K线 回调：将 WSKline 转为 candle dict，分发给匹配的策略。"""
         candle = {
             'timestamp': kline.timestamp,
             'open': kline.open,
@@ -247,10 +247,10 @@ class StrategyRunner:
                             candle
                         )
             except Exception as e:
-                print(f"[Runner] WS kline error in '{name}': {e}")
+                print(f"[Runner] WS K线 在策略 '{name}' 中出错: {e}")
 
     def _ws_on_ticker(self, ticker: WSTicker):
-        """WS ticker 回调：将 WSTicker 转为 dict，分发给匹配的策略 on_tick。"""
+        """WS 行情 回调：将 WSTicker 转为 dict，分发给匹配的策略 on_tick。"""
         ticker_dict = {
             'symbol': ticker.symbol,
             'bid': ticker.bid,
@@ -273,7 +273,7 @@ class StrategyRunner:
             try:
                 s.on_tick(ticker_dict)
             except Exception as e:
-                print(f"[Runner] WS ticker error in '{name}': {e}")
+                print(f"[Runner] WS 行情 在策略 '{name}' 中出错: {e}")
 
     def _timeframe_to_seconds(self, tf: str) -> int:
         """转换 timeframe 为秒"""

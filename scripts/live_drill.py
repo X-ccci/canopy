@@ -158,7 +158,7 @@ class DrillStats:
                 f"  回撤: {status['drawdown_pct']}%",
                 f"  总敞口: {status['total_exposure']}%",
                 f"  持仓数: {status['open_positions']}",
-                f"  熔断: {'TRIPPED' if status['circuit_breaker']['tripped'] else 'OK'}",
+                f"  熔断: {'已触发' if status['circuit_breaker']['tripped'] else 'OK'}",
             ])
 
         lines.append("=" * 60)
@@ -187,11 +187,11 @@ def load_credentials() -> tuple[str, str]:
     api_key = os.environ.get("BINANCE_API_KEY", "")
     api_secret = os.environ.get("BINANCE_API_SECRET", "")
     if api_key and api_secret:
-        print("[Env] 已从环境变量加载 Binance 凭证")
+        print("[环境变量] 已从环境变量加载 Binance 凭证")
         return api_key, api_secret
 
     # 3. 占位符（仅用于 testnet 公开行情）
-    print("[WARN] 未找到 API 密钥，使用空凭证（仅测试网公开行情可用）")
+    print("[警告] 未找到 API 密钥，使用空凭证（仅测试网公开行情可用）")
     return "", ""
 
 
@@ -255,7 +255,7 @@ def run_drill(
                 logger.info("Binance testnet 公开模式连接成功")
             except Exception as e:
                 logger.error(f"连接失败: {e}")
-                print(f"[ERROR] 无法连接 Binance testnet: {e}")
+                print(f"[错误] 无法连接 Binance testnet: {e}")
                 sys.exit(1)
         else:
             logger.error("连接失败")
@@ -344,13 +344,13 @@ def run_drill(
 
     # ── 10. 启动 ──
     print("\n" + "=" * 60)
-    print("  Canopy 实盘演练 — DRY RUN 模式")
+    print("  Canopy 实盘演练 — 干跑 模式")
     print("=" * 60)
-    print("  交易所: Binance Testnet")
+    print("  交易所: Binance 测试网")
     print(f"  策略数: {len(runner.strategies)}")
     print(f"  交易对: {', '.join(symbols)}")
     print(f"  运行时长: {duration}s ({duration // 60} 分钟)")
-    print("  模式: DRY RUN（仅记录，不实际下单）")
+    print("  模式: 干跑（仅记录，不实际下单）")
     print("=" * 60 + "\n")
 
     runner.start_all()
@@ -389,7 +389,7 @@ def run_drill(
     while not stop_event.is_set():
         elapsed = time.time() - start_ts
         if elapsed >= duration:
-            shutdown_reason = "duration 到期"
+            shutdown_reason = "运行时长到期"
             break
         stop_event.wait(min(1, duration - elapsed))
 
@@ -424,7 +424,7 @@ def run_drill(
         print(f"  最大回撤:     {risk_status['drawdown_pct']}%")
         print(f"  总敞口:       {risk_status['total_exposure']}%")
         print(f"  持仓数:       {risk_status['open_positions']}")
-        print(f"  熔断状态:     {'TRIPPED' if risk_status['circuit_breaker']['tripped'] else 'NORMAL'}")
+        print(f"  熔断状态:     {'已触发' if risk_status['circuit_breaker']['tripped'] else '正常'}")
 
         # 各策略明细
         print("\n  策略信号明细:")
@@ -454,7 +454,7 @@ def run_drill(
     print("=" * 60)
 
     db.close()
-    print("\n[DONE] 演练完成，数据库已关闭。")
+    print("\n[完成] 演练完成，数据库已关闭。")
 
 
 def main():

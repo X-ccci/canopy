@@ -78,12 +78,12 @@ def interactive_prompt_keys() -> tuple[str, str] | None:
 
     api_key = input("  API Key: ").strip()
     if not api_key:
-        print("\n  [SKIP] 未输入 API Key，取消连接。")
+        print("\n  [跳过] 未输入 API Key，取消连接。")
         return None
 
     api_secret = getpass.getpass("  API Secret: ").strip()
     if not api_secret:
-        print("\n  [SKIP] 未输入 API Secret，取消连接。")
+        print("\n  [跳过] 未输入 API Secret，取消连接。")
         return None
 
     # 保存到 Vault
@@ -92,7 +92,7 @@ def interactive_prompt_keys() -> tuple[str, str] | None:
             vault_save_credentials("binance", api_key, api_secret)
             print("\n  [Vault] 密钥已加密保存到 Vault。")
         except Exception as e:
-            print(f"\n  [WARN] Vault 保存失败: {e}")
+            print(f"\n  [警告] Vault 保存失败: {e}")
             print("  密钥仅本次会话使用，不会落盘。")
 
     return api_key, api_secret
@@ -132,7 +132,7 @@ def load_credentials(require_keys: bool = True) -> tuple[str, str] | None:
         return interactive_prompt_keys()
 
     # 4. 无密钥
-    print("[WARN] 未找到 API 密钥，使用空凭证（仅测试网公开行情可用）")
+    print("[警告] 未找到 API 密钥，使用空凭证（仅测试网公开行情可用）")
     return "", ""
 
 
@@ -183,7 +183,7 @@ class LiveStats:
         lines = [
             "",
             "=" * 60,
-            f"  [LIVE 汇总] 运行时长: {elapsed_str}",
+            f"  [实盘汇总] 运行时长: {elapsed_str}",
             f"  信号: {self.approved}/{self.total_signals} 通过 ({pass_rate})  |  拒绝: {self.rejected}",
             f"  订单: 提交 {self.orders_submitted}  |  成交 {self.orders_filled}  |  拒绝 {self.orders_rejected}",
         ]
@@ -200,7 +200,7 @@ class LiveStats:
                 f"  回撤: {status['drawdown_pct']}%",
                 f"  总敞口: {status['total_exposure']}%",
                 f"  持仓数: {status['open_positions']}",
-                f"  熔断: {'TRIPPED' if status['circuit_breaker']['tripped'] else 'OK'}",
+                f"  熔断: {'已触发' if status['circuit_breaker']['tripped'] else '正常'}",
             ])
 
         lines.append("=" * 60)
@@ -238,7 +238,7 @@ def run_live(
     # ── 1. 加载密钥 ──
     result = load_credentials(require_keys=True)
     if result is None:
-        print("\n[EXIT] 无法获取 API 密钥，退出。")
+        print("\n[退出] 无法获取 API 密钥，退出。")
         print("  提示: 设置环境变量 BINANCE_API_KEY / BINANCE_API_SECRET")
         print("        或手动编辑 vault.json 后重新运行。")
         sys.exit(0)
@@ -267,7 +267,7 @@ def run_live(
     ok = adapter.connect()
     if not ok:
         logger.error("连接 Binance testnet 失败，请检查网络和密钥。")
-        print("[ERROR] 无法连接 Binance testnet。")
+        print("[错误] 无法连接 Binance testnet。")
         print("  检查项：")
         print("    1. 网络是否可访问 testnet.binance.vision")
         print("    2. API Key 是否正确")
@@ -349,7 +349,7 @@ def run_live(
     def on_order_filled(order: Order):
         with stats_lock:
             stats.record_order("FILLED")
-        logger.info(f"[FILLED] {order.symbol} {order.side} qty={order.filled_qty} "
+        logger.info(f"[已成交] {order.symbol} {order.side} qty={order.filled_qty} "
                      f"@ ${order.avg_fill_price}")
 
     real_executor._on_fill_callbacks.append(on_order_filled)
@@ -382,7 +382,7 @@ def run_live(
     print(f"  初始资金:   {initial_capital} BTC")
     print(f"  BTC 现价:   {btc_price}")
     print(f"  运行时长:   {duration}s ({duration // 60} 分钟)")
-    print(f"  模式:       LIVE (dry_run=False，真实提交订单到 testnet)")
+    print(f"  模式:       实盘 (dry_run=False，真实提交订单到 testnet)")
     print("-" * 60)
     print(f"  汇总间隔:   {report_interval}s")
     print("  Ctrl+C 退出（自动平仓）")
@@ -479,7 +479,7 @@ def run_live(
         print(f"  当前余额:     ${risk_status['current_balance']:,.2f}")
         print(f"  峰值余额:     ${risk_status['peak_balance']:,.2f}")
         print(f"  最大回撤:     {risk_status['drawdown_pct']}%")
-        print(f"  熔断状态:     {'TRIPPED' if risk_status['circuit_breaker']['tripped'] else 'NORMAL'}")
+        print(f"  熔断状态:     {'已触发' if risk_status['circuit_breaker']['tripped'] else '正常'}")
 
         print("\n  策略信号明细:")
         for name in runner.strategies:
@@ -502,7 +502,7 @@ def run_live(
     print("=" * 60)
 
     db.close()
-    print("\n[DONE] 实盘运行结束。")
+    print("\n[完成] 实盘运行结束。")
 
 
 # ═══════════════════════════════════════════════════════════════════
@@ -543,7 +543,7 @@ def main():
     symbols = [s.strip() for s in args.symbols.split(",") if s.strip()][:5]
 
     if args.dry_run:
-        print("[INFO] 干跑模式，使用 live_drill.py 逻辑...")
+        print("[信息] 干跑模式，使用 live_drill.py 逻辑...")
         # 回退到 live_drill 的干跑逻辑
         from scripts.live_drill import run_drill
         run_drill(

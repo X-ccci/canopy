@@ -61,8 +61,8 @@ def create_app() -> FastAPI:
     static_dir = Path(__file__).parent / "static"
 
     app = FastAPI(
-        title="Canopy Web Dashboard",
-        description="Nature-Tech Trading Terminal — HTTP + WebSocket API",
+        title="Canopy Web 仪表盘",
+        description="Nature-Tech 交易终端 — HTTP + WebSocket API",
         version="0.2.0",
     )
 
@@ -143,11 +143,11 @@ def create_app() -> FastAPI:
     async def get_ws_status():
         api = get_api()
         if api is None:
-            return {"connected": False, "status": "disconnected", "status_label": "OFFLINE"}
+            return {"connected": False, "status": "未连接", "status_label": "离线"}
         try:
             return api.get_ws_status()
         except Exception:
-            return {"connected": False, "status": "disconnected", "status_label": "ERROR"}
+            return {"connected": False, "status": "未连接", "status_label": "错误"}
 
     @app.get("/api/ticker")
     async def get_ticker(symbol: str = Query("BTC/USDT")):
@@ -163,11 +163,11 @@ def create_app() -> FastAPI:
     async def get_status():
         api = get_api()
         if api is None:
-            return {"connected": False, "exchange": "Disconnected", "runner": {}, "mode": "Idle"}
+            return {"connected": False, "exchange": "已断开", "runner": {}, "mode": "空闲"}
         try:
             return api.get_status()
         except Exception:
-            return {"connected": False, "exchange": "Error", "runner": {}, "mode": "Unknown"}
+            return {"connected": False, "exchange": "错误", "runner": {}, "mode": "未知"}
 
     @app.get("/api/sentiment")
     async def get_sentiment():
@@ -178,6 +178,145 @@ def create_app() -> FastAPI:
             return api.get_sentiment()
         except Exception:
             return {}
+
+    @app.get("/api/chart-data")
+    async def get_chart_data(
+        symbol: str = Query("BTC/USDT"),
+        limit: int = Query(100, le=500),
+        signal_limit: int = Query(50, le=200),
+    ):
+        """返回 K 线数据 + 信号标记，供前端 Chart.js 渲染。
+
+        数据来源优先级：
+          1. CanopyAPI 实时缓存（若已连接交易所）
+          2. 本地 SQLite 数据库（回测/演练记录）
+          3. 模拟数据（开发/演示用）
+        """
+        import random
+        from datetime import datetime, timedelta
+
+        api = get_api()
+
+        # ── 1. 尝试从 API 获取真实 K 线 ──
+        kline_data = []
+        try:
+            if api is not None:
+                # 尝试通过 CCXT 获取 OHLCV
+                ohlcv = api.get_ohlcv(symbol, timeframe="1h", limit=limit)
+                if ohlcv:
+                    for row in ohlcv:
+                        ts = row[0] / 1000  # ms → s
+                        kline_data.append({
+                            "time": datetime.utcfromtimestamp(ts).isoformat() + "Z",
+                            "open": float(row[1]),
+                            "high": float(row[2]),
+                            "low":  float(row[3]),
+                            "close": float(row[4]),
+                            "volume": float(row[5]),
+                        })
+        except Exception:
+            pass
+
+        # ── 2. 回退：从 SQLite 读取历史 K 线 ──
+        if not kline_data:
+            try:
+                from canopy.utils.database import Database
+                import os
+                db_path = os.path.join(os.path.dirname(__file__), "..", "..", "data", "canopy_live.db")
+                if os.path.exists(db_path):
+                    db = Database(db_path)
+                    rows = db.get_klines(symbol.replace("/", ""), limit=limit)
+                    if rows:
+                        for r in rows:
+                            kline_data.append({
+                                "time": r.get("time", ""),
+                                "open": float(r.get("open", 0)),
+                                "high": float(r.get("high", 0)),
+                                "low":  float(r.get("low", 0)),
+                                "close": float(r.get("close", 0)),
+                                "volume": float(r.get("volume", 0)),
+                            })
+            except Exception:
+                pass
+
+        # ── 3. 回退：生成模拟 K 线数据 ──
+        if not kline_data:
+            base_price = {"BTC/USDT": 67800, "ETH/USDT": 3520, "SOL/USDT": 168}.get(symbol, 100)
+            now = datetime.utcnow()
+            for i in range(limit):
+                t = now - timedelta(hours=limit - i)
+                noise = random.gauss(0, base_price * 0.005)
+                open_p = base_price + noise
+                close_p = open_p + random.gauss(0, base_price * 0.003)
+                high_p = max(open_p, close_p) + abs(random.gauss(0, base_price * 0.002))
+                low_p = min(open_p, close_p) - abs(random.gauss(0, base_price * 0.002))
+                vol = random.uniform(500, 5000)
+                kline_data.append({
+                    "time": t.isoformat() + "Z",
+                    "open": round(open_p, 2),
+                    "high": round(high_p, 2),
+                    "low":  round(low_p, 2),
+                    "close": round(close_p, 2),
+                    "volume": round(vol, 2),
+                })
+                base_price = close_p  # 随机游走
+
+        # ── 4. 信号标记 ──
+        signals = []
+        try:
+            if api is not None:
+                orders = api.get_orders(limit=signal_limit)
+                for o in orders:
+                    signals.append({
+                        "time": o.get("created_at", ""),
+                        "price": float(o.get("price", 0)),
+                        "side": o.get("side", "buy"),
+                        "strategy": o.get("strategy", ""),
+                        "reason": o.get("reason", ""),
+                    })
+        except Exception:
+            pass
+
+        # 回退：从模拟 K 线中生成随机信号
+        if not signals:
+            import random as _r
+            indices = sorted(_r.sample(range(10, max(11, len(kline_data) - 5)), min(signal_limit, max(0, len(kline_data) - 10))))
+            for idx in indices:
+                k = kline_data[idx]
+                signals.append({
+                    "time": k["time"],
+                    "price": k["close"],
+                    "side": _r.choice(["buy", "sell"]),
+                    "strategy": _r.choice(["Mean Reversion v3", "Grid Infinity", "Trend Surf"]),
+                    "reason": _r.choice(["RSI oversold", "Grid fill", "EMA crossover"]),
+                })
+
+        # ── 5. 净值曲线 ──
+        equity = []
+        try:
+            if api is not None:
+                equity = api.get_equity_curve(limit=200)
+        except Exception:
+            pass
+
+        if not equity:
+            # 从 K 线收盘价模拟净值
+            initial = 10000.0
+            equity = [{"time": kline_data[0]["time"], "value": initial}]
+            for i, k in enumerate(kline_data[1:], 1):
+                ret = (k["close"] - kline_data[i - 1]["close"]) / kline_data[i - 1]["close"]
+                prev_equity = equity[-1]["value"]
+                equity.append({
+                    "time": k["time"],
+                    "value": round(prev_equity * (1 + ret * 0.5), 2),
+                })
+
+        return {
+            "symbol": symbol,
+            "kline": kline_data,
+            "signals": signals,
+            "equity": equity,
+        }
 
     # ── WebSocket ──
 

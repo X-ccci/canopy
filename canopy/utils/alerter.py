@@ -13,7 +13,7 @@ FEISHU_WEBHOOK_URL = os.environ.get("FEISHU_WEBHOOK_URL", "")
 def _send_card(title: str, fields: list[tuple[str, str]], color: str = "red") -> bool:
     """发送飞书卡片消息"""
     if not FEISHU_WEBHOOK_URL:
-        print(f"[Alerter] FEISHU_WEBHOOK_URL not set, skipping alert: {title}")
+        print(f"[告警] FEISHU_WEBHOOK_URL 未设置，跳过告警: {title}")
         return False
 
     field_items = [
@@ -37,7 +37,7 @@ def _send_card(title: str, fields: list[tuple[str, str]], color: str = "red") ->
                 {
                     "tag": "note",
                     "elements": [
-                        {"tag": "plain_text", "content": f"Canopy Alert · {datetime.now().isoformat()}"}
+                        {"tag": "plain_text", "content": f"Canopy 告警 · {datetime.now().isoformat()}"}
                     ]
                 }
             ]
@@ -54,14 +54,14 @@ def _send_card(title: str, fields: list[tuple[str, str]], color: str = "red") ->
         with urllib.request.urlopen(req, timeout=10) as resp:
             return resp.status == 200  # type: ignore[no-any-return]
     except Exception as e:
-        print(f"[Alerter] Failed to send: {e}")
+        print(f"[告警] 发送失败: {e}")
         return False
 
 
 def circuit_breaker_tripped(reason: str, tripped_at: str | None = None) -> bool:
     """熔断器跳闸告警"""
     return _send_card(
-        title="[熔断告警] Circuit Breaker Tripped",
+        title="[熔断告警] 熔断器已跳闸",
         fields=[
             ("触发原因", reason),
             ("触发时间", tripped_at or datetime.now().isoformat()),
@@ -74,7 +74,7 @@ def circuit_breaker_tripped(reason: str, tripped_at: str | None = None) -> bool:
 def daily_loss_exceeded(loss_amount: float, limit_pct: float, current_balance: float) -> bool:
     """日亏损超限告警"""
     return _send_card(
-        title="[风控告警] Daily Loss Limit Exceeded",
+        title="[风控告警] 日亏损超限",
         fields=[
             ("当日亏损", f"${loss_amount:,.2f}"),
             ("亏损比例", f"{limit_pct * 100:.1f}%"),
@@ -96,7 +96,7 @@ def strategy_error(strategy_name: str, error_msg: str, extra: dict | None = None
         for k, v in extra.items():
             fields.append((k, str(v)[:200]))
     return _send_card(
-        title="[策略告警] Strategy Error",
+        title="[策略告警] 策略异常",
         fields=fields,
         color="orange"
     )

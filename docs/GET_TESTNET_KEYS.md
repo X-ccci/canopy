@@ -1,3 +1,14 @@
+---
+AIGC:
+    Label: "1"
+    ContentProducer: 001191440300708461136T1XGW3
+    ProduceID: dfa59edf71882ac3e29663828f688f4a_5b435760706a11f1aabe5254007bceed
+    ReservedCode1: Yek4tA9NzPZP2XnD/ST3lCCJ5YXpe79I+53KusU8bM5vhBhXl392/HwCPiZJMXMUp1FX5LhOwkhjoTarrZAr1Hjyjb4x9tFMmSNIgA7YPZxHy8YhUMARgWWfQ9IKqrdk2DVMbr45dMkmGHFmou1rUe7cyxVwM985ksdOG+X+j5Ht+VOsfawxV0eltZQ=
+    ContentPropagator: 001191440300708461136T1XGW3
+    PropagateID: dfa59edf71882ac3e29663828f688f4a_5b435760706a11f1aabe5254007bceed
+    ReservedCode2: Yek4tA9NzPZP2XnD/ST3lCCJ5YXpe79I+53KusU8bM5vhBhXl392/HwCPiZJMXMUp1FX5LhOwkhjoTarrZAr1Hjyjb4x9tFMmSNIgA7YPZxHy8YhUMARgWWfQ9IKqrdk2DVMbr45dMkmGHFmou1rUe7cyxVwM985ksdOG+X+j5Ht+VOsfawxV0eltZQ=
+---
+
 # Canopy Testnet 密钥获取指南
 
 > 本文档指引你从 Binance Testnet 获取 API 密钥，并安全存入 Canopy Vault。
@@ -118,3 +129,4 @@ python3 -m canopy.main --testnet --check-connection
 - **不要**在聊天记录、截图、录屏中暴露 Secret Key
 - 定期更换 API Key（建议每 90 天）
 - Testnet 密钥仅用于模拟交易，不涉及真实资产
+*（内容由AI生成，仅供参考）*

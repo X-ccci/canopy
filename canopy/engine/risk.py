@@ -99,26 +99,26 @@ class RiskManager:
         with self._lock:
             # 0. 熔断检查
             if self.circuit_breaker.is_tripped:
-                return False, f"Circuit breaker tripped: {self.circuit_breaker._reason}", None
+                return False, f"熔断器已触发: {self.circuit_breaker._reason}", None
 
             # 1. 每日亏损限额
             self._update_daily(account_balance or self.current_balance)
             if self.daily_pnl <= -self.config.max_daily_loss_pct * self._daily_start_balance:
-                self.circuit_breaker.trip(f"Daily loss limit hit: ${abs(self.daily_pnl):.2f}")
-                return False, f"Daily max loss exceeded: -${abs(self.daily_pnl):.2f}", None
+                self.circuit_breaker.trip(f"触及每日亏损限额: ${abs(self.daily_pnl):.2f}")
+                return False, f"超出每日最大亏损: -${abs(self.daily_pnl):.2f}", None
 
             # 2. 全局回撤熔断
             if account_balance:
                 self.current_balance = account_balance
             drawdown = (self.peak_balance - self.current_balance) / self.peak_balance
             if drawdown > self.config.max_drawdown_pct:
-                self.circuit_breaker.trip(f"Max drawdown {drawdown*100:.1f}%")
-                return False, f"Max drawdown exceeded: {drawdown*100:.1f}%", None
+                self.circuit_breaker.trip(f"最大回撤 {drawdown*100:.1f}%")
+                return False, f"超出最大回撤: {drawdown*100:.1f}%", None
 
             # 3. 信号有效性
             action = signal.get('action', 'HOLD').upper()
             if action == 'HOLD':
-                return False, 'Signal is HOLD', None
+                return False, '信号为 HOLD', None
 
             symbol = signal.get('symbol', 'UNKNOWN')
             price = signal.get('price', current_price)
@@ -134,7 +134,7 @@ class RiskManager:
             )
             new_exposure_pct = (current_exposure + max_position_value) / self.current_balance
             if new_exposure_pct > self.config.max_total_exposure:
-                return False, f'Exposure limit: {new_exposure_pct*100:.1f}% > {self.config.max_total_exposure*100:.0f}%', None
+                return False, f'敞口超限: {new_exposure_pct*100:.1f}% > {self.config.max_total_exposure*100:.0f}%', None
 
             # 6. 构建订单
             order = {
@@ -148,7 +148,7 @@ class RiskManager:
             }
 
             self._log_decision(symbol, action, True, price, quantity)
-            return True, f'Approved: {action} {quantity:.4f} {symbol} @ {price}', order
+            return True, f'已批准: {action} {quantity:.4f} {symbol} @ {price}', order
 
     def update_position(self, symbol: str, side: str, entry_price: float,
                         quantity: float, current_price: float | None = None):
@@ -207,7 +207,7 @@ class RiskManager:
     def reset_circuit_breaker(self) -> str:
         """手动重置熔断器"""
         self.circuit_breaker.reset()
-        return 'Circuit breaker reset'
+        return '熔断器已重置'
 
     def get_status(self) -> dict:
         """获取风控状态"""

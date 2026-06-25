@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Nature-Tech Terminal · Multi-Theme</title>
   <link rel="stylesheet" href="/static/css/style.css">
+  <!-- Chart.js + plugins -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.2.0/dist/chartjs-plugin-zoom.min.js"></script>
 </head>
 <body data-theme="emerald" data-mode="dark" data-animation="spring" data-skeleton="false">
 
@@ -105,19 +109,19 @@
       <span class="nav-title">Nature-Tech Terminal</span>
     </div>
     <div class="nav-links">
-      <button class="nav-link active">Dashboard</button>
-      <button class="nav-link">Trading</button>
-      <button class="nav-link">Portfolio</button>
-      <button class="nav-link">Analytics</button>
-      <button class="nav-link" id="nav-backtest">Backtest</button>
-      <button class="nav-link" id="nav-orders">Orders</button>
+      <button class="nav-link active">仪表盘</button>
+      <button class="nav-link">交易</button>
+      <button class="nav-link">持仓</button>
+      <button class="nav-link">分析</button>
+      <button class="nav-link" id="nav-backtest">回测</button>
+      <button class="nav-link" id="nav-orders">订单</button>
     </div>
     <div class="nav-right">
       <button class="theme-toggle-btn" id="themeToggleBtn" title="Toggle Light/Dark">
         <svg class="sun-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
         <svg class="moon-icon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
       </button>
-      <div class="nav-status"><span class="status-dot" id="ws-dot"></span><span id="ws-status-label">Offline</span></div>
+      <div class="nav-status"><span class="status-dot" id="ws-dot"></span><span id="ws-status-label">离线</span></div>
       <button class="settings-btn" id="settingsBtn" title="Settings">⚙</button>
     </div>
   </nav>
@@ -127,27 +131,27 @@
     <!-- Real content -->
     <div class="kpi-pod emerald anim-up anim-d2">
       <div class="kpi-glow"></div>
-      <div class="kpi-label">Total Portfolio Value</div>
+      <div class="kpi-label">总资产</div>
       <div class="kpi-value">$184,632.50</div>
-      <div class="kpi-change up">+12.4% MTD</div>
+      <div class="kpi-change up">+12.4% 本月</div>
     </div>
     <div class="kpi-pod amber anim-up anim-d3">
       <div class="kpi-glow"></div>
-      <div class="kpi-label">24h P&L</div>
+      <div class="kpi-label">24小时盈亏</div>
       <div class="kpi-value">$4,218.00</div>
       <div class="kpi-change up">+2.34%</div>
     </div>
     <div class="kpi-pod amethyst anim-up anim-d4">
       <div class="kpi-glow"></div>
-      <div class="kpi-label">Active Strategies</div>
+      <div class="kpi-label">活跃策略</div>
       <div class="kpi-value">7</div>
-      <div class="kpi-change up">3 profitable</div>
+      <div class="kpi-change up">3个盈利</div>
     </div>
     <div class="kpi-pod cyan anim-up anim-d5">
       <div class="kpi-glow"></div>
-      <div class="kpi-label">Win Rate (30d)</div>
+      <div class="kpi-label">胜率(30天)</div>
       <div class="kpi-value">68.4%</div>
-      <div class="kpi-change up">+5.2% vs avg</div>
+      <div class="kpi-change up">较均值+5.2%</div>
     </div>
 
     <!-- Skeleton KPI -->
@@ -163,18 +167,18 @@
     <!-- Strategy Table -->
     <div class="glass-card anim-scale anim-d6" style="grid-column:1/-1">
       <div class="card-header">
-        <span class="card-title real-content">Active Strategies</span>
-        <span class="card-badge badge-accent real-content">Refreshing live</span>
+        <span class="card-title real-content">活跃策略</span>
+        <span class="card-badge badge-accent real-content">实时刷新</span>
         <span class="skeleton skeleton-badge skeleton-only"></span>
       </div>
       <table class="strategy-table real-content">
-        <thead><tr><th>Strategy</th><th>Pair</th><th>Signals</th><th>Entry</th><th>Current</th><th>P&amp;L</th><th>Status</th></tr></thead>
+        <thead><tr><th>策略</th><th>交易对</th><th>信号</th><th>入场价</th><th>当前价</th><th>盈亏</th><th>状态</th></tr></thead>
         <tbody>
-          <tr><td>Mean Reversion v3</td><td>BTC/USDT</td><td>0</td><td>$64,200</td><td>$67,850</td><td class="pnl-up">+5.69%</td><td><span class="card-badge badge-accent">Running</span></td></tr>
-          <tr><td>Grid Infinity</td><td>ETH/USDT</td><td>0</td><td>$3,420</td><td>$3,516</td><td class="pnl-up">+2.81%</td><td><span class="card-badge badge-accent">Running</span></td></tr>
-          <tr><td>Trend Surf</td><td>SOL/USDT</td><td>0</td><td>$172.40</td><td>$168.20</td><td class="pnl-down">-2.44%</td><td><span class="card-badge badge-accent">Holding</span></td></tr>
-          <tr><td>Arbitrage Nexus</td><td>BNB/USDT</td><td>0</td><td>$598.00</td><td>$612.30</td><td class="pnl-up">+2.39%</td><td><span class="card-badge badge-accent">Running</span></td></tr>
-          <tr><td>Volatility Harvester</td><td>AVAX/USDT</td><td>0</td><td>$38.50</td><td>$36.90</td><td class="pnl-down">-4.16%</td><td><span class="card-badge badge-accent">Stop Loss</span></td></tr>
+          <tr><td>均值回归 v3</td><td>BTC/USDT</td><td>0</td><td>$64,200</td><td>$67,850</td><td class="pnl-up">+5.69%</td><td><span class="card-badge badge-accent">运行中</span></td></tr>
+          <tr><td>无限网格</td><td>ETH/USDT</td><td>0</td><td>$3,420</td><td>$3,516</td><td class="pnl-up">+2.81%</td><td><span class="card-badge badge-accent">运行中</span></td></tr>
+          <tr><td>趋势冲浪</td><td>SOL/USDT</td><td>0</td><td>$172.40</td><td>$168.20</td><td class="pnl-down">-2.44%</td><td><span class="card-badge badge-accent">持仓中</span></td></tr>
+          <tr><td>套利枢纽</td><td>BNB/USDT</td><td>0</td><td>$598.00</td><td>$612.30</td><td class="pnl-up">+2.39%</td><td><span class="card-badge badge-accent">运行中</span></td></tr>
+          <tr><td>波动收割</td><td>AVAX/USDT</td><td>0</td><td>$38.50</td><td>$36.90</td><td class="pnl-down">-4.16%</td><td><span class="card-badge badge-accent">已止损</span></td></tr>
         </tbody>
       </table>
       <!-- Skeleton rows -->
@@ -183,11 +187,40 @@
       </div>
     </div>
 
+    <!-- ===== Charts Panel ===== -->
+    <div class="glass-card anim-scale anim-d7" style="grid-column: span 2;">
+      <div class="card-header">
+        <span class="card-title">价格图表 (OHLCV)</span>
+        <select id="chart-symbol" style="margin-left:12px;padding:4px 8px;border-radius:6px;border:1px solid var(--border);background:var(--card);color:var(--text);">
+          <option value="BTC/USDT">BTC/USDT</option>
+          <option value="ETH/USDT">ETH/USDT</option>
+          <option value="SOL/USDT">SOL/USDT</option>
+        </select>
+      </div>
+      <div style="position:relative; height: 300px;">
+        <canvas id="kline-canvas"></canvas>
+      </div>
+    </div>
+
+    <div class="glass-card anim-scale anim-d7">
+      <div class="card-header"><span class="card-title">净值曲线</span></div>
+      <div style="position:relative; height: 300px;">
+        <canvas id="equity-canvas"></canvas>
+      </div>
+    </div>
+
+    <div class="glass-card anim-scale anim-d7" style="grid-column: 1 / -1;">
+      <div class="card-header"><span class="card-title">信号标记</span></div>
+      <div style="position:relative; height: 320px;">
+        <canvas id="signal-canvas"></canvas>
+      </div>
+    </div>
+
     <!-- Portfolio -->
     <div class="glass-card anim-scale anim-d7">
       <div class="card-header">
-        <span class="card-title real-content">Portfolio Allocation</span>
-        <span class="card-badge badge-accent real-content">Rebalanced</span>
+        <span class="card-title real-content">持仓分布</span>
+        <span class="card-badge badge-accent real-content">已再平衡</span>
         <span class="skeleton skeleton-badge skeleton-only"></span>
       </div>
       <!-- Real -->
@@ -200,13 +233,13 @@
             <circle cx="60" cy="60" r="48" fill="none" stroke="var(--kpi-amethyst)" stroke-width="12" stroke-dasharray="55 302" stroke-linecap="round" stroke-dashoffset="-198" style="filter:drop-shadow(0 0 6px var(--kpi-amethyst))"/>
             <circle cx="60" cy="60" r="48" fill="none" stroke="var(--kpi-cyan)" stroke-width="12" stroke-dasharray="49 302" stroke-linecap="round" stroke-dashoffset="-253" style="filter:drop-shadow(0 0 6px var(--kpi-cyan))"/>
           </svg>
-          <div class="donut-center"><span class="donut-total">$184K</span><span class="donut-label">Total</span></div>
+          <div class="donut-center"><span class="donut-total">$184K</span><span class="donut-label">总计</span></div>
         </div>
         <div class="portfolio-legend">
-          <div class="legend-item"><span class="legend-dot emerald"></span><span class="legend-name">BTC · Bitcoin</span><span class="legend-value">43%</span></div>
-          <div class="legend-item"><span class="legend-dot amber"></span><span class="legend-name">ETH · Ethereum</span><span class="legend-value">22%</span></div>
-          <div class="legend-item"><span class="legend-dot amethyst"></span><span class="legend-name">SOL · Solana</span><span class="legend-value">18%</span></div>
-          <div class="legend-item"><span class="legend-dot cyan"></span><span class="legend-name">Stablecoins</span><span class="legend-value">17%</span></div>
+          <div class="legend-item"><span class="legend-dot emerald"></span><span class="legend-name">BTC · 比特币</span><span class="legend-value">43%</span></div>
+          <div class="legend-item"><span class="legend-dot amber"></span><span class="legend-name">ETH · 以太坊</span><span class="legend-value">22%</span></div>
+          <div class="legend-item"><span class="legend-dot amethyst"></span><span class="legend-name">SOL · 索拉纳</span><span class="legend-value">18%</span></div>
+          <div class="legend-item"><span class="legend-dot cyan"></span><span class="legend-name">稳定币</span><span class="legend-value">17%</span></div>
         </div>
       </div>
       <!-- Skeleton -->
@@ -228,19 +261,19 @@
       <!-- Real -->
       <div class="real-content">
         <div class="gauge-row">
-          <span style="font-size:11px;color:#ef4444;font-weight:600">Fear</span>
+          <span style="font-size:11px;color:#ef4444;font-weight:600">恐惧</span>
           <div class="gauge-bar"><div class="gauge-indicator" style="left:68%"></div></div>
-          <span style="font-size:11px;color:#22c55e;font-weight:600">Greed</span>
+          <span style="font-size:11px;color:#22c55e;font-weight:600">贪婪</span>
           <span class="gauge-value">68</span>
         </div>
-        <div style="font-size:11px;color:var(--text-muted);margin-bottom:14px">Greed · Markets trending bullish</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:14px">贪婪 · 市场趋势看涨</div>
         <div class="chart-bars" style="height:70px">
           <div class="bar-item emerald" style="height:60%"></div><div class="bar-item amber" style="height:45%"></div><div class="bar-item emerald" style="height:72%"></div><div class="bar-item amethyst" style="height:38%"></div><div class="bar-item cyan" style="height:55%"></div><div class="bar-item amber" style="height:82%"></div><div class="bar-item emerald" style="height:50%"></div><div class="bar-item amethyst" style="height:65%"></div>
         </div>
         <div style="display:flex;justify-content:space-between;margin-top:20px">
-          <div style="font-size:11px;color:var(--text-muted)">BTC Dom: <strong style="color:var(--text-primary)">52.1%</strong></div>
-          <div style="font-size:11px;color:var(--text-muted)">24h Vol: <strong style="color:var(--text-primary)">$42.8B</strong></div>
-          <div style="font-size:11px;color:var(--text-muted)">Vol: <strong style="color:var(--accent3)">Medium</strong></div>
+          <div style="font-size:11px;color:var(--text-muted)">BTC占比: <strong style="color:var(--text-primary)">52.1%</strong></div>
+          <div style="font-size:11px;color:var(--text-muted)">24h成交量: <strong style="color:var(--text-primary)">$42.8B</strong></div>
+          <div style="font-size:11px;color:var(--text-muted)">波动: <strong style="color:var(--accent3)">中等</strong></div>
         </div>
       </div>
       <!-- Skeleton -->
@@ -257,13 +290,13 @@
 
     <!-- Quick Trade -->
     <div class="glass-card anim-scale anim-d7" style="grid-column:1/-1">
-      <div class="card-header"><span class="card-title">Quick Trade</span><span class="card-badge badge-accent">Low Spread</span></div>
+      <div class="card-header"><span class="card-title">快速交易</span><span class="card-badge badge-accent">低点差</span></div>
       <div class="order-form">
-        <div class="input-group"><label>Pair</label><select><option>BTC/USDT</option><option>ETH/USDT</option><option>SOL/USDT</option></select></div>
-        <div class="input-group"><label>Type</label><select><option>Market</option><option>Limit</option></select></div>
-        <div class="input-group"><label>Amount (USDT)</label><input type="number" value="1000"></div>
-        <button class="btn btn-buy">Buy</button>
-        <button class="btn btn-sell">Sell</button>
+        <div class="input-group"><label>交易对</label><select><option>BTC/USDT</option><option>ETH/USDT</option><option>SOL/USDT</option></select></div>
+        <div class="input-group"><label>类型</label><select><option>市价</option><option>限价</option></select></div>
+        <div class="input-group"><label>金额 (USDT)</label><input type="number" value="1000"></div>
+        <button class="btn btn-buy">买入</button>
+        <button class="btn btn-sell">卖出</button>
       </div>
     </div>
 
@@ -272,11 +305,11 @@
       <!-- 回测控制栏 -->
       <div class="glass-card" style="margin-bottom: 16px; padding: 16px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
         <select id="bt-strategy" style="padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--card); color: var(--text);">
-          <option value="mean_reversion">Mean Reversion</option>
-          <option value="trend">Trend Following</option>
-          <option value="grid">Grid Trading</option>
-          <option value="momentum">Momentum Breakout</option>
-          <option value="arbitrage">Arbitrage</option>
+          <option value="mean_reversion">均值回归</option>
+          <option value="trend">趋势跟踪</option>
+          <option value="grid">网格交易</option>
+          <option value="momentum">动量突破</option>
+          <option value="arbitrage">套利</option>
         </select>
         <select id="bt-symbol" style="padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--card); color: var(--text);">
           <option value="BTC/USDT">BTC/USDT</option>
@@ -284,12 +317,12 @@
           <option value="SOL/USDT">SOL/USDT</option>
         </select>
         <select id="bt-timeframe" style="padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--card); color: var(--text);">
-          <option value="1h">1h</option>
-          <option value="4h">4h</option>
-          <option value="1d">1d</option>
+          <option value="1h">1小时</option>
+          <option value="4h">4小时</option>
+          <option value="1d">1天</option>
         </select>
-        <button id="bt-run" class="btn-accent" style="padding: 8px 20px; background: var(--accent); color: #fff; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Run Backtest</button>
-        <button id="bt-compare" class="btn-accent" style="padding: 8px 20px; background: var(--amethyst, #a78bfa); color: #fff; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Compare All</button>
+        <button id="bt-run" class="btn-accent" style="padding: 8px 20px; background: var(--accent); color: #fff; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">运行回测</button>
+        <button id="bt-compare" class="btn-accent" style="padding: 8px 20px; background: var(--amethyst, #a78bfa); color: #fff; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">对比全部</button>
       </div>
 
       <!-- 净值曲线画布 -->
@@ -300,21 +333,21 @@
 
       <!-- KPI 网格 -->
       <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px;" id="bt-kpi-grid">
-        <div class="glass-card" style="padding: 14px; text-align: center;"><div class="card-header">Total Return</div><div class="kpi-value" id="bt-total-return">--</div></div>
-        <div class="glass-card" style="padding: 14px; text-align: center;"><div class="card-header">Max Drawdown</div><div class="kpi-value pnl-down" id="bt-max-dd">--</div></div>
-        <div class="glass-card" style="padding: 14px; text-align: center;"><div class="card-header">Sharpe Ratio</div><div class="kpi-value" id="bt-sharpe">--</div></div>
-        <div class="glass-card" style="padding: 14px; text-align: center;"><div class="card-header">Win Rate</div><div class="kpi-value" id="bt-winrate">--</div></div>
-        <div class="glass-card" style="padding: 14px; text-align: center;"><div class="card-header">Sortino</div><div class="kpi-value" id="bt-sortino">--</div></div>
-        <div class="glass-card" style="padding: 14px; text-align: center;"><div class="card-header">Calmar</div><div class="kpi-value" id="bt-calmar">--</div></div>
-        <div class="glass-card" style="padding: 14px; text-align: center;"><div class="card-header">Profit Factor</div><div class="kpi-value" id="bt-prof-factor">--</div></div>
-        <div class="glass-card" style="padding: 14px; text-align: center;"><div class="card-header">Total Trades</div><div class="kpi-value" id="bt-trades">--</div></div>
+        <div class="glass-card" style="padding: 14px; text-align: center;"><div class="card-header">总收益</div><div class="kpi-value" id="bt-total-return">--</div></div>
+        <div class="glass-card" style="padding: 14px; text-align: center;"><div class="card-header">最大回撤</div><div class="kpi-value pnl-down" id="bt-max-dd">--</div></div>
+        <div class="glass-card" style="padding: 14px; text-align: center;"><div class="card-header">夏普比率</div><div class="kpi-value" id="bt-sharpe">--</div></div>
+        <div class="glass-card" style="padding: 14px; text-align: center;"><div class="card-header">胜率</div><div class="kpi-value" id="bt-winrate">--</div></div>
+        <div class="glass-card" style="padding: 14px; text-align: center;"><div class="card-header">索提诺比率</div><div class="kpi-value" id="bt-sortino">--</div></div>
+        <div class="glass-card" style="padding: 14px; text-align: center;"><div class="card-header">卡玛比率</div><div class="kpi-value" id="bt-calmar">--</div></div>
+        <div class="glass-card" style="padding: 14px; text-align: center;"><div class="card-header">盈利因子</div><div class="kpi-value" id="bt-prof-factor">--</div></div>
+        <div class="glass-card" style="padding: 14px; text-align: center;"><div class="card-header">总交易数</div><div class="kpi-value" id="bt-trades">--</div></div>
       </div>
 
       <!-- 交易记录表格 -->
       <div class="glass-card" style="padding: 16px;">
-        <div class="card-header">Recent Trades</div>
+        <div class="card-header">最近交易</div>
         <table class="strategy-table" style="width: 100%; margin-top: 8px;">
-          <thead><tr><th>Time</th><th>Action</th><th>Price</th><th>Size</th><th>PnL</th><th>Reason</th></tr></thead>
+          <thead><tr><th>时间</th><th>操作</th><th>价格</th><th>数量</th><th>盈亏</th><th>原因</th></tr></thead>
           <tbody id="bt-trades-body"></tbody>
         </table>
       </div>
@@ -323,12 +356,12 @@
     <!-- ===== Orders Panel ===== -->
     <div id="orders-panel" style="display:none; grid-column: 1 / -1;">
       <div class="glass-card" style="margin-bottom: 16px; padding: 16px; display: flex; align-items: center; gap: 12px;">
-        <div style="flex: 1; font-weight: 600; color: var(--text-secondary);">Order History</div>
-        <button id="ord-refresh" class="btn-accent" style="padding: 6px 16px; background: var(--accent); color: #fff; border: none; border-radius: 8px; cursor: pointer;">Refresh</button>
+        <div style="flex: 1; font-weight: 600; color: var(--text-secondary);">订单历史</div>
+        <button id="ord-refresh" class="btn-accent" style="padding: 6px 16px; background: var(--accent); color: #fff; border: none; border-radius: 8px; cursor: pointer;">刷新</button>
       </div>
       <div class="glass-card" style="padding: 16px;">
         <table class="strategy-table" style="width: 100%;">
-          <thead><tr><th>ID</th><th>Symbol</th><th>Side</th><th>Type</th><th>Price</th><th>Qty</th><th>Filled</th><th>Status</th></tr></thead>
+          <thead><tr><th>编号</th><th>交易对</th><th>方向</th><th>类型</th><th>价格</th><th>数量</th><th>已成交</th><th>状态</th></tr></thead>
           <tbody id="ord-tbody"></tbody>
         </table>
       </div>
@@ -338,6 +371,7 @@
 </div>
 
   <script src="/static/js/app.js"></script>
+  <script src="/static/js/charts.js"></script>
 <!-- ===== CANOPY BRIDGE: pywebview JS-API ===== -->
 <script>
 // 检测是否在 pywebview 环境中运行
@@ -770,6 +804,36 @@ navOrders.addEventListener('click', function() {
 
 // 订单刷新按钮
 document.getElementById('ord-refresh').addEventListener('click', refreshOrders);
+</script>
+<!-- ===== Charts Initialization ===== -->
+<script>
+(function() {
+  // 等待 Chart.js 加载完毕后初始化图表
+  function initCharts() {
+    if (typeof Chart === 'undefined') {
+      setTimeout(initCharts, 200);
+      return;
+    }
+    var symbol = 'BTC/USDT';
+    if (window.CanopyCharts) {
+      window.CanopyCharts.refreshAll(symbol);
+    }
+    // 交易对切换
+    var sel = document.getElementById('chart-symbol');
+    if (sel) {
+      sel.addEventListener('change', function() {
+        if (window.CanopyCharts) {
+          window.CanopyCharts.refreshAll(this.value);
+        }
+      });
+    }
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCharts);
+  } else {
+    initCharts();
+  }
+})();
 </script>
 </body>
 </html>

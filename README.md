@@ -11,7 +11,7 @@ AIGC:
 
 
 
-# Canopy · Nature-Tech Trading Terminal
+# Canopy · Nature-Tech 交易终端
 
 轻量化加密量化交易软件 — Python + pywebview + CCXT。
 
@@ -78,10 +78,10 @@ canopy/
 
 | # | 方法 | 说明 |
 |---|------|------|
-| 1 | connect_exchange(exchange_id) | 连接交易所，初始化 StrategyRunner |
+| 1 | connect_exchange(exchange_id) | 连接交易所，初始化策略运行器 |
 | 2 | get_kpi() | 实时 KPI 数据 |
 | 3 | get_ticker(symbol) | 实时行情 |
-| 4 | get_strategies() | 策略状态+模拟 PnL |
+| 4 | get_strategies() | 策略状态与模拟盈亏 |
 | 5 | get_portfolio() | 持仓分布 |
 | 6 | get_sentiment() | 市场情绪 |
 | 7 | run_backtest(params) | 运行单策略回测 |
@@ -116,7 +116,7 @@ python canopy/main.py
 ## 技术栈
 
 - **后端**: Python 3.x, CCXT, pandas, pywebview
-- **前端**: Vanilla JS + Canvas, Nature-Tech Glass Design System (Emerald/Amber/Amethyst/Rose × Dark/Light)
+- **前端**: 原生 JS + Canvas, Nature-Tech Glass 设计系统 (Emerald/Amber/Amethyst/Rose × 暗色/亮色)
 - **数据**: Parquet 本地缓存
 *（内容由AI生成，仅供参考）*
 *（内容由AI生成，仅供参考）*
