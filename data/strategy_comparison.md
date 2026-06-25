@@ -1,3 +1,14 @@
+---
+AIGC:
+    Label: "1"
+    ContentProducer: 001191440300708461136T1XGW3
+    ProduceID: dfa59edf71882ac3e29663828f688f4a_9b40ce5370dd11f1986d525400d9a7a1
+    ReservedCode1: 67Gs/l1LuNGx1I51fBumcSlDer28b/9MKTut6fJmB+cEYoF6Xe+ADux+yR4OsoGLLpFaYPGmD5kNArOGyDgWZAwus6+xyyJGZ+Q0A8c93ipQ/e5mD7C9s2HEmRhXIPN4PGhe129+yA30EixLjd95byqch4oTzjduMcL98+Q0Sy7IBOwS1ieF2mXo1i8=
+    ContentPropagator: 001191440300708461136T1XGW3
+    PropagateID: dfa59edf71882ac3e29663828f688f4a_9b40ce5370dd11f1986d525400d9a7a1
+    ReservedCode2: 67Gs/l1LuNGx1I51fBumcSlDer28b/9MKTut6fJmB+cEYoF6Xe+ADux+yR4OsoGLLpFaYPGmD5kNArOGyDgWZAwus6+xyyJGZ+Q0A8c93ipQ/e5mD7C9s2HEmRhXIPN4PGhe129+yA30EixLjd95byqch4oTzjduMcL98+Q0Sy7IBOwS1ieF2mXo1i8=
+---
+
 # Canopy 5 策略横向对比报告
 
 **数据**: BTC/USDT 1h K 线
@@ -60,3 +71,4 @@
   entry_z: 2.0
   exit_z: 0.5
 ```
+*（内容由AI生成，仅供参考）*

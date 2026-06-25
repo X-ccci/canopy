@@ -7,8 +7,10 @@ Canopy 桌面应用入口
   - Web 模式（--web）：FastAPI 服务器（配合浏览器访问）
 """
 import argparse
+import json
 import os
 import sys
+import threading
 
 import webview
 
@@ -399,6 +401,142 @@ class CanopyAPI:
         return {'success': False, 'message': '无可用风控管理器'}
 
 
+# ── 窗口尺寸记忆 ──
+
+CONFIG_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'config.json')
+
+_default_window_config = {
+    "window_x": 100,
+    "window_y": 100,
+    "window_width": 1400,
+    "window_height": 900,
+}
+
+
+def load_window_config() -> dict:
+    """从 config.json 加载窗口位置和大小。"""
+    try:
+        if os.path.exists(CONFIG_PATH):
+            with open(CONFIG_PATH, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            cfg = {k: data.get(k, _default_window_config[k]) for k in _default_window_config}
+            # 确保窗口不超出屏幕边界
+            cfg['window_x'] = max(0, cfg['window_x'])
+            cfg['window_y'] = max(0, cfg['window_y'])
+            return cfg
+    except Exception:
+        pass
+    return dict(_default_window_config)
+
+
+def save_window_config(window):
+    """保存当前窗口位置和大小到 config.json。"""
+    try:
+        cfg = load_window_config()
+        cfg['window_x'] = window.x
+        cfg['window_y'] = window.y
+        cfg['window_width'] = window.width
+        cfg['window_height'] = window.height
+        with open(CONFIG_PATH, 'w', encoding='utf-8') as f:
+            json.dump(cfg, f, indent=2, ensure_ascii=False)
+    except Exception:
+        pass
+
+
+# ── macOS 系统托盘 ──
+
+_tray_app = None
+_window_ref = None
+
+
+def _setup_tray():
+    """在 macOS 上创建系统托盘（使用 rumps）。"""
+    global _tray_app
+    try:
+        import rumps
+        import AppKit
+    except ImportError:
+        return False
+
+    class CanopyTray(rumps.App):
+        def __init__(self):
+            super().__init__("🌿", title=None, quit_button=None)
+
+        @rumps.clicked("显示 Canopy")
+        def show_window(self, _):
+            global _window_ref
+            if _window_ref is not None:
+                try:
+                    # macOS: 恢复窗口到前台
+                    ns_app = AppKit.NSApplication.sharedApplication()
+                    ns_app.activateIgnoringOtherApps_(True)
+                except Exception:
+                    pass
+
+        @rumps.clicked("退出")
+        def quit_app(self, _):
+            global _window_ref
+            if _window_ref is not None:
+                try:
+                    _window_ref.destroy()
+                except Exception:
+                    pass
+            try:
+                import rumps
+                rumps.quit_application()
+            except Exception:
+                pass
+
+    _tray_app = CanopyTray()
+    tray_thread = threading.Thread(target=_tray_app.run, daemon=True)
+    tray_thread.start()
+    return True
+
+
+def _on_closing():
+    """窗口关闭时的回调：隐藏到托盘而非退出。"""
+    global _window_ref
+    if _tray_app is not None and _window_ref is not None:
+        try:
+            _window_ref.hide()
+            return False  # 阻止窗口销毁
+        except Exception:
+            pass
+    return True
+
+
+def _on_moved_or_resized(window):
+    """窗口移动/缩放时保存配置。"""
+    save_window_config(window)
+
+
+def _create_window(api, html_path: str, cfg: dict, title: str = 'Canopy · Nature-Tech 交易终端'):
+    """创建 pywebview 窗口（从 config 读取尺寸）。"""
+    global _window_ref
+    _window_ref = webview.create_window(
+        title=title,
+        url=html_path,
+        js_api=api,
+        width=cfg['window_width'],
+        height=cfg['window_height'],
+        x=cfg['window_x'],
+        y=cfg['window_y'],
+        min_size=(960, 600),
+        resizable=True,
+        fullscreen=False,
+        easy_drag=False,
+    )
+    # 绑定关闭事件
+    _window_ref.events.closing += _on_closing
+    # macOS 特有：窗口移动/缩放时保存
+    try:
+        _window_ref.events.moved += _on_moved_or_resized
+        _window_ref.events.resized += _on_moved_or_resized
+    except Exception:
+        pass
+    return _window_ref
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Canopy · Nature-Tech 交易终端",
@@ -412,10 +550,19 @@ def main():
                         help="Web 模式监听地址（默认 0.0.0.0）")
     parser.add_argument("--no-desktop", action="store_true",
                         help="Web 模式下不启动 pywebview 桌面窗口")
+    parser.add_argument("--no-tray", action="store_true",
+                        help="禁用 macOS 系统托盘")
 
     args = parser.parse_args()
 
     api = CanopyAPI()
+
+    # 加载窗口配置
+    win_cfg = load_window_config()
+
+    # macOS 系统托盘
+    if not args.no_tray and sys.platform == 'darwin':
+        _setup_tray()
 
     # ── Web 模式：启动 FastAPI 服务器 ──
     if args.web:
@@ -425,7 +572,6 @@ def main():
 
         # 如果同时启动桌面窗口
         if not args.no_desktop:
-            import threading
 
             def start_web():
                 uvicorn.run(app, host=args.host, port=args.port, log_level="info")
@@ -436,16 +582,7 @@ def main():
 
             # 启动 pywebview 桌面窗口（同时运行）
             html_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'web', 'index.html')
-            webview.create_window(
-                title='Canopy · Nature-Tech 交易终端',
-                url=html_path,
-                js_api=api,
-                width=1400,
-                height=900,
-                min_size=(960, 600),
-                resizable=True,
-                fullscreen=False,
-            )
+            _create_window(api, html_path, win_cfg)
             webview.start(debug=True)
         else:
             # 纯 Web 模式，无桌面窗口
@@ -455,16 +592,7 @@ def main():
     else:
         # ── 桌面模式（默认）：pywebview 原生窗口 ──
         html_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'web', 'index.html')
-        webview.create_window(
-            title='Canopy · Nature-Tech 交易终端',
-            url=html_path,
-            js_api=api,
-            width=1400,
-            height=900,
-            min_size=(960, 600),
-            resizable=True,
-            fullscreen=False,
-        )
+        _create_window(api, html_path, win_cfg)
         webview.start(debug=True)
 
 

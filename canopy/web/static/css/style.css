@@ -426,6 +426,13 @@ body::after{
   border-color: var(--border-hover);
   box-shadow: 0 2px 0 rgba(255,255,255,.04), 0 12px 40px rgba(0,0,0,.4);
 }
+/* 暗色模式导航栏增强 */
+body[data-mode="dark"] .forest-nav{
+  box-shadow: 0 2px 0 rgba(255,255,255,.02), 0 8px 32px rgba(0,0,0,.35);
+}
+body[data-mode="dark"] .forest-nav:hover{
+  box-shadow: 0 2px 0 rgba(255,255,255,.04), 0 14px 44px rgba(0,0,0,.5);
+}
 .nav-brand{display:flex;align-items:center;gap:12px}
 .nav-logo{
   width: 34px; height: 34px;
@@ -587,6 +594,11 @@ body[data-mode="light"] .theme-toggle-btn .moon-icon{display:none}
 .kpi-pod.amber .kpi-value{color:var(--kpi-amber)}
 .kpi-pod.amethyst .kpi-value{color:var(--kpi-amethyst)}
 .kpi-pod.cyan .kpi-value{color:var(--kpi-cyan)}
+/* 暗色模式下 KPI 数值更鲜艳 + 文字发光 */
+body[data-mode="dark"] .kpi-pod.emerald .kpi-value{color:#34d399;text-shadow:0 0 18px rgba(52,211,153,.35)}
+body[data-mode="dark"] .kpi-pod.amber .kpi-value{color:#fbbf24;text-shadow:0 0 18px rgba(251,191,36,.35)}
+body[data-mode="dark"] .kpi-pod.amethyst .kpi-value{color:#c084fc;text-shadow:0 0 18px rgba(192,132,252,.35)}
+body[data-mode="dark"] .kpi-pod.cyan .kpi-value{color:#22d3ee;text-shadow:0 0 18px rgba(34,211,238,.35)}
 .kpi-change{position:relative;z-index:1;font-size:12px;font-weight:600}
 .kpi-change.up{color:var(--positive)}
 .kpi-change.down{color:var(--negative)}
@@ -640,6 +652,19 @@ body[data-mode="light"] .theme-toggle-btn .moon-icon{display:none}
   background: var(--bg-card-hover);
   border-color: var(--border-hover);
   box-shadow: 0 12px 36px rgba(0,0,0,.3), 0 0 40px var(--accent-glow);
+}
+/* 暗色模式增强卡片 hover 光影 */
+body[data-mode="dark"] .glass-card{
+  box-shadow: 0 4px 16px rgba(0,0,0,.25), 0 0 0 1px rgba(255,255,255,.03);
+}
+body[data-mode="dark"] .glass-card:hover{
+  box-shadow: 0 12px 40px rgba(0,0,0,.45), 0 0 60px var(--accent-glow), 0 0 0 1px rgba(255,255,255,.05);
+}
+body[data-mode="dark"] .kpi-pod{
+  box-shadow: 0 2px 12px rgba(0,0,0,.2), 0 0 0 1px rgba(255,255,255,.03);
+}
+body[data-mode="dark"] .kpi-pod:hover{
+  box-shadow: 0 8px 32px rgba(0,0,0,.4), 0 0 40px var(--accent-glow), 0 0 0 1px rgba(255,255,255,.06);
 }
 .glass-card>*{position:relative;z-index:1}
 .card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
@@ -713,6 +738,17 @@ body[data-mode="light"] .theme-toggle-btn .moon-icon{display:none}
 }
 .input-group input:focus,.input-group select:focus{
   border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow);background:rgba(255,255,255,.06);
+}
+/* 暗色模式输入框 */
+body[data-mode="dark"] .input-group input,
+body[data-mode="dark"] .input-group select{
+  background:rgba(255,255,255,.06);
+  color:#e8edea;
+}
+body[data-mode="dark"] .input-group input:focus,
+body[data-mode="dark"] .input-group select:focus{
+  background:rgba(255,255,255,.09);
+  box-shadow:0 0 0 3px var(--accent-glow);
 }
 .btn{
   padding:10px 22px;border-radius:10px;border:none;
