@@ -1,3 +1,14 @@
+---
+AIGC:
+    Label: "1"
+    ContentProducer: 001191440300708461136T1XGW3
+    ProduceID: dfa59edf71882ac3e29663828f688f4a_5dc25fb170d711f1897e5254002afed2
+    ReservedCode1: jnCZImCNdSCWLAsXz2BLy2Ky4D1gRwn39E0lGK38LblRMLg/jjio34zwh7XMIWAgcuDCwFNU8HMhwckOEtPydNwQAuZUMoIkbHw2ZVyhdHkSbdEnlDrhA5a/rMnNWDDaR6XfRpgA0iE3EcnU4zmLneGuDQdFW7U6qTqymHRNqmkGm1TmDTJURb675/k=
+    ContentPropagator: 001191440300708461136T1XGW3
+    PropagateID: dfa59edf71882ac3e29663828f688f4a_5dc25fb170d711f1897e5254002afed2
+    ReservedCode2: jnCZImCNdSCWLAsXz2BLy2Ky4D1gRwn39E0lGK38LblRMLg/jjio34zwh7XMIWAgcuDCwFNU8HMhwckOEtPydNwQAuZUMoIkbHw2ZVyhdHkSbdEnlDrhA5a/rMnNWDDaR6XfRpgA0iE3EcnU4zmLneGuDQdFW7U6qTqymHRNqmkGm1TmDTJURb675/k=
+---
+
 # Canopy 动量策略回测报告
 
 > 日期: 2026-06-26 | 数据: BTC/USDT 1H 模拟 K 线 (1000 根) | 引擎: BacktestEngine v1.0
@@ -99,3 +110,4 @@ TrendStrategy 默认参数回测正常产出 4 笔交易，证明 BacktestEngine
 ---
 
 *报告由 Canopy File Agent 自动生成*
+*（内容由AI生成，仅供参考）*

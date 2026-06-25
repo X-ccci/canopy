@@ -1,3 +1,14 @@
+---
+AIGC:
+    Label: "1"
+    ContentProducer: 001191440300708461136T1XGW3
+    ProduceID: dfa59edf71882ac3e29663828f688f4a_5cba04ab70d711f1986d525400d9a7a1
+    ReservedCode1: APYJXbqAszLjyT2JpRrpZD78zT7VtHp199rNBxTG4eo3ho19F/szgjpaa1GDQYMcuJKFerLqBxXRRhFlmt+ffxrbmqKeFFcU9SbEXJiwX3dRr5b8TsTI+9GoEll9tEDQ7Kr9SIuk8IYevh5DEhMs1sR5Zb4Kc5t3qdDjwwSVAkCzxBTZXpXVCYSxwYg=
+    ContentPropagator: 001191440300708461136T1XGW3
+    PropagateID: dfa59edf71882ac3e29663828f688f4a_5cba04ab70d711f1986d525400d9a7a1
+    ReservedCode2: APYJXbqAszLjyT2JpRrpZD78zT7VtHp199rNBxTG4eo3ho19F/szgjpaa1GDQYMcuJKFerLqBxXRRhFlmt+ffxrbmqKeFFcU9SbEXJiwX3dRr5b8TsTI+9GoEll9tEDQ7Kr9SIuk8IYevh5DEhMs1sR5Zb4Kc5t3qdDjwwSVAkCzxBTZXpXVCYSxwYg=
+---
+
 # Canopy v1.0 发布验证清单
 
 > 日期: 2026-06-26 | 版本: v1.0.0
@@ -92,3 +103,4 @@
 ---
 
 *Canopy v1.0 — 开箱即用的量化交易系统*
+*（内容由AI生成，仅供参考）*

@@ -73,7 +73,7 @@ class CanopyAPI:
                                         upper_price=4000, lower_price=3200, grid_count=10)
                 self.runner.add_strategy('Trend Surf', 'trend', 'SOL/USDT', '1h')
                 self.runner.add_strategy('Arbitrage Nexus', 'arbitrage', 'BNB/USDT', '1h')
-                self.runner.add_strategy('Volatility Harvester', 'momentum', 'AVAX/USDT', '1h')
+                self.runner.add_strategy('Momentum Hunter', 'momentum', 'XRP/USDT', '1h')
                 self.runner.start_all()
             return {'success': ok, 'exchange': exchange_id, 'status': '已连接' if ok else '连接失败'}
         except Exception as e:

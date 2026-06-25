@@ -1,4 +1,36 @@
+---
+AIGC:
+    Label: "1"
+    ContentProducer: 001191440300708461136T1XGW3
+    ProduceID: dfa59edf71882ac3e29663828f688f4a_5d3bb00170d711f1b2f55254006c9bbf
+    ReservedCode1: N/HG0Rc5e0WvWjagHhyygBdlHLEk+b8KBwr6AwscJDEGaRsY8FPF9l5OZEZ+dXidE/1sDTtkDNwfggpn0WMCoUe/yywwNuhW1wi70W/uepsjpbW4OzYyO3OPYk6o7P2w79aFHAaq/sbsGlhGW/Gjo9qbXDY7VtSLio4dckD6y5t4zxeVFaAtZf1qqUw=
+    ContentPropagator: 001191440300708461136T1XGW3
+    PropagateID: dfa59edf71882ac3e29663828f688f4a_5d3bb00170d711f1b2f55254006c9bbf
+    ReservedCode2: N/HG0Rc5e0WvWjagHhyygBdlHLEk+b8KBwr6AwscJDEGaRsY8FPF9l5OZEZ+dXidE/1sDTtkDNwfggpn0WMCoUe/yywwNuhW1wi70W/uepsjpbW4OzYyO3OPYk6o7P2w79aFHAaq/sbsGlhGW/Gjo9qbXDY7VtSLio4dckD6y5t4zxeVFaAtZf1qqUw=
+---
+
 # Canopy 更新日志
+
+## v1.1.0 (2026-06-26) — 数据驱动升级
+
+### 新增
+- **真实历史数据**：scripts/download_historical.py 从 Binance 公开 API 拉取 10 个交易对 1h K 线并缓存为 Parquet
+- **5 策略横向对比报告**：data/strategy_comparison.md，基于 BTC/USDT 真实数据回测
+
+### 改进
+- **测试套件 100% 通过**：修复 4 个中英文断言不匹配（72/72 passed）
+- **前端币种扩展**：下拉框从 3 个品种扩展到 10 个（BTC/ETH/SOL/BNB/XRP/DOGE/ADA/DOT/MATIC/LINK）
+- **server.py**：WebSocket ticker 推送和模拟数据回退覆盖全部 10 个交易对
+- **runner.py**：默认策略配置更新为支持的 10 个交易对
+
+### 策略对比结果（BTC/USDT 1h，初始 $10,000）
+| 策略 | 收益率 | Sharpe | 胜率 |
+|------|--------|--------|------|
+| 均值回归 | +17.22% | 1.05 | 53.9% |
+| 趋势跟踪 | +5.15% | 0.37 | 28.6% |
+| 动量突破 | -3.42% | -0.46 | 0.0% |
+| 网格交易 | +0.00% | 0.00 | — |
+| 套利 | +0.00% | 0.00 | — |
 
 ## v1.0.0 (2026-06-26) — 正式发布
 
@@ -120,3 +152,4 @@
 ---
 
 *Canopy — 开箱即用的量化交易系统*
+*（内容由AI生成，仅供参考）*

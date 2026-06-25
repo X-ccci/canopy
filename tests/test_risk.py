@@ -84,7 +84,7 @@ class TestRiskManager:
         rm = RiskManager(initial_balance=100000.0)
         approved, reason, order = rm.approve(self.SAMPLE_SIGNAL, current_price=50000.0)
         assert approved is True
-        assert 'Approved' in reason
+        assert '已批准' in reason
         assert order is not None
         assert order['symbol'] == 'BTC/USDT'
         assert order['action'] == 'BUY'
@@ -103,7 +103,7 @@ class TestRiskManager:
         rm.circuit_breaker.trip("Test trip")
         approved, reason, order = rm.approve(self.SAMPLE_SIGNAL, current_price=50000.0)
         assert approved is False
-        assert "Circuit breaker" in reason
+        assert '熔断器已触发' in reason
         assert order is None
 
     def test_drawdown_exceeds_limit_trips_breaker(self):
@@ -114,7 +114,7 @@ class TestRiskManager:
         rm.current_balance = 80000.0  # 20% drawdown, exceeds 15% limit
         approved, reason, order = rm.approve(self.SAMPLE_SIGNAL, current_price=50000.0)
         assert approved is False
-        assert "drawdown" in reason.lower()
+        assert "回撤" in reason
         assert rm.circuit_breaker.is_tripped is True
 
     def test_drawdown_within_limit_pass(self):
@@ -134,7 +134,7 @@ class TestRiskManager:
         rm.daily_pnl = -4000.0
         approved, reason, _ = rm.approve(self.SAMPLE_SIGNAL, current_price=50000.0)
         assert approved is False
-        assert "daily" in reason.lower()
+        assert '每日' in reason
 
     def test_exposure_limit_blocks(self):
         config = RiskConfig(max_total_exposure=0.01, max_position_pct=0.05)
@@ -143,7 +143,7 @@ class TestRiskManager:
         rm.update_position('ETH/USDT', 'LONG', 2000.0, 2.5, 2000.0)
         approved, reason, _ = rm.approve(self.SAMPLE_SIGNAL, current_price=50000.0)
         assert approved is False
-        assert "Exposure" in reason
+        assert "敞口" in reason
 
     def test_approve_with_account_balance_override(self):
         rm = RiskManager(initial_balance=10000.0)
@@ -183,7 +183,7 @@ class TestRiskManager:
         rm = RiskManager()
         rm.circuit_breaker.trip("test")
         result = rm.reset_circuit_breaker()
-        assert result == 'Circuit breaker reset'
+        assert result == '熔断器已重置'
         assert rm.circuit_breaker.is_tripped is False
 
     def test_get_status_returns_valid_dict(self):

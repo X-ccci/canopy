@@ -87,7 +87,7 @@ class GridStrategy(Strategy):
             return {"action": "HOLD", "price": close, "stop_loss": None, "reason": "初始化完毕，等待下一次价格变动"}
 
         # 检测价格穿越网格线
-        for i, grid_price in enumerate(self._grid_lines or []):
+        for i, grid_price in enumerate(self._grid_lines if self._grid_lines is not None else []):
             if i in self._triggered:
                 continue
 

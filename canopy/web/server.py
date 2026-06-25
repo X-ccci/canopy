@@ -241,7 +241,12 @@ def create_app() -> FastAPI:
 
         # ── 3. 回退：生成模拟 K 线数据 ──
         if not kline_data:
-            base_price = {"BTC/USDT": 67800, "ETH/USDT": 3520, "SOL/USDT": 168}.get(symbol, 100)
+            base_price = {
+                "BTC/USDT": 67800, "ETH/USDT": 3520, "SOL/USDT": 168,
+                "BNB/USDT": 620, "XRP/USDT": 2.5, "DOGE/USDT": 0.35,
+                "ADA/USDT": 1.2, "DOT/USDT": 22, "MATIC/USDT": 1.8,
+                "LINK/USDT": 25,
+            }.get(symbol, 100)
             now = datetime.utcnow()
             for i in range(limit):
                 t = now - timedelta(hours=limit - i)
@@ -338,6 +343,13 @@ def create_app() -> FastAPI:
                             "BTC/USDT": api.get_ticker("BTC/USDT"),
                             "ETH/USDT": api.get_ticker("ETH/USDT"),
                             "SOL/USDT": api.get_ticker("SOL/USDT"),
+                            "BNB/USDT": api.get_ticker("BNB/USDT"),
+                            "XRP/USDT": api.get_ticker("XRP/USDT"),
+                            "DOGE/USDT": api.get_ticker("DOGE/USDT"),
+                            "ADA/USDT": api.get_ticker("ADA/USDT"),
+                            "DOT/USDT": api.get_ticker("DOT/USDT"),
+                            "MATIC/USDT": api.get_ticker("MATIC/USDT"),
+                            "LINK/USDT": api.get_ticker("LINK/USDT"),
                         }
                         payload["ws_status"] = api.get_ws_status()
                     except Exception:
