@@ -1,0 +1,469 @@
+{
+  "strategy": "grid",
+  "method": "genetic",
+  "config": {
+    "pop_size": 20,
+    "generations": 10,
+    "initial_capital": 10000.0
+  },
+  "param_space": {
+    "grid_count": [
+      5,
+      8,
+      10,
+      15,
+      20
+    ],
+    "order_amount": [
+      0.005,
+      0.01,
+      0.02,
+      0.05
+    ],
+    "mode": [
+      "arithmetic",
+      "geometric"
+    ]
+  },
+  "optimal_params": {
+    "grid_count": 5,
+    "order_amount": 0.005,
+    "mode": "geometric"
+  },
+  "optimal_fitness": 0.0,
+  "optimal_metrics": {
+    "total_return": 0.0,
+    "sharpe_ratio": 0.0,
+    "max_drawdown": 0.0,
+    "win_rate": 0.0,
+    "profit_factor": 0.0,
+    "calmar_ratio": 0.0,
+    "sortino_ratio": 0.0,
+    "total_trades": 0
+  },
+  "generation_history": [
+    {
+      "generation": 1,
+      "best_params": {
+        "grid_count": 5,
+        "order_amount": 0.005,
+        "mode": "geometric"
+      },
+      "best_fitness": 0.0,
+      "best_metrics": {
+        "total_return": 0.0,
+        "sharpe_ratio": 0.0,
+        "max_drawdown": 0.0,
+        "win_rate": 0.0,
+        "profit_factor": 0.0,
+        "calmar_ratio": 0.0,
+        "sortino_ratio": 0.0,
+        "total_trades": 0
+      },
+      "avg_fitness": 0.0
+    },
+    {
+      "generation": 2,
+      "best_params": {
+        "grid_count": 5,
+        "order_amount": 0.005,
+        "mode": "geometric"
+      },
+      "best_fitness": 0.0,
+      "best_metrics": {
+        "total_return": 0.0,
+        "sharpe_ratio": 0.0,
+        "max_drawdown": 0.0,
+        "win_rate": 0.0,
+        "profit_factor": 0.0,
+        "calmar_ratio": 0.0,
+        "sortino_ratio": 0.0,
+        "total_trades": 0
+      },
+      "avg_fitness": 0.0
+    },
+    {
+      "generation": 3,
+      "best_params": {
+        "grid_count": 5,
+        "order_amount": 0.005,
+        "mode": "geometric"
+      },
+      "best_fitness": 0.0,
+      "best_metrics": {
+        "total_return": 0.0,
+        "sharpe_ratio": 0.0,
+        "max_drawdown": 0.0,
+        "win_rate": 0.0,
+        "profit_factor": 0.0,
+        "calmar_ratio": 0.0,
+        "sortino_ratio": 0.0,
+        "total_trades": 0
+      },
+      "avg_fitness": 0.0
+    },
+    {
+      "generation": 4,
+      "best_params": {
+        "grid_count": 5,
+        "order_amount": 0.005,
+        "mode": "geometric"
+      },
+      "best_fitness": 0.0,
+      "best_metrics": {
+        "total_return": 0.0,
+        "sharpe_ratio": 0.0,
+        "max_drawdown": 0.0,
+        "win_rate": 0.0,
+        "profit_factor": 0.0,
+        "calmar_ratio": 0.0,
+        "sortino_ratio": 0.0,
+        "total_trades": 0
+      },
+      "avg_fitness": 0.0
+    },
+    {
+      "generation": 5,
+      "best_params": {
+        "grid_count": 5,
+        "order_amount": 0.005,
+        "mode": "geometric"
+      },
+      "best_fitness": 0.0,
+      "best_metrics": {
+        "total_return": 0.0,
+        "sharpe_ratio": 0.0,
+        "max_drawdown": 0.0,
+        "win_rate": 0.0,
+        "profit_factor": 0.0,
+        "calmar_ratio": 0.0,
+        "sortino_ratio": 0.0,
+        "total_trades": 0
+      },
+      "avg_fitness": 0.0
+    },
+    {
+      "generation": 6,
+      "best_params": {
+        "grid_count": 5,
+        "order_amount": 0.005,
+        "mode": "geometric"
+      },
+      "best_fitness": 0.0,
+      "best_metrics": {
+        "total_return": 0.0,
+        "sharpe_ratio": 0.0,
+        "max_drawdown": 0.0,
+        "win_rate": 0.0,
+        "profit_factor": 0.0,
+        "calmar_ratio": 0.0,
+        "sortino_ratio": 0.0,
+        "total_trades": 0
+      },
+      "avg_fitness": 0.0
+    },
+    {
+      "generation": 7,
+      "best_params": {
+        "grid_count": 5,
+        "order_amount": 0.005,
+        "mode": "geometric"
+      },
+      "best_fitness": 0.0,
+      "best_metrics": {
+        "total_return": 0.0,
+        "sharpe_ratio": 0.0,
+        "max_drawdown": 0.0,
+        "win_rate": 0.0,
+        "profit_factor": 0.0,
+        "calmar_ratio": 0.0,
+        "sortino_ratio": 0.0,
+        "total_trades": 0
+      },
+      "avg_fitness": 0.0
+    },
+    {
+      "generation": 8,
+      "best_params": {
+        "grid_count": 5,
+        "order_amount": 0.005,
+        "mode": "geometric"
+      },
+      "best_fitness": 0.0,
+      "best_metrics": {
+        "total_return": 0.0,
+        "sharpe_ratio": 0.0,
+        "max_drawdown": 0.0,
+        "win_rate": 0.0,
+        "profit_factor": 0.0,
+        "calmar_ratio": 0.0,
+        "sortino_ratio": 0.0,
+        "total_trades": 0
+      },
+      "avg_fitness": 0.0
+    },
+    {
+      "generation": 9,
+      "best_params": {
+        "grid_count": 5,
+        "order_amount": 0.005,
+        "mode": "geometric"
+      },
+      "best_fitness": 0.0,
+      "best_metrics": {
+        "total_return": 0.0,
+        "sharpe_ratio": 0.0,
+        "max_drawdown": 0.0,
+        "win_rate": 0.0,
+        "profit_factor": 0.0,
+        "calmar_ratio": 0.0,
+        "sortino_ratio": 0.0,
+        "total_trades": 0
+      },
+      "avg_fitness": 0.0
+    },
+    {
+      "generation": 10,
+      "best_params": {
+        "grid_count": 5,
+        "order_amount": 0.005,
+        "mode": "geometric"
+      },
+      "best_fitness": 0.0,
+      "best_metrics": {
+        "total_return": 0.0,
+        "sharpe_ratio": 0.0,
+        "max_drawdown": 0.0,
+        "win_rate": 0.0,
+        "profit_factor": 0.0,
+        "calmar_ratio": 0.0,
+        "sortino_ratio": 0.0,
+        "total_trades": 0
+      },
+      "avg_fitness": 0.0
+    }
+  ],
+  "pareto_front": [
+    {
+      "params": {
+        "grid_count": 5,
+        "order_amount": 0.005,
+        "mode": "geometric"
+      },
+      "sharpe": 0.0,
+      "max_drawdown": 0.0,
+      "sortino": 0.0,
+      "win_rate": 0.0
+    },
+    {
+      "params": {
+        "grid_count": 8,
+        "order_amount": 0.01,
+        "mode": "arithmetic"
+      },
+      "sharpe": 0.0,
+      "max_drawdown": 0.0,
+      "sortino": 0.0,
+      "win_rate": 0.0
+    },
+    {
+      "params": {
+        "grid_count": 8,
+        "order_amount": 0.005,
+        "mode": "geometric"
+      },
+      "sharpe": 0.0,
+      "max_drawdown": 0.0,
+      "sortino": 0.0,
+      "win_rate": 0.0
+    },
+    {
+      "params": {
+        "grid_count": 15,
+        "order_amount": 0.005,
+        "mode": "geometric"
+      },
+      "sharpe": 0.0,
+      "max_drawdown": 0.0,
+      "sortino": 0.0,
+      "win_rate": 0.0
+    },
+    {
+      "params": {
+        "grid_count": 20,
+        "order_amount": 0.008032,
+        "mode": "arithmetic"
+      },
+      "sharpe": 0.0,
+      "max_drawdown": 0.0,
+      "sortino": 0.0,
+      "win_rate": 0.0
+    },
+    {
+      "params": {
+        "grid_count": 8,
+        "order_amount": 0.005,
+        "mode": "arithmetic"
+      },
+      "sharpe": 0.0,
+      "max_drawdown": 0.0,
+      "sortino": 0.0,
+      "win_rate": 0.0
+    },
+    {
+      "params": {
+        "grid_count": 15,
+        "order_amount": 0.01,
+        "mode": "geometric"
+      },
+      "sharpe": 0.0,
+      "max_drawdown": 0.0,
+      "sortino": 0.0,
+      "win_rate": 0.0
+    },
+    {
+      "params": {
+        "grid_count": 8,
+        "order_amount": 0.01,
+        "mode": "geometric"
+      },
+      "sharpe": 0.0,
+      "max_drawdown": 0.0,
+      "sortino": 0.0,
+      "win_rate": 0.0
+    },
+    {
+      "params": {
+        "grid_count": 15,
+        "order_amount": 0.005,
+        "mode": "geometric"
+      },
+      "sharpe": 0.0,
+      "max_drawdown": 0.0,
+      "sortino": 0.0,
+      "win_rate": 0.0
+    },
+    {
+      "params": {
+        "grid_count": 8,
+        "order_amount": 0.005,
+        "mode": "arithmetic"
+      },
+      "sharpe": 0.0,
+      "max_drawdown": 0.0,
+      "sortino": 0.0,
+      "win_rate": 0.0
+    },
+    {
+      "params": {
+        "grid_count": 15,
+        "order_amount": 0.005,
+        "mode": "geometric"
+      },
+      "sharpe": 0.0,
+      "max_drawdown": 0.0,
+      "sortino": 0.0,
+      "win_rate": 0.0
+    },
+    {
+      "params": {
+        "grid_count": 15,
+        "order_amount": 0.01,
+        "mode": "geometric"
+      },
+      "sharpe": 0.0,
+      "max_drawdown": 0.0,
+      "sortino": 0.0,
+      "win_rate": 0.0
+    },
+    {
+      "params": {
+        "grid_count": 15,
+        "order_amount": 0.005,
+        "mode": "arithmetic"
+      },
+      "sharpe": 0.0,
+      "max_drawdown": 0.0,
+      "sortino": 0.0,
+      "win_rate": 0.0
+    },
+    {
+      "params": {
+        "grid_count": 5,
+        "order_amount": 0.005,
+        "mode": "arithmetic"
+      },
+      "sharpe": 0.0,
+      "max_drawdown": 0.0,
+      "sortino": 0.0,
+      "win_rate": 0.0
+    },
+    {
+      "params": {
+        "grid_count": 5,
+        "order_amount": 0.005,
+        "mode": "geometric"
+      },
+      "sharpe": 0.0,
+      "max_drawdown": 0.0,
+      "sortino": 0.0,
+      "win_rate": 0.0
+    },
+    {
+      "params": {
+        "grid_count": 10,
+        "order_amount": 0.005,
+        "mode": "geometric"
+      },
+      "sharpe": 0.0,
+      "max_drawdown": 0.0,
+      "sortino": 0.0,
+      "win_rate": 0.0
+    },
+    {
+      "params": {
+        "grid_count": 5,
+        "order_amount": 0.005,
+        "mode": "geometric"
+      },
+      "sharpe": 0.0,
+      "max_drawdown": 0.0,
+      "sortino": 0.0,
+      "win_rate": 0.0
+    },
+    {
+      "params": {
+        "grid_count": 5,
+        "order_amount": 0.005,
+        "mode": "geometric"
+      },
+      "sharpe": 0.0,
+      "max_drawdown": 0.0,
+      "sortino": 0.0,
+      "win_rate": 0.0
+    },
+    {
+      "params": {
+        "grid_count": 8,
+        "order_amount": 0.01,
+        "mode": "arithmetic"
+      },
+      "sharpe": 0.0,
+      "max_drawdown": 0.0,
+      "sortino": 0.0,
+      "win_rate": 0.0
+    },
+    {
+      "params": {
+        "grid_count": 15,
+        "order_amount": 0.01,
+        "mode": "geometric"
+      },
+      "sharpe": 0.0,
+      "max_drawdown": 0.0,
+      "sortino": 0.0,
+      "win_rate": 0.0
+    }
+  ],
+  "note": "\u57fa\u4e8e\u672c\u5730\u6a21\u62df OHLCV \u6570\u636e\u7684\u9057\u4f20\u7b97\u6cd5\u4f18\u5316\u7ed3\u679c"
+}

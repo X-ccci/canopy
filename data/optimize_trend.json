@@ -1,0 +1,470 @@
+{
+  "strategy": "trend",
+  "method": "genetic",
+  "config": {
+    "pop_size": 20,
+    "generations": 10,
+    "initial_capital": 10000.0
+  },
+  "param_space": {
+    "fast_period": [
+      6,
+      8,
+      10,
+      12,
+      16,
+      20
+    ],
+    "slow_period": [
+      20,
+      24,
+      26,
+      30,
+      34,
+      40
+    ],
+    "signal_period": [
+      6,
+      9,
+      12,
+      15
+    ],
+    "atr_period": [
+      10,
+      14,
+      20
+    ],
+    "atr_multiplier": [
+      1.5,
+      2.0,
+      2.5,
+      3.0,
+      3.5
+    ]
+  },
+  "optimal_params": {
+    "fast_period": 6,
+    "slow_period": 30,
+    "signal_period": 15,
+    "atr_period": 20,
+    "atr_multiplier": 3.5
+  },
+  "optimal_fitness": 0.6131,
+  "optimal_metrics": {
+    "total_return": -0.973709,
+    "sharpe_ratio": 0.6131,
+    "max_drawdown": 0.9777,
+    "win_rate": 0.0345,
+    "profit_factor": 0.0016,
+    "calmar_ratio": 1.3513,
+    "sortino_ratio": 1.6045,
+    "total_trades": 29
+  },
+  "generation_history": [
+    {
+      "generation": 1,
+      "best_params": {
+        "fast_period": 8,
+        "slow_period": 30,
+        "signal_period": 15,
+        "atr_period": 14,
+        "atr_multiplier": 3.5
+      },
+      "best_fitness": 0.5727,
+      "best_metrics": {
+        "total_return": -0.986063,
+        "sharpe_ratio": 0.5727,
+        "max_drawdown": 0.9882,
+        "win_rate": 0.0286,
+        "profit_factor": 0.001,
+        "calmar_ratio": 1.2612,
+        "sortino_ratio": 1.4832,
+        "total_trades": 35
+      },
+      "avg_fitness": -1.3658750000000002
+    },
+    {
+      "generation": 2,
+      "best_params": {
+        "fast_period": 8,
+        "slow_period": 20,
+        "signal_period": 12,
+        "atr_period": 14,
+        "atr_multiplier": 3.5
+      },
+      "best_fitness": 0.5774,
+      "best_metrics": {
+        "total_return": -0.99862,
+        "sharpe_ratio": 0.5774,
+        "max_drawdown": 0.9991,
+        "win_rate": 0.0,
+        "profit_factor": 0.0,
+        "calmar_ratio": 1.4506,
+        "sortino_ratio": 1.5771,
+        "total_trades": 34
+      },
+      "avg_fitness": 0.16543500000000003
+    },
+    {
+      "generation": 3,
+      "best_params": {
+        "fast_period": 8,
+        "slow_period": 30,
+        "signal_period": 15,
+        "atr_period": 20,
+        "atr_multiplier": 3.5
+      },
+      "best_fitness": 0.6124,
+      "best_metrics": {
+        "total_return": -0.973529,
+        "sharpe_ratio": 0.6124,
+        "max_drawdown": 0.9775,
+        "win_rate": 0.0345,
+        "profit_factor": 0.0016,
+        "calmar_ratio": 1.3492,
+        "sortino_ratio": 1.6045,
+        "total_trades": 29
+      },
+      "avg_fitness": 0.506385
+    },
+    {
+      "generation": 4,
+      "best_params": {
+        "fast_period": 8,
+        "slow_period": 30,
+        "signal_period": 15,
+        "atr_period": 20,
+        "atr_multiplier": 3.5
+      },
+      "best_fitness": 0.6124,
+      "best_metrics": {
+        "total_return": -0.973529,
+        "sharpe_ratio": 0.6124,
+        "max_drawdown": 0.9775,
+        "win_rate": 0.0345,
+        "profit_factor": 0.0016,
+        "calmar_ratio": 1.3492,
+        "sortino_ratio": 1.6045,
+        "total_trades": 29
+      },
+      "avg_fitness": 0.5440750000000001
+    },
+    {
+      "generation": 5,
+      "best_params": {
+        "fast_period": 8,
+        "slow_period": 30,
+        "signal_period": 15,
+        "atr_period": 20,
+        "atr_multiplier": 3.5
+      },
+      "best_fitness": 0.6124,
+      "best_metrics": {
+        "total_return": -0.973529,
+        "sharpe_ratio": 0.6124,
+        "max_drawdown": 0.9775,
+        "win_rate": 0.0345,
+        "profit_factor": 0.0016,
+        "calmar_ratio": 1.3492,
+        "sortino_ratio": 1.6045,
+        "total_trades": 29
+      },
+      "avg_fitness": 0.5476250000000001
+    },
+    {
+      "generation": 6,
+      "best_params": {
+        "fast_period": 8,
+        "slow_period": 30,
+        "signal_period": 15,
+        "atr_period": 20,
+        "atr_multiplier": 3.5
+      },
+      "best_fitness": 0.6124,
+      "best_metrics": {
+        "total_return": -0.973529,
+        "sharpe_ratio": 0.6124,
+        "max_drawdown": 0.9775,
+        "win_rate": 0.0345,
+        "profit_factor": 0.0016,
+        "calmar_ratio": 1.3492,
+        "sortino_ratio": 1.6045,
+        "total_trades": 29
+      },
+      "avg_fitness": 0.5571700000000002
+    },
+    {
+      "generation": 7,
+      "best_params": {
+        "fast_period": 8,
+        "slow_period": 30,
+        "signal_period": 15,
+        "atr_period": 20,
+        "atr_multiplier": 3.5
+      },
+      "best_fitness": 0.6124,
+      "best_metrics": {
+        "total_return": -0.973529,
+        "sharpe_ratio": 0.6124,
+        "max_drawdown": 0.9775,
+        "win_rate": 0.0345,
+        "profit_factor": 0.0016,
+        "calmar_ratio": 1.3492,
+        "sortino_ratio": 1.6045,
+        "total_trades": 29
+      },
+      "avg_fitness": 0.59284
+    },
+    {
+      "generation": 8,
+      "best_params": {
+        "fast_period": 8,
+        "slow_period": 30,
+        "signal_period": 15,
+        "atr_period": 20,
+        "atr_multiplier": 3.5
+      },
+      "best_fitness": 0.6124,
+      "best_metrics": {
+        "total_return": -0.973529,
+        "sharpe_ratio": 0.6124,
+        "max_drawdown": 0.9775,
+        "win_rate": 0.0345,
+        "profit_factor": 0.0016,
+        "calmar_ratio": 1.3492,
+        "sortino_ratio": 1.6045,
+        "total_trades": 29
+      },
+      "avg_fitness": 0.5016050000000001
+    },
+    {
+      "generation": 9,
+      "best_params": {
+        "fast_period": 6,
+        "slow_period": 30,
+        "signal_period": 15,
+        "atr_period": 20,
+        "atr_multiplier": 3.5
+      },
+      "best_fitness": 0.6131,
+      "best_metrics": {
+        "total_return": -0.973709,
+        "sharpe_ratio": 0.6131,
+        "max_drawdown": 0.9777,
+        "win_rate": 0.0345,
+        "profit_factor": 0.0016,
+        "calmar_ratio": 1.3513,
+        "sortino_ratio": 1.6045,
+        "total_trades": 29
+      },
+      "avg_fitness": 0.578425
+    },
+    {
+      "generation": 10,
+      "best_params": {
+        "fast_period": 6,
+        "slow_period": 30,
+        "signal_period": 15,
+        "atr_period": 20,
+        "atr_multiplier": 3.5
+      },
+      "best_fitness": 0.6131,
+      "best_metrics": {
+        "total_return": -0.973709,
+        "sharpe_ratio": 0.6131,
+        "max_drawdown": 0.9777,
+        "win_rate": 0.0345,
+        "profit_factor": 0.0016,
+        "calmar_ratio": 1.3513,
+        "sortino_ratio": 1.6045,
+        "total_trades": 29
+      },
+      "avg_fitness": 0.59277
+    }
+  ],
+  "pareto_front": [
+    {
+      "params": {
+        "fast_period": 6,
+        "slow_period": 30,
+        "signal_period": 15,
+        "atr_period": 20,
+        "atr_multiplier": 3.5
+      },
+      "sharpe": 0.6131,
+      "max_drawdown": 0.9777,
+      "sortino": 1.6045,
+      "win_rate": 0.0345
+    },
+    {
+      "params": {
+        "fast_period": 6,
+        "slow_period": 30,
+        "signal_period": 15,
+        "atr_period": 20,
+        "atr_multiplier": 3.5
+      },
+      "sharpe": 0.6131,
+      "max_drawdown": 0.9777,
+      "sortino": 1.6045,
+      "win_rate": 0.0345
+    },
+    {
+      "params": {
+        "fast_period": 6,
+        "slow_period": 30,
+        "signal_period": 15,
+        "atr_period": 20,
+        "atr_multiplier": 3.5
+      },
+      "sharpe": 0.6131,
+      "max_drawdown": 0.9777,
+      "sortino": 1.6045,
+      "win_rate": 0.0345
+    },
+    {
+      "params": {
+        "fast_period": 6,
+        "slow_period": 30,
+        "signal_period": 15,
+        "atr_period": 20,
+        "atr_multiplier": 3.5
+      },
+      "sharpe": 0.6131,
+      "max_drawdown": 0.9777,
+      "sortino": 1.6045,
+      "win_rate": 0.0345
+    },
+    {
+      "params": {
+        "fast_period": 6,
+        "slow_period": 30,
+        "signal_period": 15,
+        "atr_period": 20,
+        "atr_multiplier": 3.5
+      },
+      "sharpe": 0.6131,
+      "max_drawdown": 0.9777,
+      "sortino": 1.6045,
+      "win_rate": 0.0345
+    },
+    {
+      "params": {
+        "fast_period": 8,
+        "slow_period": 30,
+        "signal_period": 15,
+        "atr_period": 20,
+        "atr_multiplier": 3.5
+      },
+      "sharpe": 0.6124,
+      "max_drawdown": 0.9775,
+      "sortino": 1.6045,
+      "win_rate": 0.0345
+    },
+    {
+      "params": {
+        "fast_period": 8,
+        "slow_period": 30,
+        "signal_period": 15,
+        "atr_period": 20,
+        "atr_multiplier": 3.5
+      },
+      "sharpe": 0.6124,
+      "max_drawdown": 0.9775,
+      "sortino": 1.6045,
+      "win_rate": 0.0345
+    },
+    {
+      "params": {
+        "fast_period": 8,
+        "slow_period": 30,
+        "signal_period": 15,
+        "atr_period": 20,
+        "atr_multiplier": 3.5
+      },
+      "sharpe": 0.6124,
+      "max_drawdown": 0.9775,
+      "sortino": 1.6045,
+      "win_rate": 0.0345
+    },
+    {
+      "params": {
+        "fast_period": 8,
+        "slow_period": 30,
+        "signal_period": 15,
+        "atr_period": 20,
+        "atr_multiplier": 3.5
+      },
+      "sharpe": 0.6124,
+      "max_drawdown": 0.9775,
+      "sortino": 1.6045,
+      "win_rate": 0.0345
+    },
+    {
+      "params": {
+        "fast_period": 8,
+        "slow_period": 30,
+        "signal_period": 15,
+        "atr_period": 20,
+        "atr_multiplier": 3.5
+      },
+      "sharpe": 0.6124,
+      "max_drawdown": 0.9775,
+      "sortino": 1.6045,
+      "win_rate": 0.0345
+    },
+    {
+      "params": {
+        "fast_period": 8,
+        "slow_period": 30,
+        "signal_period": 15,
+        "atr_period": 20,
+        "atr_multiplier": 3.5
+      },
+      "sharpe": 0.6124,
+      "max_drawdown": 0.9775,
+      "sortino": 1.6045,
+      "win_rate": 0.0345
+    },
+    {
+      "params": {
+        "fast_period": 8,
+        "slow_period": 30,
+        "signal_period": 15,
+        "atr_period": 20,
+        "atr_multiplier": 3.5
+      },
+      "sharpe": 0.6124,
+      "max_drawdown": 0.9775,
+      "sortino": 1.6045,
+      "win_rate": 0.0345
+    },
+    {
+      "params": {
+        "fast_period": 8,
+        "slow_period": 30,
+        "signal_period": 15,
+        "atr_period": 20,
+        "atr_multiplier": 3.5
+      },
+      "sharpe": 0.6124,
+      "max_drawdown": 0.9775,
+      "sortino": 1.6045,
+      "win_rate": 0.0345
+    },
+    {
+      "params": {
+        "fast_period": 8,
+        "slow_period": 30,
+        "signal_period": 15,
+        "atr_period": 20,
+        "atr_multiplier": 3.5
+      },
+      "sharpe": 0.6124,
+      "max_drawdown": 0.9775,
+      "sortino": 1.6045,
+      "win_rate": 0.0345
+    }
+  ],
+  "note": "\u57fa\u4e8e\u672c\u5730\u6a21\u62df OHLCV \u6570\u636e\u7684\u9057\u4f20\u7b97\u6cd5\u4f18\u5316\u7ed3\u679c"
+}
