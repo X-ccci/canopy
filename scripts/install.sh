@@ -69,11 +69,12 @@ fi
 
 cp -R "$APP_SOURCE" "$APP_TARGET"
 
-# ── 第 2 步: 设置权限 ──
+# ── 第 2 步: 清除隔离属性 + 设置权限 ──
+log_info "清除 Gatekeeper 隔离属性..."
+xattr -cr "$APP_TARGET"
+xattr -dr com.apple.quarantine "$APP_TARGET" 2>/dev/null || true
 log_info "设置权限..."
 chmod -R 755 "$APP_TARGET"
-# 移除 quarantine 属性（避免 macOS Gatekeeper 拦截）
-xattr -d com.apple.quarantine "$APP_TARGET" 2>/dev/null || true
 
 # ── 第 3 步: 创建 /usr/local/bin/canopy 启动器 ──
 log_info "创建命令行启动器: $LAUNCHER"

@@ -135,35 +135,8 @@ cat > "$LAUNCH_SCRIPT" << 'LAUNCHEREOF'
 #!/usr/bin/env bash
 set -euo pipefail
 
-# ── 定位项目根目录 ──
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-# .app bundle 内: Contents/MacOS/Canopy → 项目根目录
-PROJECT_ROOT="/Users/cccc/Desktop/canopy"
-
-# ── 激活虚拟环境（按优先级查找） ──
-activate_venv() {
-    local venv_candidates=(
-        "${PROJECT_ROOT}/.venv/bin/activate"
-        "${PROJECT_ROOT}/venv/bin/activate"
-        "${PROJECT_ROOT}/env/bin/activate"
-    )
-    for activate_script in "${venv_candidates[@]}"; do
-        if [[ -f "$activate_script" ]]; then
-            source "$activate_script"
-            return 0
-        fi
-    done
-    return 1
-}
-
-if ! activate_venv; then
-    # 尝试直接用 python3
-    :
-fi
-
-# ── 切换到项目目录并启动 ──
-cd "$PROJECT_ROOT"
-exec python3 -m canopy.main "$@"
+cd /Users/cccc/Desktop/canopy
+exec python3 -m canopy.main --web --no-desktop "$@"
 LAUNCHEREOF
 
 chmod +x "$LAUNCH_SCRIPT"
