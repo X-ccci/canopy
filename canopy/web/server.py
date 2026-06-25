@@ -84,7 +84,7 @@ def create_app() -> FastAPI:
     @app.get("/")
     async def root():
         """主页面"""
-        index_path = static_dir / "index.html"
+        index_path = Path(__file__).parent / "index.html"
         if index_path.exists():
             return FileResponse(str(index_path))
         return HTMLResponse("<h1>Canopy Dashboard</h1><p>index.html not found</p>")
