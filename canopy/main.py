@@ -1,7 +1,12 @@
 """
 Canopy 桌面应用入口
 使用 pywebview 加载 Nature-Tech 前端，并通过 JS API 桥接 Python 后端。
+
+双模式支持：
+  - 桌面模式（默认）：pywebview 原生窗口
+  - Web 模式（--web）：FastAPI 服务器（配合浏览器访问）
 """
+import argparse
 import os
 import sys
 
@@ -15,6 +20,7 @@ from canopy.engine.backtest_runner import BacktestRunner
 from canopy.engine.runner import StrategyRunner
 from canopy.exchange.ccxt_adapter import ExchangeAdapter
 from canopy.exchange.multi_adapter import MultiExchangeManager
+from canopy.web.server import create_app, set_api
 
 
 class CanopyAPI:
@@ -394,24 +400,72 @@ class CanopyAPI:
 
 
 def main():
+    parser = argparse.ArgumentParser(
+        description="Canopy · Nature-Tech Trading Terminal",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    parser.add_argument("--web", action="store_true",
+                        help="启动 Web Dashboard 模式（FastAPI 服务器）")
+    parser.add_argument("--port", type=int, default=8080,
+                        help="Web 模式端口（默认 8080）")
+    parser.add_argument("--host", type=str, default="0.0.0.0",
+                        help="Web 模式监听地址（默认 0.0.0.0）")
+    parser.add_argument("--no-desktop", action="store_true",
+                        help="Web 模式下不启动 pywebview 桌面窗口")
+
+    args = parser.parse_args()
+
     api = CanopyAPI()
 
-    # 获取 HTML 文件路径（相对于当前文件的 web/index.html）
-    html_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'web', 'index.html')
+    # ── Web 模式：启动 FastAPI 服务器 ──
+    if args.web:
+        import uvicorn
+        set_api(api)                          # 注入 CanopyAPI 实例
+        app = create_app()
 
-    # 创建 pywebview 窗口
-    webview.create_window(
-        title='Canopy · Nature-Tech Trading Terminal',
-        url=html_path,
-        js_api=api,
-        width=1400,
-        height=900,
-        min_size=(960, 600),
-        resizable=True,
-        fullscreen=False,
-    )
+        # 如果同时启动桌面窗口
+        if not args.no_desktop:
+            import threading
 
-    webview.start(debug=True)
+            def start_web():
+                uvicorn.run(app, host=args.host, port=args.port, log_level="info")
+
+            web_thread = threading.Thread(target=start_web, daemon=True)
+            web_thread.start()
+            print(f"[Web] FastAPI 服务器已启动: http://localhost:{args.port}")
+
+            # 启动 pywebview 桌面窗口（同时运行）
+            html_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'web', 'index.html')
+            webview.create_window(
+                title='Canopy · Nature-Tech Trading Terminal',
+                url=html_path,
+                js_api=api,
+                width=1400,
+                height=900,
+                min_size=(960, 600),
+                resizable=True,
+                fullscreen=False,
+            )
+            webview.start(debug=True)
+        else:
+            # 纯 Web 模式，无桌面窗口
+            print(f"[Web] Canopy Dashboard 启动: http://localhost:{args.port}")
+            uvicorn.run(app, host=args.host, port=args.port, log_level="info")
+
+    else:
+        # ── 桌面模式（默认）：pywebview 原生窗口 ──
+        html_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'web', 'index.html')
+        webview.create_window(
+            title='Canopy · Nature-Tech Trading Terminal',
+            url=html_path,
+            js_api=api,
+            width=1400,
+            height=900,
+            min_size=(960, 600),
+            resizable=True,
+            fullscreen=False,
+        )
+        webview.start(debug=True)
 
 
 if __name__ == '__main__':

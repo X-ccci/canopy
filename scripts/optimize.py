@@ -101,9 +101,7 @@ def fetch_candles(args: argparse.Namespace) -> list[dict]:
 
     adapter = ExchangeAdapter(
         exchange_id=config.exchange,
-        api_key=config.api_key,  # type: ignore[call-arg]
-        api_secret=config.api_secret,
-        testnet=config.testnet,
+        config=config,
     )
     fetcher = DataFetcher(adapter, cache_dir=config.data_cache_dir)
 
