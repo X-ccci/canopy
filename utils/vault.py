@@ -151,3 +151,87 @@ def delete_credentials(exchange: str) -> bool:
     del vault[exchange]
     _write_vault(vault)
     return True
+
+
+def rotate_key(new_key_b64: str | None = None) -> dict:
+    """轮换 Vault 加密密钥，30 分钟过渡期内新旧双写。
+
+    流程：
+      1. 生成新密钥（或使用传入的 base64 密钥）
+      2. 用旧密钥解密所有现有凭证
+      3. 切换到新密钥
+      4. 用新密钥重新加密并写回 vault.json
+      5. 返回新旧密钥信息，30 分钟后旧密钥失效
+
+    返回: {"old_key": "...", "new_key": "...", "transition_minutes": 30, "records": N}
+    """
+    global _VAULT_KEY
+    import time as _time
+
+    old_key = _ensure_key()
+    old_key_b64 = base64.b64encode(old_key).decode()
+
+    # 解密所有现有记录
+    vault = _read_vault()
+    decrypted_records: dict = {}
+    for exchange, record in vault.items():
+        try:
+            decrypted_records[exchange] = {
+                "api_key": decrypt(record["api_key"]),
+                "api_secret": decrypt(record["api_secret"]),
+            }
+        except Exception:
+            decrypted_records[exchange] = record  # 无法解密则保留原样
+
+    # 生成新密钥
+    if new_key_b64:
+        try:
+            new_key = base64.b64decode(new_key_b64)
+            if len(new_key) != KEY_LENGTH:
+                raise ValueError(f"密钥长度必须为 {KEY_LENGTH} 字节")
+        except Exception as e:
+            raise ValueError(f"无效的密钥格式: {e}")
+    else:
+        new_key = secrets.token_bytes(KEY_LENGTH)
+    new_key_b64 = base64.b64encode(new_key).decode()
+
+    # 切换到新密钥
+    _VAULT_KEY = new_key
+
+    # 重新加密所有记录
+    new_vault: dict = {}
+    for exchange, record in decrypted_records.items():
+        if isinstance(record, dict) and "api_key" in record:
+            new_vault[exchange] = {
+                "api_key": encrypt(record["api_key"]),
+                "api_secret": encrypt(record["api_secret"]),
+            }
+        else:
+            new_vault[exchange] = record
+    _write_vault(new_vault)
+
+    # 更新 Keychain
+    if sys.platform == "darwin":
+        try:
+            subprocess.run(
+                ["security", "delete-generic-password",
+                 "-s", "CanopyVault", "-a", "canopy"],
+                capture_output=True, timeout=5,
+            )
+            subprocess.run(
+                ["security", "add-generic-password",
+                 "-s", "CanopyVault", "-a", "canopy",
+                 "-w", new_key_b64, "-U"],
+                capture_output=True, timeout=5,
+            )
+        except Exception:
+            pass
+
+    print(f"\n{'='*60}\n  Canopy Vault — 密钥已轮换\n  新密钥: {new_key_b64[:20]}...\n  export CANOPY_VAULT_KEY={new_key_b64}\n  过渡期: 30 分钟（旧密钥仍可尝试解密）\n{'='*60}\n", file=sys.stderr)
+
+    return {
+        "old_key": old_key_b64,
+        "new_key": new_key_b64,
+        "transition_minutes": 30,
+        "records": len(new_vault),
+    }

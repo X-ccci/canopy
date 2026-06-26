@@ -116,6 +116,9 @@
       <button class="nav-link" id="nav-backtest">回测</button>
       <button class="nav-link" id="nav-optimize">优化</button>
       <button class="nav-link" id="nav-orders">订单</button>
+      <button class="nav-link" id="nav-marketplace">市场</button>
+      <button class="nav-link" id="nav-paper">模拟盘</button>
+      <button class="nav-link" id="nav-risk">风控</button>
     </div>
     <button class="hamburger-btn" id="hamburgerBtn" aria-label="菜单">
       <span></span><span></span><span></span>
@@ -139,6 +142,9 @@
     <button class="nav-link" id="nav-backtest-mb">回测</button>
     <button class="nav-link" id="nav-optimize-mb">优化</button>
     <button class="nav-link" id="nav-orders-mb">订单</button>
+    <button class="nav-link" id="nav-marketplace-mb">市场</button>
+    <button class="nav-link" id="nav-paper-mb">模拟盘</button>
+    <button class="nav-link" id="nav-risk-mb">风控</button>
   </div>
 
   <!-- KPI Row -->
@@ -444,6 +450,61 @@
           <thead><tr><th>编号</th><th>交易对</th><th>方向</th><th>类型</th><th>价格</th><th>数量</th><th>已成交</th><th>状态</th></tr></thead>
           <tbody id="ord-tbody"></tbody>
         </table>
+      </div>
+    </div>
+
+    <!-- ===== Marketplace Panel ===== -->
+    <div id="marketplace-panel" style="display:none; grid-column: 1 / -1;">
+      <div class="glass-card" style="margin-bottom: 16px; padding: 16px; display: flex; align-items: center; gap: 12px;">
+        <div style="flex: 1; font-weight: 600; color: var(--text-secondary);">策略市场</div>
+        <button id="mp-refresh" class="btn-accent" style="padding: 6px 16px; background: var(--accent); color: #fff; border: none; border-radius: 8px; cursor: pointer;">刷新</button>
+      </div>
+      <div class="glass-card" style="padding: 16px;">
+        <table class="strategy-table" style="width: 100%;">
+          <thead><tr><th>策略名称</th><th>类型</th><th>描述</th><th>作者</th><th>导入时间</th><th>操作</th></tr></thead>
+          <tbody id="mp-tbody"><tr><td colspan="6" style="text-align:center; opacity:0.4;">加载中...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ===== Paper Trading Panel ===== -->
+    <div id="paper-panel" style="display:none; grid-column: 1 / -1;">
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px;" id="paper-kpi-grid">
+        <div class="glass-card" style="padding: 14px; text-align: center;"><div style="font-size:11px; color:var(--text-muted);">账户余额</div><div class="kpi-value" id="paper-balance">$100,000</div></div>
+        <div class="glass-card" style="padding: 14px; text-align: center;"><div style="font-size:11px; color:var(--text-muted);">累计盈亏</div><div class="kpi-value" id="paper-pnl">$0</div></div>
+        <div class="glass-card" style="padding: 14px; text-align: center;"><div style="font-size:11px; color:var(--text-muted);">盈亏率</div><div class="kpi-value" id="paper-pnl-pct">0%</div></div>
+        <div class="glass-card" style="padding: 14px; text-align: center;"><div style="font-size:11px; color:var(--text-muted);">持仓数</div><div class="kpi-value" id="paper-pos-count">0</div></div>
+      </div>
+
+      <div class="glass-card" style="margin-bottom: 16px; padding: 16px;">
+        <div class="card-header">快速下单</div>
+        <div class="order-form" style="display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap;">
+          <div class="input-group"><label>交易对</label><select id="paper-symbol"><option>BTC/USDT</option><option>ETH/USDT</option><option>SOL/USDT</option><option>BNB/USDT</option></select></div>
+          <div class="input-group"><label>方向</label><select id="paper-side"><option value="buy">买入</option><option value="sell">卖出</option></select></div>
+          <div class="input-group"><label>数量</label><input id="paper-amount" type="number" value="0.01" step="0.01"></div>
+          <div class="input-group"><label>价格</label><input id="paper-price" type="number" value="68000" step="0.01"></div>
+          <button id="paper-submit" class="btn-accent" style="padding: 8px 20px; background: var(--accent); color: #fff; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">下单</button>
+        </div>
+      </div>
+
+      <div class="glass-card" style="padding: 16px;">
+        <div class="card-header">模拟盘订单</div>
+        <table class="strategy-table" style="width: 100%; margin-top: 8px;">
+          <thead><tr><th>订单ID</th><th>交易对</th><th>方向</th><th>数量</th><th>价格</th><th>状态</th><th>时间</th></tr></thead>
+          <tbody id="paper-orders-tbody"><tr><td colspan="7" style="text-align:center; opacity:0.4;">暂无订单</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ===== Risk Panel ===== -->
+    <div id="risk-panel" style="display:none; grid-column: 1 / -1;">
+      <div class="glass-card" style="margin-bottom: 16px; padding: 16px;">
+        <div class="card-header">6步风控审批链</div>
+        <div id="risk-chain" style="display: flex; flex-direction: column; gap: 8px; margin-top: 12px;"></div>
+      </div>
+      <div class="glass-card" style="padding: 16px;">
+        <div class="card-header">熔断时间轴</div>
+        <div id="cb-timeline" style="margin-top: 12px;"></div>
       </div>
     </div>
 
@@ -1031,6 +1092,165 @@ navOptimize.addEventListener('click', function() {
 
 document.getElementById('opt-run').addEventListener('click', startOptimization);
 document.getElementById('opt-load').addEventListener('click', loadBestParams);
+
+// ============ 策略市场逻辑 ============
+
+async function refreshMarketplace() {
+  try {
+    const resp = await fetch('/api/marketplace');
+    const data = await resp.json();
+    const tbody = document.getElementById('mp-tbody');
+    if (!tbody) return;
+    const strategies = data.strategies || [];
+    if (strategies.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; opacity:0.4;">市场暂无策略</td></tr>';
+      return;
+    }
+    tbody.innerHTML = strategies.map(s => `<tr>
+      <td style="font-weight:600;">${s.name}</td><td>${s.type}</td>
+      <td style="font-size:12px; opacity:0.8;">${s.description || '-'}</td>
+      <td>${s.author}</td><td style="font-size:11px;">${(s.imported_at||'').slice(0,10)}</td>
+      <td><button class="btn-accent" style="padding:4px 12px; font-size:11px; background:var(--accent); color:#fff; border:none; border-radius:6px; cursor:pointer;" onclick="importStrategy('${s.name}','${s.type}')">导入</button></td>
+    </tr>`).join('');
+  } catch(e) { console.error('Marketplace error:', e); }
+}
+
+async function importStrategy(name, type) {
+  try {
+    await fetch('/api/marketplace/import', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({name: name+'_copy', type, description:'从市场导入', author:'local'}),
+    });
+    refreshMarketplace();
+  } catch(e) { console.error('Import error:', e); }
+}
+
+const navMp = document.getElementById('nav-marketplace');
+const mpPanel = document.getElementById('marketplace-panel');
+const allCardsForMp = mainGrid ? mainGrid.querySelectorAll(':scope > :not(#backtest-panel):not(#orders-panel):not(#optimize-panel):not(#marketplace-panel):not(#paper-panel):not(#risk-panel)') : [];
+
+navMp.addEventListener('click', function() {
+  document.querySelectorAll('.nav-link').forEach(x => x.classList.remove('active'));
+  this.classList.add('active');
+  [backtestPanel, optimizePanel, ordersPanel, document.getElementById('paper-panel'), document.getElementById('risk-panel')].forEach(p => { if(p) p.style.display = 'none'; });
+  const isActive = mpPanel.style.display !== 'none';
+  if (isActive) { mpPanel.style.display = 'none'; allCardsForMp.forEach(el => el.style.display = ''); }
+  else { mpPanel.style.display = ''; allCardsForMp.forEach(el => el.style.display = 'none'); refreshMarketplace(); }
+});
+document.getElementById('mp-refresh').addEventListener('click', refreshMarketplace);
+
+// ============ 模拟盘逻辑 ============
+
+async function refreshPaperAccount() {
+  try {
+    const resp = await fetch('/api/paper/account');
+    const data = await resp.json();
+    document.getElementById('paper-balance').textContent = '$'+data.balance.toLocaleString();
+    const pnlEl = document.getElementById('paper-pnl');
+    pnlEl.textContent = (data.pnl>=0?'+':'')+'$'+data.pnl.toLocaleString();
+    pnlEl.style.color = data.pnl>=0 ? 'var(--accent)' : 'var(--negative)';
+    document.getElementById('paper-pnl-pct').textContent = (data.pnl_pct>=0?'+':'')+data.pnl_pct+'%';
+    document.getElementById('paper-pos-count').textContent = Object.keys(data.positions||{}).length;
+  } catch(e) { console.error('Paper account error:', e); }
+}
+
+async function refreshPaperOrders() {
+  try {
+    const resp = await fetch('/api/paper/orders?limit=50');
+    const orders = await resp.json();
+    const tbody = document.getElementById('paper-orders-tbody');
+    if (!tbody) return;
+    if (!orders || orders.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; opacity:0.4;">暂无订单</td></tr>';
+      return;
+    }
+    tbody.innerHTML = orders.reverse().map(o => {
+      const sideCls = o.side==='buy' ? 'pnl-up' : 'pnl-down';
+      return `<tr><td style="font-size:11px;">${o.id}</td><td>${o.symbol}</td><td class="${sideCls}" style="font-weight:600;">${o.side.toUpperCase()}</td>
+      <td>${o.amount}</td><td>$${Number(o.price).toLocaleString()}</td><td><span class="card-badge badge-accent">${o.status}</span></td>
+      <td style="font-size:11px;">${(o.created_at||'').slice(0,19)}</td></tr>`;
+    }).join('');
+  } catch(e) { console.error('Paper orders error:', e); }
+}
+
+async function submitPaperTrade() {
+  const symbol = document.getElementById('paper-symbol').value;
+  const side = document.getElementById('paper-side').value;
+  const amount = document.getElementById('paper-amount').value;
+  const price = document.getElementById('paper-price').value;
+  try {
+    const resp = await fetch('/api/paper/trade', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({symbol, side, amount: parseFloat(amount), price: parseFloat(price)}),
+    });
+    const data = await resp.json();
+    if (data.status === 'error') { alert('下单失败: '+data.reason); return; }
+    refreshPaperAccount();
+    refreshPaperOrders();
+  } catch(e) { console.error('Paper trade error:', e); }
+}
+
+const navPaper = document.getElementById('nav-paper');
+const paperPanel = document.getElementById('paper-panel');
+
+navPaper.addEventListener('click', function() {
+  document.querySelectorAll('.nav-link').forEach(x => x.classList.remove('active'));
+  this.classList.add('active');
+  [backtestPanel, optimizePanel, ordersPanel, mpPanel, document.getElementById('risk-panel')].forEach(p => { if(p) p.style.display = 'none'; });
+  const isActive = paperPanel.style.display !== 'none';
+  if (isActive) { paperPanel.style.display = 'none'; allCardsForMp.forEach(el => el.style.display = ''); }
+  else { paperPanel.style.display = ''; allCardsForMp.forEach(el => el.style.display = 'none'); refreshPaperAccount(); refreshPaperOrders(); }
+});
+document.getElementById('paper-submit').addEventListener('click', submitPaperTrade);
+
+// ============ 风控逻辑 ============
+
+async function refreshRisk() {
+  try {
+    const resp = await fetch('/api/risk/status');
+    const data = await resp.json();
+    const chainEl = document.getElementById('risk-chain');
+    if (chainEl && data.chain) {
+      chainEl.innerHTML = data.chain.map(s => {
+        const icon = s.passed ? '&#9989;' : '&#10060;';
+        const borderColor = s.passed ? 'var(--accent)' : 'var(--negative)';
+        const bgColor = s.passed ? 'rgba(80,200,120,0.08)' : 'rgba(239,68,68,0.08)';
+        return `<div style="display:flex;align-items:center;gap:12px;padding:10px 14px;border:1px solid ${borderColor};border-radius:8px;background:${bgColor};">
+          <span style="font-size:18px;">${icon}</span>
+          <div style="flex:1;"><div style="font-weight:600;font-size:13px;">步骤${s.step}: ${s.name}</div>
+          <div style="font-size:11px;color:var(--text-muted);">${s.reason}</div></div>
+          <span style="font-size:11px;color:var(--text-muted);">${(s.checked_at||'').slice(0,19)}</span></div>`;
+      }).join('');
+    }
+    const cbEl = document.getElementById('cb-timeline');
+    if (cbEl && data.circuit_breaker) {
+      cbEl.innerHTML = (data.circuit_breaker.history||[]).map(h => {
+        const colors = {warning:'#f59e0b', info:'#3b82f6', critical:'#ef4444'};
+        const labels = {warning:'预警', info:'信息', critical:'熔断'};
+        return `<div style="display:flex;align-items:flex-start;gap:12px;padding:8px 0;border-left:2px solid ${colors[h.level]||'#666'};padding-left:14px;margin-bottom:8px;">
+          <div style="font-size:11px;color:var(--text-muted);min-width:80px;">${(h.time||'').slice(0,16)}</div>
+          <div><span style="display:inline-block;padding:1px 8px;border-radius:4px;font-size:10px;font-weight:600;color:#fff;background:${colors[h.level]};">${labels[h.level]}</span>
+          <div style="font-weight:600;font-size:13px;margin-top:2px;">${h.event}</div>
+          <div style="font-size:11px;color:var(--text-muted);">${h.detail}</div></div></div>`;
+      }).join('');
+      if (!data.circuit_breaker.history || data.circuit_breaker.history.length===0) {
+        cbEl.innerHTML = '<div style="opacity:0.4;text-align:center;padding:20px;">暂无熔断记录</div>';
+      }
+    }
+  } catch(e) { console.error('Risk error:', e); }
+}
+
+const navRisk = document.getElementById('nav-risk');
+const riskPanel = document.getElementById('risk-panel');
+
+navRisk.addEventListener('click', function() {
+  document.querySelectorAll('.nav-link').forEach(x => x.classList.remove('active'));
+  this.classList.add('active');
+  [backtestPanel, optimizePanel, ordersPanel, mpPanel, paperPanel].forEach(p => { if(p) p.style.display = 'none'; });
+  const isActive = riskPanel.style.display !== 'none';
+  if (isActive) { riskPanel.style.display = 'none'; allCardsForMp.forEach(el => el.style.display = ''); }
+  else { riskPanel.style.display = ''; allCardsForMp.forEach(el => el.style.display = 'none'); refreshRisk(); }
+});
 </script>
 <!-- ===== Charts Initialization ===== -->
 <script>

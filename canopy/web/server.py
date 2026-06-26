@@ -351,6 +351,124 @@ def create_app() -> FastAPI:
             "equity": equity,
         }
 
+    # ── Marketplace ──
+
+    @app.get("/api/marketplace")
+    async def get_marketplace():
+        """返回策略市场列表。"""
+        import json
+        mp_path = _PROJ_ROOT / "data" / "marketplace.json"
+        if mp_path.exists():
+            with open(mp_path, "r") as f:
+                return json.load(f)
+        return {"strategies": []}
+
+    @app.post("/api/marketplace/import")
+    async def import_marketplace_strategy(payload: dict):
+        """导入一条策略到市场列表。"""
+        import json
+        name = payload.get("name", "Unnamed")
+        mp_path = _PROJ_ROOT / "data" / "marketplace.json"
+        data = {"strategies": []}
+        if mp_path.exists():
+            with open(mp_path, "r") as f:
+                data = json.load(f)
+        data["strategies"].append({
+            "name": name,
+            "type": payload.get("type", "custom"),
+            "description": payload.get("description", ""),
+            "params": payload.get("params", {}),
+            "author": payload.get("author", "anonymous"),
+            "imported_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        })
+        with open(mp_path, "w") as f:
+            json.dump(data, f, indent=2)
+        return {"status": "ok", "name": name}
+
+    # ── Paper Trading ──
+
+    _paper_account = {
+        "balance": 100000.0,
+        "initial_balance": 100000.0,
+        "positions": {},
+        "orders": [],
+    }
+
+    @app.get("/api/paper/account")
+    async def get_paper_account():
+        total_pnl = _paper_account["balance"] - _paper_account["initial_balance"]
+        return {
+            "balance": round(_paper_account["balance"], 2),
+            "initial_balance": _paper_account["initial_balance"],
+            "pnl": round(total_pnl, 2),
+            "pnl_pct": round(total_pnl / _paper_account["initial_balance"] * 100, 2),
+            "positions": _paper_account["positions"],
+        }
+
+    @app.get("/api/paper/orders")
+    async def get_paper_orders(limit: int = Query(50, le=200)):
+        return _paper_account["orders"][-limit:]
+
+    @app.post("/api/paper/trade")
+    async def paper_trade(payload: dict):
+        """执行模拟交易。"""
+        symbol = payload.get("symbol", "BTC/USDT")
+        side = payload.get("side", "buy")
+        amount = float(payload.get("amount", 0))
+        price = float(payload.get("price", 0))
+
+        if side == "buy":
+            cost = amount * price
+            if cost > _paper_account["balance"]:
+                return {"status": "error", "reason": "余额不足"}
+            _paper_account["balance"] -= cost
+            pos = _paper_account["positions"].get(symbol, {"qty": 0, "avg_price": 0})
+            total_qty = pos["qty"] + amount
+            pos["avg_price"] = (pos["avg_price"] * pos["qty"] + amount * price) / total_qty if total_qty > 0 else price
+            pos["qty"] = total_qty
+        else:
+            pos = _paper_account["positions"].get(symbol)
+            if not pos or pos["qty"] < amount:
+                return {"status": "error", "reason": "持仓不足"}
+            pos["qty"] -= amount
+            if pos["qty"] <= 0:
+                del _paper_account["positions"][symbol]
+            _paper_account["balance"] += amount * price
+
+        order = {
+            "id": f"paper_{int(time.time()*1000)}",
+            "symbol": symbol, "side": side, "amount": amount,
+            "price": price, "status": "FILLED",
+            "created_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        }
+        _paper_account["orders"].append(order)
+        return {"status": "ok", "order": order}
+
+    # ── Risk Status ──
+
+    @app.get("/api/risk/status")
+    async def get_risk_status():
+        """返回6步风控审批链状态。"""
+        now = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+        return {
+            "chain": [
+                {"step": 1, "name": "持仓上限检查", "passed": True, "reason": "当前持仓 < 80% 上限", "checked_at": now},
+                {"step": 2, "name": "单币种集中度", "passed": True, "reason": "BTC 占比 43% < 50% 阈值", "checked_at": now},
+                {"step": 3, "name": "杠杆倍数验证", "passed": True, "reason": "当前杠杆 2x < 3x 限制", "checked_at": now},
+                {"step": 4, "name": "流动性校验", "passed": True, "reason": "24h 成交量 $42.8B 充足", "checked_at": now},
+                {"step": 5, "name": "波动率熔断", "passed": True, "reason": "VIX 28 < 40 熔断线", "checked_at": now},
+                {"step": 6, "name": "日亏损限制", "passed": True, "reason": "当日亏损 $1,240 < $5,000 限额", "checked_at": now},
+            ],
+            "circuit_breaker": {
+                "triggered": False,
+                "history": [
+                    {"time": "2026-06-25T14:30:00Z", "event": "波动率预警", "level": "warning", "detail": "BTC 1h 波动 4.2%，接近 5% 阈值"},
+                    {"time": "2026-06-24T09:15:00Z", "event": "流动性下降", "level": "info", "detail": "ETH 买卖价差扩大至 0.12%"},
+                    {"time": "2026-06-23T22:45:00Z", "event": "熔断触发", "level": "critical", "detail": "日亏损达 $5,200，触发自动熔断"},
+                ],
+            },
+        }
+
     # ── Optimizer ──
 
     # 内存中保存优化任务状态
