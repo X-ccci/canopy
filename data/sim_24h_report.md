@@ -1,3 +1,14 @@
+---
+AIGC:
+    Label: "1"
+    ContentProducer: 001191440300708461136T1XGW3
+    ProduceID: dfa59edf71882ac3e29663828f688f4a_b196369c70e211f1aabe5254007bceed
+    ReservedCode1: A/WRLVDOyhvbzSNtIkV85M7HU3N7aRgqFyo4AH/VcJFYI2YO52SCdtNPOr7v6FtDrc0U/DhSBODnuJcYvx5TnjwtShZkhMdLceJiLmfGZJ4RLmf/SOxsRnAuHnUGC4lySDhK6YJxEKFlQHpwizCPbWTClQWBLw5jjCJ3IT1jeAMV7n6oYBnBTF3YIys=
+    ContentPropagator: 001191440300708461136T1XGW3
+    PropagateID: dfa59edf71882ac3e29663828f688f4a_b196369c70e211f1aabe5254007bceed
+    ReservedCode2: A/WRLVDOyhvbzSNtIkV85M7HU3N7aRgqFyo4AH/VcJFYI2YO52SCdtNPOr7v6FtDrc0U/DhSBODnuJcYvx5TnjwtShZkhMdLceJiLmfGZJ4RLmf/SOxsRnAuHnUGC4lySDhK6YJxEKFlQHpwizCPbWTClQWBLw5jjCJ3IT1jeAMV7n6oYBnBTF3YIys=
+---
+
 # Canopy 24小时模拟交易报告
 
 **生成时间**: 2026-06-26 06:07:53
@@ -53,3 +64,4 @@
 - 以上结果基于历史数据回测，不代表未来表现
 - Arbitrage Nexus 策略在单所模式下无跨所数据，实际表现为无交易
 - 模拟未考虑滑点和手续费外的市场冲击成本
+*（内容由AI生成，仅供参考）*

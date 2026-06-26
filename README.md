@@ -118,5 +118,48 @@ python canopy/main.py
 - **后端**: Python 3.x, CCXT, pandas, pywebview
 - **前端**: 原生 JS + Canvas, Nature-Tech Glass 设计系统 (Emerald/Amber/Amethyst/Rose × 暗色/亮色)
 - **数据**: Parquet 本地缓存
-*（内容由AI生成，仅供参考）*
-*（内容由AI生成，仅供参考）*
+
+## 功能总览
+
+| 模块 | 说明 |
+|---|---|
+| 策略引擎 | 5 种零交易策略 (网格/趋势/套利/动量/均值回归) |
+| 多交易所 | Binance + OKX + Bybit 并行执行，跨所价差检测 |
+| 遗传优化器 | Web UI 可视化调参，种群/代数进度条 |
+| 回测系统 | 完整回测 + 多策略对比，KPI 卡片展示 |
+| 30 天模拟 | 真实数据日频记录 PnL/Sharpe/MDD，输出月报 |
+| 渠道告警 | Telegram + 微信 Server酱 + 飞书三端并行推送 |
+| 移动端 | 响应式布局，汉堡菜单，触摸优化 |
+| VPS 部署 | 一键脚本 + Docker Compose 生产配置 |
+
+## 社区与支持
+
+### Star History
+
+如果这个项目对你有帮助，请点亮右上角的 Star，这将帮助更多人发现 Canopy。
+
+### 捐赠
+
+维护一个开源交易终端需要大量时间与精力。如果你觉得 Canopy 有价值，欢迎通过以下方式支持：
+
+- **BTC**: `bc1qxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`
+- **ETH/USDT (ERC20)**: `0xXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX`
+- **币安智能链 (BEP20)**: `0xXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX`
+
+### 贡献指南
+
+1. Fork 本仓库
+2. 创建特性分支 (`git checkout -b feat/amazing-feature`)
+3. 提交更改 (`git commit -m 'Add amazing feature'`)
+4. 推送分支 (`git push origin feat/amazing-feature`)
+5. 发起 Pull Request
+
+欢迎贡献新策略、新交易所适配器或 UI 主题。
+
+### 许可证
+
+MIT License — 详见 `LICENSE` 文件。
+
+---
+
+*Canopy：让算法在森林中呼吸。*

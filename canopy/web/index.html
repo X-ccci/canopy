@@ -108,14 +108,18 @@
       <div class="nav-logo"></div>
       <span class="nav-title">Nature-Tech Terminal</span>
     </div>
-    <div class="nav-links">
+    <div class="nav-links" id="navLinks">
       <button class="nav-link active">仪表盘</button>
       <button class="nav-link">交易</button>
       <button class="nav-link">持仓</button>
       <button class="nav-link">分析</button>
       <button class="nav-link" id="nav-backtest">回测</button>
+      <button class="nav-link" id="nav-optimize">优化</button>
       <button class="nav-link" id="nav-orders">订单</button>
     </div>
+    <button class="hamburger-btn" id="hamburgerBtn" aria-label="菜单">
+      <span></span><span></span><span></span>
+    </button>
     <div class="nav-right">
       <button class="theme-toggle-btn" id="themeToggleBtn" title="Toggle Light/Dark">
         <svg class="sun-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
@@ -125,6 +129,17 @@
       <button class="settings-btn" id="settingsBtn" title="Settings">⚙</button>
     </div>
   </nav>
+
+  <!-- Mobile nav dropdown -->
+  <div class="nav-mobile-dropdown" id="navMobileDropdown">
+    <button class="nav-link active">仪表盘</button>
+    <button class="nav-link">交易</button>
+    <button class="nav-link">持仓</button>
+    <button class="nav-link">分析</button>
+    <button class="nav-link" id="nav-backtest-mb">回测</button>
+    <button class="nav-link" id="nav-optimize-mb">优化</button>
+    <button class="nav-link" id="nav-orders-mb">订单</button>
+  </div>
 
   <!-- KPI Row -->
   <div class="kpi-row">
@@ -171,6 +186,7 @@
         <span class="card-badge badge-accent real-content">实时刷新</span>
         <span class="skeleton skeleton-badge skeleton-only"></span>
       </div>
+      <div class="table-scroll real-content">
       <table class="strategy-table real-content">
         <thead><tr><th>策略</th><th>交易对</th><th>信号</th><th>入场价</th><th>当前价</th><th>盈亏</th><th>状态</th></tr></thead>
         <tbody>
@@ -181,6 +197,7 @@
           <tr><td>波动收割</td><td>AVAX/USDT</td><td>0</td><td>$38.50</td><td>$36.90</td><td class="pnl-down">-4.16%</td><td><span class="card-badge badge-accent">已止损</span></td></tr>
         </tbody>
       </table>
+      </div>
       <!-- Skeleton rows -->
       <div class="skeleton-only" style="display:flex;flex-direction:column;gap:8px">
         <div class="skeleton skeleton-row"></div><div class="skeleton skeleton-row"></div><div class="skeleton skeleton-row"></div><div class="skeleton skeleton-row"></div><div class="skeleton skeleton-row"></div>
@@ -367,6 +384,55 @@
       </div>
     </div>
 
+    <!-- ===== Optimizer Panel ===== -->
+    <div id="optimize-panel" style="display:none; grid-column: 1 / -1;">
+      <!-- 优化控制栏 -->
+      <div class="glass-card" style="margin-bottom: 16px; padding: 16px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+        <select id="opt-strategy" style="padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--card); color: var(--text);">
+          <option value="trend">趋势跟踪</option>
+          <option value="grid">网格交易</option>
+          <option value="arbitrage">套利</option>
+          <option value="momentum">动量突破</option>
+          <option value="mean_reversion">均值回归</option>
+        </select>
+        <select id="opt-symbol" style="padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--card); color: var(--text);">
+          <option value="BTC/USDT">BTC/USDT</option>
+          <option value="ETH/USDT">ETH/USDT</option>
+          <option value="BNB/USDT">BNB/USDT</option>
+        </select>
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <label style="font-size: 11px; color: var(--text-muted);">种群</label>
+          <input id="opt-pop" type="number" value="30" min="10" max="100" style="width: 56px; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--border); background: var(--card); color: var(--text);">
+        </div>
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <label style="font-size: 11px; color: var(--text-muted);">代数</label>
+          <input id="opt-gen" type="number" value="15" min="5" max="50" style="width: 56px; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--border); background: var(--card); color: var(--text);">
+        </div>
+        <button id="opt-run" class="btn-accent" style="padding: 8px 20px; background: var(--accent); color: #fff; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">启动优化</button>
+        <button id="opt-load" class="btn-accent" style="padding: 8px 20px; background: var(--amethyst, #a78bfa); color: #fff; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">加载最佳</button>
+      </div>
+
+      <!-- 进度条 -->
+      <div class="glass-card" style="margin-bottom: 16px; padding: 16px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <span class="card-header" id="opt-progress-label">就绪</span>
+          <span id="opt-progress-pct" style="font-size: 12px; color: var(--text-muted);">0%</span>
+        </div>
+        <div style="width: 100%; height: 8px; border-radius: 4px; background: rgba(255,255,255,0.06); overflow: hidden;">
+          <div id="opt-progress-bar" style="width: 0%; height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 4px; transition: width 0.4s ease;"></div>
+        </div>
+      </div>
+
+      <!-- 结果表格 -->
+      <div class="glass-card" style="padding: 16px;">
+        <div class="card-header">优化结果</div>
+        <table class="strategy-table" style="width: 100%; margin-top: 8px;">
+          <thead><tr><th>排名</th><th>夏普</th><th>收益%</th><th>最大回撤%</th><th>参数</th></tr></thead>
+          <tbody id="opt-results-body"><tr><td colspan="5" style="text-align:center; opacity:0.4;">点击「启动优化」开始</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
     <!-- ===== Orders Panel ===== -->
     <div id="orders-panel" style="display:none; grid-column: 1 / -1;">
       <div class="glass-card" style="margin-bottom: 16px; padding: 16px; display: flex; align-items: center; gap: 12px;">
@@ -386,6 +452,32 @@
 
   <script src="/static/js/app.js"></script>
   <script src="/static/js/charts.js"></script>
+<!-- ===== Mobile Nav Hamburger ===== -->
+<script>
+(function(){
+  var btn = document.getElementById('hamburgerBtn');
+  var dropdown = document.getElementById('navMobileDropdown');
+  if (!btn || !dropdown) return;
+  btn.addEventListener('click', function(){
+    btn.classList.toggle('open');
+    dropdown.classList.toggle('open');
+  });
+  // Close dropdown when clicking a mobile nav link
+  dropdown.querySelectorAll('.nav-link').forEach(function(link){
+    link.addEventListener('click', function(){
+      btn.classList.remove('open');
+      dropdown.classList.remove('open');
+    });
+  });
+  // Close on outside click
+  document.addEventListener('click', function(e){
+    if (!btn.contains(e.target) && !dropdown.contains(e.target)){
+      btn.classList.remove('open');
+      dropdown.classList.remove('open');
+    }
+  });
+})();
+</script>
 <!-- ===== CANOPY BRIDGE: pywebview JS-API ===== -->
 <script>
 // 检测是否在 pywebview 环境中运行
@@ -818,6 +910,127 @@ navOrders.addEventListener('click', function() {
 
 // 订单刷新按钮
 document.getElementById('ord-refresh').addEventListener('click', refreshOrders);
+
+// ============ 优化器逻辑 ============
+let optPollTimer = null;
+
+async function startOptimization() {
+  const strategy = document.getElementById('opt-strategy').value;
+  const symbol = document.getElementById('opt-symbol').value;
+  const popSize = parseInt(document.getElementById('opt-pop').value) || 30;
+  const generations = parseInt(document.getElementById('opt-gen').value) || 15;
+  const btn = document.getElementById('opt-run');
+  btn.disabled = true;
+  btn.textContent = '提交中...';
+
+  try {
+    const resp = await fetch('/api/optimize', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ strategy_type: strategy, symbol, pop_size: popSize, generations }),
+    });
+    const data = await resp.json();
+    if (data.task_id) {
+      document.getElementById('opt-progress-label').textContent = '优化运行中...';
+      pollOptimizeStatus(data.task_id);
+    } else {
+      document.getElementById('opt-progress-label').textContent = '启动失败';
+      btn.disabled = false;
+      btn.textContent = '启动优化';
+    }
+  } catch (e) {
+    console.error('Optimize error:', e);
+    btn.disabled = false;
+    btn.textContent = '启动优化';
+  }
+}
+
+function pollOptimizeStatus(taskId) {
+  if (optPollTimer) clearInterval(optPollTimer);
+  optPollTimer = setInterval(async () => {
+    try {
+      const resp = await fetch('/api/optimize/status?task_id=' + encodeURIComponent(taskId));
+      const data = await resp.json();
+      const pct = data.progress || 0;
+      document.getElementById('opt-progress-bar').style.width = pct + '%';
+      document.getElementById('opt-progress-pct').textContent = Math.round(pct) + '%';
+
+      if (data.status === 'completed') {
+        clearInterval(optPollTimer);
+        document.getElementById('opt-progress-label').textContent = '优化完成';
+        document.getElementById('opt-run').disabled = false;
+        document.getElementById('opt-run').textContent = '启动优化';
+        renderOptimizeResults(data.results);
+      } else if (data.status === 'failed') {
+        clearInterval(optPollTimer);
+        document.getElementById('opt-progress-label').textContent = '优化失败: ' + (data.error || '未知错误');
+        document.getElementById('opt-run').disabled = false;
+        document.getElementById('opt-run').textContent = '启动优化';
+      }
+    } catch (e) {
+      // silent
+    }
+  }, 1500);
+}
+
+function renderOptimizeResults(results) {
+  const tbody = document.getElementById('opt-results-body');
+  if (!tbody || !results || !results.length) {
+    if (tbody) tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; opacity:0.4;">无结果</td></tr>';
+    return;
+  }
+  tbody.innerHTML = results.map((r, i) => {
+    const params = r.params || {};
+    const paramStr = Object.entries(params).map(([k, v]) => k + '=' + (typeof v === 'number' ? v.toFixed(4) : v)).join(', ');
+    return '<tr>' +
+      '<td style="font-weight: 600; color: var(--accent);">#' + (i + 1) + '</td>' +
+      '<td>' + (r.sharpe_ratio != null ? r.sharpe_ratio.toFixed(3) : '--') + '</td>' +
+      '<td class="' + (r.total_return_pct >= 0 ? 'pnl-up' : 'pnl-down') + '">' +
+        (r.total_return_pct >= 0 ? '+' : '') + (r.total_return_pct != null ? r.total_return_pct.toFixed(2) : '--') + '%</td>' +
+      '<td class="pnl-down">-' + (r.max_drawdown_pct != null ? r.max_drawdown_pct.toFixed(2) : '--') + '%</td>' +
+      '<td style="font-size: 11px; opacity: 0.7; max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">' + paramStr + '</td>' +
+      '</tr>';
+  }).join('');
+}
+
+async function loadBestParams() {
+  const strategy = document.getElementById('opt-strategy').value;
+  try {
+    const resp = await fetch('/api/optimize/status?strategy=' + encodeURIComponent(strategy) + '&best=1');
+    const data = await resp.json();
+    if (data && data.params) {
+      document.getElementById('opt-progress-label').textContent = '已加载最优参数 (' + strategy + ')';
+      renderOptimizeResults([data]);
+    }
+  } catch (e) {
+    console.error('Load best error:', e);
+  }
+}
+
+// 优化器标签页切换
+const navOptimize = document.getElementById('nav-optimize');
+const optimizePanel = document.getElementById('optimize-panel');
+const allCardsForOpt = mainGrid ? mainGrid.querySelectorAll(':scope > :not(#backtest-panel):not(#orders-panel):not(#optimize-panel)') : [];
+
+navOptimize.addEventListener('click', function() {
+  document.querySelectorAll('.nav-link').forEach(x => x.classList.remove('active'));
+  this.classList.add('active');
+
+  if (backtestPanel) backtestPanel.style.display = 'none';
+  if (ordersPanel) ordersPanel.style.display = 'none';
+
+  const isActive = optimizePanel.style.display !== 'none';
+  if (isActive) {
+    optimizePanel.style.display = 'none';
+    allCardsForOpt.forEach(el => el.style.display = '');
+  } else {
+    optimizePanel.style.display = '';
+    allCardsForOpt.forEach(el => el.style.display = 'none');
+  }
+});
+
+document.getElementById('opt-run').addEventListener('click', startOptimization);
+document.getElementById('opt-load').addEventListener('click', loadBestParams);
 </script>
 <!-- ===== Charts Initialization ===== -->
 <script>

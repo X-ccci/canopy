@@ -331,3 +331,113 @@ class StrategyRunner:
                     'params': s.params
                 })
             return result
+
+
+# ── 多交易所并行运行器 ──
+
+class MultiExchangeRunner:
+    """
+    多交易所并行运行器：为每个交易所创建独立的 StrategyRunner 实例，
+    支持 Binance / OKX / Bybit 三所同时运行，跨所价差检测。
+    """
+
+    SUPPORTED_EXCHANGES = {
+        "binance": {"adapter_class": "ExchangeAdapter", "sandbox": True},
+        "okx": {"adapter_class": "ExchangeAdapter", "sandbox": True},
+        "bybit": {"adapter_class": "ExchangeAdapter", "sandbox": True},
+    }
+
+    def __init__(self, exchange_ids: list[str], config: Config | None = None):
+        self.exchange_ids = exchange_ids
+        self.config = config
+        self.runners: dict[str, StrategyRunner] = {}
+        self._running = False
+        self._lock = threading.Lock()
+
+    def start_all(self, strategies: list[dict] | None = None):
+        """
+        启动所有交易所的策略运行器。
+        strategies: [{"type": "grid", "name": "grid_btc", "symbol": "BTC/USDT"}, ...]
+        """
+        self._running = True
+
+        for ex_id in self.exchange_ids:
+            try:
+                adapter = ExchangeAdapter(ex_id, sandbox=True)
+                adapter.connect()
+
+                fetcher = DataFetcher(exchange=ex_id)
+                runner = StrategyRunner(adapter, fetcher, self.config)
+                runner.exchange_id = ex_id  # 标记所属交易所
+
+                # 为每个交易所注册策略
+                if strategies:
+                    for s_cfg in strategies:
+                        runner.add_strategy(
+                            name=f"{ex_id}_{s_cfg.get('name', s_cfg['type'])}",
+                            strategy_type=s_cfg["type"],
+                            symbol=s_cfg.get("symbol", "BTC/USDT"),
+                            timeframe=s_cfg.get("timeframe", "1h"),
+                            **(s_cfg.get("params", {})),
+                        )
+
+                runner.start_all()
+                with self._lock:
+                    self.runners[ex_id] = runner
+                print(f"[MultiRunner] {ex_id} 已启动，{len(runner.strategies)} 个策略")
+            except Exception as e:
+                print(f"[MultiRunner] {ex_id} 启动失败: {e}")
+
+    def stop_all(self):
+        """停止所有交易所的运行器"""
+        self._running = False
+        with self._lock:
+            for ex_id, runner in list(self.runners.items()):
+                try:
+                    runner.stop_all()
+                    print(f"[MultiRunner] {ex_id} 已停止")
+                except Exception as e:
+                    print(f"[MultiRunner] {ex_id} 停止异常: {e}")
+        self.runners.clear()
+
+    def get_cross_exchange_spread(self, symbol: str = "BTC/USDT") -> dict:
+        """获取跨所价差（套利检测用）。"""
+        result = {}
+        prices = {}
+        with self._lock:
+            for ex_id, runner in self.runners.items():
+                try:
+                    ticker = runner.adapter.get_ticker(symbol)
+                    if ticker:
+                        prices[ex_id] = float(ticker.get("last", 0))
+                except Exception:
+                    pass
+
+        if len(prices) >= 2:
+            sorted_exs = sorted(prices.items(), key=lambda x: x[1])
+            low_ex, low_price = sorted_exs[0]
+            high_ex, high_price = sorted_exs[-1]
+            spread = high_price - low_price
+            spread_pct = (spread / low_price * 100) if low_price > 0 else 0
+            result = {
+                "low_exchange": low_ex,
+                "low_price": round(low_price, 2),
+                "high_exchange": high_ex,
+                "high_price": round(high_price, 2),
+                "spread": round(spread, 2),
+                "spread_pct": round(spread_pct, 4),
+                "all_prices": {k: round(v, 2) for k, v in prices.items()},
+            }
+
+        return result
+
+    def get_status(self) -> dict:
+        """获取多交易所运行状态"""
+        status = {"running": self._running, "exchanges": {}}
+        with self._lock:
+            for ex_id, runner in self.runners.items():
+                status["exchanges"][ex_id] = {
+                    "strategies": len(runner.strategies),
+                    "pending_orders": runner.executor.get_pending_count(),
+                }
+        return status

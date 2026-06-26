@@ -1,13 +1,13 @@
 /**
- * Canopy Charts — Chart.js 实时图表模块
+ * Canopy Charts — Chart.js 实时图表模块（含多周期 K 线）
  *
  * 依赖（CDN 引入）：
  *   - Chart.js v4
  *   - chartjs-adapter-date-fns
  *   - chartjs-plugin-zoom
  *
- * 三个图表：
- *   1. K 线图（OHLCV）— 最近 100 根 K 线，支持缩放/平移
+ * 三个主图表 + K 线周期切换按钮：
+ *   1. K 线图（OHLCV）— 支持 1m/5m/15m/1h/4h/1d 周期切换
  *   2. 净值曲线 — 策略回测或实盘 PnL 曲线
  *   3. 信号标记图 — 在价格曲线上叠加 buy/sell 信号点
  */
@@ -19,6 +19,8 @@
   let klineChart = null;
   let equityChart = null;
   let signalChart = null;
+  let currentKlineSymbol = 'BTC/USDT';
+  let currentKlineInterval = '1h';
 
   // ═══ Nature-Tech Glass 配色 ═══
   const COLORS = {
@@ -34,15 +36,16 @@
   };
 
   // ═══ 数据获取 ═══
-  async function fetchChartData(symbol, limit, signalLimit) {
-    const params = new URLSearchParams();
+  async function fetchChartData(symbol, limit, signalLimit, interval) {
+    var params = new URLSearchParams();
     if (symbol) params.set('symbol', symbol);
     if (limit)  params.set('limit', String(limit));
     if (signalLimit) params.set('signal_limit', String(signalLimit));
+    if (interval) params.set('interval', interval);
 
     try {
-      const resp = await fetch('/api/chart-data?' + params.toString());
-      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      var resp = await fetch('/api/chart-data?' + params.toString());
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
       return await resp.json();
     } catch (err) {
       console.error('[Charts] fetchChartData failed:', err);
@@ -50,131 +53,67 @@
     }
   }
 
-  // ═══ 1. K 线图（OHLCV） ═══
-  async function initKlineChart(canvasId, symbol, limit) {
-    symbol = symbol || 'BTC/USDT';
-    limit = limit || 100;
-    const canvas = document.getElementById(canvasId);
-    if (!canvas) return;
-
-    const data = await fetchChartData(symbol, limit);
-    if (!data || !data.kline || data.kline.length === 0) {
-      console.warn('[Charts] K 线数据为空');
-      return;
-    }
-
-    const timeLabels = data.kline.map(d => new Date(d.time));
-    const o = data.kline.map(d => d.open);
-    const h = data.kline.map(d => d.high);
-    const l = data.kline.map(d => d.low);
-    const c = data.kline.map(d => d.close);
-    const v = data.kline.map(d => d.volume);
-
-    // 每根蜡烛的颜色
-    const borderColors = c.map((cl, i) => cl >= o[i] ? COLORS.emerald : COLORS.coral);
-    const bgColors = c.map((cl, i) => cl >= o[i] ? COLORS.emeraldBg : COLORS.coralBg);
-
-    const ctx = canvas.getContext('2d');
-    if (klineChart) klineChart.destroy();
-
-    klineChart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: timeLabels,
-        datasets: [
-          {
-            label: '成交量',
-            data: v,
-            backgroundColor: bgColors,
-            borderColor: borderColors,
-            borderWidth: 0.5,
-            yAxisID: 'yVolume',
-            order: 2,
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        interaction: { mode: 'index', intersect: false },
-        plugins: {
-          legend: { display: false },
-          tooltip: { mode: 'index', intersect: false },
-          zoom: {
-            zoom: {
-              wheel: { enabled: true },
-              pinch: { enabled: true },
-              drag: { enabled: true, backgroundColor: 'rgba(80,200,120,0.08)' },
-              mode: 'x',
-            },
-            pan: { enabled: true, mode: 'x' },
-          },
-        },
-        scales: {
-          x: {
-            type: 'time',
-            time: { unit: 'hour', displayFormats: { hour: 'MM-dd H高:mm' } },
-            grid: { color: COLORS.grid },
-            ticks: { color: COLORS.text, maxTicksLimit: 10 },
-          },
-          yVolume: {
-            position: 'left',
-            title: { display: true, text: '成交量', color: COLORS.text },
-            grid: { display: false },
-            ticks: { color: COLORS.text, maxTicksLimit: 4 },
-            max: Math.max(...v) * 3,
-          },
-        },
-      },
-      plugins: [
-        {
-          id: 'candleOverlay',
-          afterDraw(chart) {
-            const { ctx, scales } = chart;
-            const meta = chart.getDatasetMeta(0);
-            if (!meta || !meta.data) return;
-            ctx.save();
-            meta.data.forEach((bar, i) => {
-              if (i >= data.kline.length) return;
-              const k = data.kline[i];
-              const px = bar.x;
-              const pyO = scales.yVolume.getPixelForValue ? scales.yVolume.getPixelForValue(k.open) : 0;
-              const pyC = scales.yVolume.getPixelForValue ? scales.yVolume.getPixelForValue(k.close) : 0;
-              const pyH = scales.yVolume.getPixelForValue ? scales.yVolume.getPixelForValue(k.high) : 0;
-              const pyL = scales.yVolume.getPixelForValue ? scales.yVolume.getPixelForValue(k.low) : 0;
-
-              // 需要 yPrice 轴来正确映射价格。但 volume 轴的 scale 不同，这里改用占位方式。
-              // 直接在这个 canvas 上绘制 OHLC 蜡烛叠加层，使用 chartArea 映射
-            });
-            ctx.restore();
-          },
-        },
-      ],
-    });
-
-    return klineChart;
+  // ═══ 时间单位映射 ═══
+  function getTimeUnit(interval) {
+    return { '1m': 'minute', '5m': 'minute', '15m': 'minute', '1h': 'hour', '4h': 'hour', '1d': 'day' }[interval] || 'hour';
   }
 
-  // ═══ 1-alt. OHLC 独立图（用 line + 自定义绘制） ═══
-  // 实际上我们使用两个独立图表 + 一个合成信号图更可行。
-  // 这里简化：K 线信息通过鼠标悬停 tooltip 展示，主图展示收盘价曲线。
+  function getDisplayFormat(interval) {
+    return {
+      '1m': 'HH:mm', '5m': 'HH:mm', '15m': 'HH:mm',
+      '1h': 'MM-dd HH:mm', '4h': 'MM-dd HH:mm', '1d': 'MM-dd'
+    }[interval] || 'MM-dd HH:mm';
+  }
 
-  async function initPriceChart(canvasId, symbol, limit) {
-    symbol = symbol || 'BTC/USDT';
+  // ═══ 周期切换按钮渲染 ═══
+  function renderIntervalButtons(containerId, onSelect) {
+    var container = document.getElementById(containerId);
+    if (!container) return;
+    var intervals = ['1m', '5m', '15m', '1h', '4h', '1d'];
+    var html = '';
+    intervals.forEach(function(ival) {
+      var cls = (ival === currentKlineInterval) ? 'interval-btn active' : 'interval-btn';
+      html += '<button class="' + cls + '" data-interval="' + ival + '">' + ival + '</button>';
+    });
+    container.innerHTML = html;
+    container.style.display = 'flex';
+    container.style.gap = '6px';
+    container.style.marginBottom = '10px';
+    container.style.flexWrap = 'wrap';
+
+    container.querySelectorAll('.interval-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        currentKlineInterval = this.dataset.interval;
+        container.querySelectorAll('.interval-btn').forEach(function(b) { b.classList.remove('active'); });
+        this.classList.add('active');
+        if (onSelect) onSelect(currentKlineInterval);
+      });
+    });
+  }
+
+  // ═══ 1. K 线图（OHLCV）— 支持 interval 参数 ═══
+  async function initPriceChart(canvasId, symbol, limit, interval) {
+    symbol = symbol || currentKlineSymbol;
     limit = limit || 100;
-    const canvas = document.getElementById(canvasId);
+    interval = interval || currentKlineInterval;
+    currentKlineSymbol = symbol;
+    currentKlineInterval = interval;
+
+    var canvas = document.getElementById(canvasId);
     if (!canvas) return;
 
-    const data = await fetchChartData(symbol, limit);
+    var data = await fetchChartData(symbol, limit, 0, interval);
     if (!data || !data.kline || data.kline.length === 0) {
       console.warn('[Charts] 无价格数据');
       return;
     }
 
-    const timeLabels = data.kline.map(d => new Date(d.time));
-    const closeData = data.kline.map(d => d.close);
+    var timeLabels = data.kline.map(function(d) { return new Date(d.time); });
+    var closeData = data.kline.map(function(d) { return d.close; });
+    var timeUnit = getTimeUnit(interval);
+    var displayFmt = getDisplayFormat(interval);
 
-    const ctx = canvas.getContext('2d');
+    var ctx = canvas.getContext('2d');
     if (klineChart) klineChart.destroy();
 
     klineChart = new Chart(ctx, {
@@ -183,7 +122,7 @@
         labels: timeLabels,
         datasets: [
           {
-            label: symbol,
+            label: symbol + ' · ' + interval,
             data: closeData,
             borderColor: COLORS.emerald,
             backgroundColor: 'rgba(80, 200, 120, 0.08)',
@@ -203,12 +142,12 @@
           tooltip: {
             callbacks: {
               label: function(ctx) {
-                const i = ctx.dataIndex;
-                const k = data.kline[i];
+                var i = ctx.dataIndex;
+                var k = data.kline[i];
                 if (!k) return '';
                 return [
-                  `开: ${k.open}  高: ${k.high}  低: ${k.low}  收: ${k.close}`,
-                  `成交量: ${k.volume.toLocaleString()}`,
+                  '开: ' + k.open + '  高: ' + k.high + '  低: ' + k.low + '  收: ' + k.close,
+                  '成交量: ' + (k.volume || 0).toLocaleString(),
                 ];
               },
             },
@@ -226,7 +165,7 @@
         scales: {
           x: {
             type: 'time',
-            time: { unit: 'hour', displayFormats: { hour: 'MM-dd H高:mm' } },
+            time: { unit: timeUnit, displayFormats: {} },
             grid: { color: COLORS.grid },
             ticks: { color: COLORS.text, maxTicksLimit: 10 },
           },
@@ -239,24 +178,31 @@
       },
     });
 
+    // 动态设置 x 轴显示格式
+    if (klineChart && klineChart.options && klineChart.options.scales && klineChart.options.scales.x) {
+      klineChart.options.scales.x.time.displayFormats = {};
+      klineChart.options.scales.x.time.displayFormats[timeUnit] = displayFmt;
+      klineChart.update();
+    }
+
     return klineChart;
   }
 
   // ═══ 2. 净值曲线 ═══
   async function initEquityChart(canvasId) {
-    const canvas = document.getElementById(canvasId);
+    var canvas = document.getElementById(canvasId);
     if (!canvas) return;
 
-    const data = await fetchChartData('BTC/USDT', 200, 200);
+    var data = await fetchChartData('BTC/USDT', 200, 200);
     if (!data) return;
 
-    let equity = data.equity;
+    var equity = data.equity;
     if (!equity || equity.length === 0) {
       if (data.kline && data.kline.length > 0) {
-        let val = 10000;
+        var val = 10000;
         equity = [{ time: data.kline[0].time, value: val }];
-        for (let i = 1; i < data.kline.length; i++) {
-          const ret = (data.kline[i].close - data.kline[i-1].close) / data.kline[i-1].close;
+        for (var i = 1; i < data.kline.length; i++) {
+          var ret = (data.kline[i].close - data.kline[i-1].close) / data.kline[i-1].close;
           val = val * (1 + ret * 0.5);
           equity.push({ time: data.kline[i].time, value: Math.round(val * 100) / 100 });
         }
@@ -266,11 +212,11 @@
       }
     }
 
-    const timeLabels = equity.map(d => new Date(d.time));
-    const values = equity.map(d => d.value);
-    const initialValue = values[0] || 10000;
+    var timeLabels = equity.map(function(d) { return new Date(d.time); });
+    var values = equity.map(function(d) { return d.value; });
+    var initialValue = values[0] || 10000;
 
-    const ctx = canvas.getContext('2d');
+    var ctx = canvas.getContext('2d');
     if (equityChart) equityChart.destroy();
 
     equityChart = new Chart(ctx, {
@@ -283,7 +229,7 @@
             data: values,
             borderColor: COLORS.emerald,
             backgroundColor: function(ctx) {
-              const grad = ctx.chart.ctx.createLinearGradient(0, 0, 0, ctx.chart.height || 300);
+              var grad = ctx.chart.ctx.createLinearGradient(0, 0, 0, ctx.chart.height || 300);
               grad.addColorStop(0, 'rgba(80, 200, 120, 0.25)');
               grad.addColorStop(1, 'rgba(80, 200, 120, 0.01)');
               return grad;
@@ -296,7 +242,7 @@
           },
           {
             label: '初始资金',
-            data: timeLabels.map(() => initialValue),
+            data: timeLabels.map(function() { return initialValue; }),
             borderColor: 'rgba(255,255,255,0.15)',
             borderWidth: 1,
             borderDash: [5, 5],
@@ -316,7 +262,7 @@
               label: function(ctx) {
                 if (ctx.dataset.label === '初始资金')
                   return '初始资金: $' + initialValue.toLocaleString();
-                return '净值: $' + ctx.raw.toLocaleString();
+                return '净值: $' + (ctx.raw || 0).toLocaleString();
               },
             },
           },
@@ -331,7 +277,7 @@
           y: {
             title: { display: true, text: '净值 (USDT)', color: COLORS.text },
             grid: { color: COLORS.grid },
-            ticks: { color: COLORS.text, callback: v => '$' + v.toLocaleString() },
+            ticks: { color: COLORS.text, callback: function(v) { return '$' + v.toLocaleString(); } },
           },
         },
       },
@@ -345,25 +291,25 @@
     symbol = symbol || 'BTC/USDT';
     limit = limit || 100;
     signalLimit = signalLimit || 50;
-    const canvas = document.getElementById(canvasId);
+    var canvas = document.getElementById(canvasId);
     if (!canvas) return;
 
-    const data = await fetchChartData(symbol, limit, signalLimit);
+    var data = await fetchChartData(symbol, limit, signalLimit);
     if (!data || !data.kline || data.kline.length === 0) {
       console.warn('[Charts] 信号图数据为空');
       return;
     }
 
-    const timeLabels = data.kline.map(d => new Date(d.time));
-    const closeData = data.kline.map(d => ({ x: new Date(d.time), y: d.close }));
+    var timeLabels = data.kline.map(function(d) { return new Date(d.time); });
+    var closeData = data.kline.map(function(d) { return { x: new Date(d.time), y: d.close }; });
 
-    const signals = data.signals || [];
-    const buyPoints = [];
-    const sellPoints = [];
+    var signals = data.signals || [];
+    var buyPoints = [];
+    var sellPoints = [];
 
     signals.forEach(function(s) {
-      const t = new Date(s.time);
-      const price = s.price || 0;
+      var t = new Date(s.time);
+      var price = s.price || 0;
       if (s.side === 'buy' || s.side === 'BUY') {
         buyPoints.push({ x: t, y: price });
       } else {
@@ -371,7 +317,7 @@
       }
     });
 
-    const datasets = [
+    var datasets = [
       {
         label: symbol,
         data: closeData,
@@ -415,7 +361,7 @@
       });
     }
 
-    const ctx = canvas.getContext('2d');
+    var ctx = canvas.getContext('2d');
     if (signalChart) signalChart.destroy();
 
     signalChart = new Chart(ctx, {
@@ -431,10 +377,10 @@
             callbacks: {
               label: function(ctx) {
                 if (ctx.dataset.label === symbol) {
-                  return symbol + ': $' + ctx.raw.y.toFixed(2);
+                  return symbol + ': $' + (ctx.raw.y || 0).toFixed(2);
                 }
                 if (ctx.dataset.label === '买入信号' || ctx.dataset.label === '卖出信号') {
-                  const s = signals.find(function(sig) {
+                  var s = signals.find(function(sig) {
                     return new Date(sig.time).getTime() === ctx.raw.x.getTime();
                   });
                   if (s) {
@@ -452,7 +398,7 @@
         scales: {
           x: {
             type: 'time',
-            time: { unit: 'hour', displayFormats: { hour: 'MM-dd H高:mm' } },
+            time: { unit: 'hour', displayFormats: { hour: 'MM-dd HH:mm' } },
             grid: { color: COLORS.grid },
             ticks: { color: COLORS.text, maxTicksLimit: 10 },
           },
@@ -469,21 +415,26 @@
   }
 
   // ═══ 刷新所有图表 ═══
-  async function refreshAll(symbol) {
+  async function refreshAll(symbol, interval) {
+    interval = interval || currentKlineInterval;
+    currentKlineSymbol = symbol || currentKlineSymbol;
+    currentKlineInterval = interval;
     await Promise.all([
-      initPriceChart('kline-canvas', symbol),
+      initPriceChart('kline-canvas', currentKlineSymbol, 100, interval),
       initEquityChart('equity-canvas'),
-      initSignalChart('signal-canvas', symbol),
+      initSignalChart('signal-canvas', currentKlineSymbol),
     ]);
   }
 
   // ═══ 导出 ═══
   window.CanopyCharts = {
-    initPriceChart,
-    initEquityChart,
-    initSignalChart,
-    refreshAll,
+    initPriceChart: initPriceChart,
+    initEquityChart: initEquityChart,
+    initSignalChart: initSignalChart,
+    refreshAll: refreshAll,
+    renderIntervalButtons: renderIntervalButtons,
+    currentKlineInterval: currentKlineInterval,
   };
 
-  console.log('[Charts] CanopyCharts module loaded');
+  console.log('[Charts] CanopyCharts module loaded (multi-interval)');
 })();
