@@ -1,0 +1,43 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT || 22 }}
+          script: |
+            set -e
+            cd /opt/canopy || git clone git@github.com:${{ github.repository }}.git /opt/canopy && cd /opt/canopy
+            git fetch origin master
+            git reset --hard origin/master
+
+            # 注入环境变量
+            cat > .env << 'EOF'
+            CANOPY_VAULT_KEY=${{ secrets.CANOPY_VAULT_KEY }}
+            CANOPY_SMTP_HOST=${{ secrets.CANOPY_SMTP_HOST }}
+            CANOPY_SMTP_PORT=${{ secrets.CANOPY_SMTP_PORT }}
+            CANOPY_SMTP_USER=${{ secrets.CANOPY_SMTP_USER }}
+            CANOPY_SMTP_PASS=${{ secrets.CANOPY_SMTP_PASS }}
+            CANOPY_TO_EMAIL=${{ secrets.CANOPY_TO_EMAIL }}
+            EOF
+
+            # 安装依赖
+            pip install -r requirements.txt
+
+            # 重启服务
+            sudo systemctl restart canopy
+            sudo systemctl status canopy --no-pager -l
+
+            echo "Deploy completed at $(date)"

@@ -1,0 +1,171 @@
+{
+  "strategies": [
+    {
+      "id": "comm-grid-infinite",
+      "name": "Infinite Grid (Community Edition)",
+      "description": "社区优化版无限网格，增加了动态步长调整和资金费率对冲。",
+      "strategy_type": "grid",
+      "params": { "grid_levels": 30, "grid_step_pct": 0.8, "take_profit_pct": 2.5, "funding_hedge": true },
+      "author": "GridMaster99",
+      "rating": 4.6,
+      "downloads": 2340,
+      "tags": ["grid", "社区", "动态"],
+      "created_at": "2025-06-15"
+    },
+    {
+      "id": "comm-ema-cloud",
+      "name": "EMA Cloud Strategy",
+      "description": "三重EMA云层策略，EMA(9,21,55)组成云层，价格在云层上方做多。",
+      "strategy_type": "trend",
+      "params": { "ema_short": 9, "ema_mid": 21, "ema_long": 55, "atr_mult": 2.0 },
+      "author": "CloudTrader",
+      "rating": 4.4,
+      "downloads": 1850,
+      "tags": ["EMA", "云层", "趋势"],
+      "created_at": "2025-06-18"
+    },
+    {
+      "id": "comm-rsi-divergence",
+      "name": "RSI Divergence Scanner",
+      "description": "RSI背离扫描器，自动检测常规背离和隐藏背离，多时间框架确认。",
+      "strategy_type": "mean_reversion",
+      "params": { "rsi_period": 14, "div_lookback": 30, "confirmation_bars": 2 },
+      "author": "DivScanner",
+      "rating": 4.2,
+      "downloads": 1320,
+      "tags": ["RSI", "背离", "扫描"],
+      "created_at": "2025-06-20"
+    },
+    {
+      "id": "comm-vwap-revert",
+      "name": "VWAP Mean Reversion",
+      "description": "VWAP均值回归策略。价格偏离VWAP超过设定标准差时反向交易。",
+      "strategy_type": "mean_reversion",
+      "params": { "vwap_deviation": 2.0, "lookback": "1d", "stop_loss_pct": 2.0 },
+      "author": "VWAPGuru",
+      "rating": 4.5,
+      "downloads": 1560,
+      "tags": ["VWAP", "机构", "回归"],
+      "created_at": "2025-06-22"
+    },
+    {
+      "id": "comm-fibo-grid",
+      "name": "Fibonacci Grid",
+      "description": "斐波那契网格策略。在关键斐波那契回撤位挂单，结合趋势方向过滤。",
+      "strategy_type": "grid",
+      "params": { "fibo_levels": [0.236, 0.382, 0.5, 0.618, 0.786], "trend_filter": true, "grid_spacing": 0.5 },
+      "author": "FiboKing",
+      "rating": 4.3,
+      "downloads": 980,
+      "tags": ["斐波那契", "网格", "数学"],
+      "created_at": "2025-06-23"
+    },
+    {
+      "id": "comm-orderflow-sniper",
+      "name": "Order Flow Sniper",
+      "description": "订单流狙击策略。基于大单监控和成交量分布，捕捉主力资金动向。",
+      "strategy_type": "momentum",
+      "params": { "whale_threshold_btc": 10, "vol_spike_mult": 3.0, "exit_bars": 5 },
+      "author": "FlowHunter",
+      "rating": 4.7,
+      "downloads": 2100,
+      "tags": ["订单流", "主力", "成交量"],
+      "created_at": "2025-06-24"
+    },
+    {
+      "id": "comm-pairs-trader",
+      "name": "Statistical Pairs Trader",
+      "description": "统计套利配对交易。基于协整检验和Z-score的配对交易策略。",
+      "strategy_type": "arbitrage",
+      "params": { "z_entry": 2.0, "z_exit": 0.5, "half_life": 20, "corr_threshold": 0.8 },
+      "author": "StatArb",
+      "rating": 4.1,
+      "downloads": 720,
+      "tags": ["配对交易", "统计套利", "协整"],
+      "created_at": "2025-06-25"
+    },
+    {
+      "id": "comm-sentiment-fusion",
+      "name": "Sentiment Fusion",
+      "description": "情绪融合策略。结合恐惧贪婪指数、社交媒体情绪和链上数据。",
+      "strategy_type": "momentum",
+      "params": { "fear_threshold": 25, "greed_threshold": 75, "sentiment_weight": 0.6, "onchain_weight": 0.4 },
+      "author": "SentientAI",
+      "rating": 4.0,
+      "downloads": 640,
+      "tags": ["情绪", "AI", "链上"],
+      "created_at": "2025-06-25"
+    },
+    {
+      "id": "comm-martingale-lite",
+      "name": "Martingale Lite (Risk-Managed)",
+      "description": "轻量马丁格尔策略。带最大加仓次数和总敞口限制，风控优先。",
+      "strategy_type": "grid",
+      "params": { "base_qty": 0.01, "multiplier": 1.5, "max_levels": 5, "max_exposure_pct": 0.3 },
+      "author": "RiskFirst",
+      "rating": 3.8,
+      "downloads": 890,
+      "tags": ["马丁", "风控", "网格"],
+      "created_at": "2025-06-26"
+    },
+    {
+      "id": "comm-ichimoku-cloud",
+      "name": "Ichimoku Cloud Breakout",
+      "description": "一目均衡表突破策略。价格突破云层+转换线上穿基准线确认入场。",
+      "strategy_type": "trend",
+      "params": { "tenkan": 9, "kijun": 26, "senkou_b": 52, "cloud_filter": true },
+      "author": "IchiTrader",
+      "rating": 4.5,
+      "downloads": 1430,
+      "tags": ["一目均衡", "云层", "突破"],
+      "created_at": "2025-06-26"
+    }
+  ],
+  "backtest_configs": [
+    {
+      "id": "btc-1h-standard",
+      "name": "BTC 1h Standard",
+      "symbol": "BTC/USDT",
+      "timeframe": "1h",
+      "initial_capital": 10000,
+      "start_date": "2025-01-01",
+      "end_date": "2025-06-26"
+    },
+    {
+      "id": "eth-4h-aggressive",
+      "name": "ETH 4h Aggressive",
+      "symbol": "ETH/USDT",
+      "timeframe": "4h",
+      "initial_capital": 5000,
+      "start_date": "2025-01-01",
+      "end_date": "2025-06-26"
+    },
+    {
+      "id": "sol-1d-conservative",
+      "name": "SOL 1d Conservative",
+      "symbol": "SOL/USDT",
+      "timeframe": "1d",
+      "initial_capital": 20000,
+      "start_date": "2024-06-26",
+      "end_date": "2025-06-26"
+    },
+    {
+      "id": "multi-btc-eth-sol",
+      "name": "Multi-Asset Portfolio",
+      "symbols": ["BTC/USDT", "ETH/USDT", "SOL/USDT"],
+      "timeframe": "1h",
+      "initial_capital": 50000,
+      "start_date": "2025-01-01",
+      "end_date": "2025-06-26"
+    },
+    {
+      "id": "quick-7d-test",
+      "name": "Quick 7-Day Test",
+      "symbol": "BTC/USDT",
+      "timeframe": "15m",
+      "initial_capital": 1000,
+      "start_date": "2025-06-19",
+      "end_date": "2025-06-26"
+    }
+  ]
+}

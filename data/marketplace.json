@@ -1,0 +1,165 @@
+[
+  {
+    "id": "grid-infinity-v2",
+    "name": "Grid Infinity v2",
+    "description": "无限网格策略，自动在价格区间内挂单买卖，震荡市利器。参数可调网格层数和步长。",
+    "strategy_type": "grid",
+    "params": {
+      "grid_levels": 20,
+      "grid_step_pct": 1.5,
+      "take_profit_pct": 3.0
+    },
+    "author": "Canopy Core",
+    "rating": 4.5,
+    "downloads": 1280,
+    "tags": ["grid", "震荡", "高胜率"],
+    "created_at": "2025-06-01"
+  },
+  {
+    "id": "trend-surf-pro",
+    "name": "Trend Surf Pro",
+    "description": "双EMA趋势跟踪，结合ATR动态止损。适合单边行情，趋势越强收益越高。",
+    "strategy_type": "trend",
+    "params": {
+      "ema_fast": 20,
+      "ema_slow": 50,
+      "atr_mult": 2.5
+    },
+    "author": "Canopy Core",
+    "rating": 4.3,
+    "downloads": 960,
+    "tags": ["trend", "单边", "ATR"],
+    "created_at": "2025-06-05"
+  },
+  {
+    "id": "mean-reversion-rsi",
+    "name": "Mean Reversion RSI",
+    "description": "基于RSI超买超卖信号的均值回归策略。RSI<30买入，RSI>70卖出。",
+    "strategy_type": "mean_reversion",
+    "params": {
+      "rsi_period": 14,
+      "oversold": 30,
+      "overbought": 70,
+      "stop_loss_pct": 3.0
+    },
+    "author": "TraderJoe",
+    "rating": 4.0,
+    "downloads": 750,
+    "tags": ["mean_reversion", "RSI", "超买超卖"],
+    "created_at": "2025-06-10"
+  },
+  {
+    "id": "momentum-breakout",
+    "name": "Momentum Breakout",
+    "description": "动量突破策略，当价格突破N日高点时做多，跌破N日低点时做空。",
+    "strategy_type": "momentum",
+    "params": {
+      "lookback": 20,
+      "threshold": 0.02,
+      "stop_loss_pct": 5.0
+    },
+    "author": "AlphaSeeker",
+    "rating": 4.2,
+    "downloads": 620,
+    "tags": ["momentum", "突破", "高波动"],
+    "created_at": "2025-06-12"
+  },
+  {
+    "id": "dca-smart",
+    "name": "DCA Smart Accumulator",
+    "description": "智能定投策略。波动率低时加大定投，波动率高时减小定投，实现智能仓位管理。",
+    "strategy_type": "dca",
+    "params": {
+      "interval_hours": 24,
+      "amount_per_order": 100,
+      "mode": "smart",
+      "volatility_weight": 1.0
+    },
+    "author": "HODLer",
+    "rating": 4.7,
+    "downloads": 1500,
+    "tags": ["DCA", "定投", "长期"],
+    "created_at": "2025-06-15"
+  },
+  {
+    "id": "arbitrage-hub",
+    "name": "Arbitrage Hub",
+    "description": "跨所价差套利策略。监控Binance/OKX/Bybit价差，超过阈值自动执行。",
+    "strategy_type": "arbitrage",
+    "params": {
+      "spread_threshold": 0.005,
+      "max_position_pct": 0.3,
+      "rebalance_interval": 30
+    },
+    "author": "Canopy Core",
+    "rating": 4.1,
+    "downloads": 540,
+    "tags": ["arbitrage", "套利", "低风险"],
+    "created_at": "2025-06-18"
+  },
+  {
+    "id": "bollinger-band-bounce",
+    "name": "Bollinger Band Bounce",
+    "description": "布林带反弹策略。价格触及下轨买入，触及上轨卖出，中轨止损。",
+    "strategy_type": "mean_reversion",
+    "params": {
+      "bb_period": 20,
+      "bb_std": 2.0,
+      "stop_loss_pct": 2.0
+    },
+    "author": "QuantNinja",
+    "rating": 4.4,
+    "downloads": 890,
+    "tags": ["bollinger", "反弹", "布林带"],
+    "created_at": "2025-06-20"
+  },
+  {
+    "id": "macd-divergence",
+    "name": "MACD Divergence Hunter",
+    "description": "MACD顶底背离策略。检测价格与MACD柱的背离信号，高胜率反转交易。",
+    "strategy_type": "trend",
+    "params": {
+      "macd_fast": 12,
+      "macd_slow": 26,
+      "macd_signal": 9,
+      "divergence_lookback": 50
+    },
+    "author": "PatternMaster",
+    "rating": 4.6,
+    "downloads": 1100,
+    "tags": ["MACD", "背离", "反转"],
+    "created_at": "2025-06-22"
+  },
+  {
+    "id": "volatility-harvest",
+    "name": "Volatility Harvest v2",
+    "description": "波动率收割策略。利用期权或永续合约的资金费率，在波动率回归中获利。",
+    "strategy_type": "mean_reversion",
+    "params": {
+      "zscore_threshold": 2.0,
+      "lookback": 50,
+      "stop_loss_pct": 4.0
+    },
+    "author": "VolTrader",
+    "rating": 3.9,
+    "downloads": 430,
+    "tags": ["volatility", "波动率", "资金费率"],
+    "created_at": "2025-06-24"
+  },
+  {
+    "id": "multi-tf-confluence",
+    "name": "Multi-TF Confluence",
+    "description": "多周期共振策略。1h/4h/1d三周期EMA均线共振，多周期同向时入场。",
+    "strategy_type": "trend",
+    "params": {
+      "ema_period": 50,
+      "timeframes": ["1h", "4h", "1d"],
+      "min_confluence": 2
+    },
+    "author": "SwingMaster",
+    "rating": 4.8,
+    "downloads": 1700,
+    "tags": ["多周期", "共振", "趋势"],
+    "created_at": "2025-06-25"
+  }
+]

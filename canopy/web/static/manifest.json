@@ -1,0 +1,29 @@
+{
+  "name": "Canopy - Nature-Tech Terminal",
+  "short_name": "Canopy",
+  "description": "Nature-Tech 交易终端 — 多策略量化交易仪表盘",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#10b981",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/static/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/static/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["finance", "utilities"],
+  "lang": "zh-CN",
+  "dir": "ltr",
+  "scope": "/",
+  "prefer_related_applications": false
+}
